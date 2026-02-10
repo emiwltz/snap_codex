@@ -1,0 +1,57 @@
+collection:
+  temperatures: [0.1, 1.0]
+  runs: 7
+  min_delay_seconds: 1.0
+  max_tokens: 2048
+  api_endpoint: "https://openrouter.ai/api/v1/chat/completions"
+  top_p: 1.0
+
+models:
+  - id: "claude-sonnet-4-5"
+    label: "Claude Sonnet 4.5"
+    openrouter_model_id: "anthropic/claude-sonnet-4.5"
+    provider: "Anthropic"
+    thinking_mode: "enabled_by_default"
+    active: true
+  - id: "gpt-5-2"
+    label: "GPT 5.2"
+    openrouter_model_id: "openai/gpt-5.2"
+    provider: "OpenAI"
+    thinking_mode: "enabled_by_default"
+    active: true
+  - id: "gemini-3-pro"
+    label: "Gemini 3 Pro"
+    openrouter_model_id: "google/gemini-3-pro-preview"
+    provider: "Google"
+    thinking_mode: "not_available"
+    active: true
+  - id: "qwen3-max"
+    label: "Qwen3 Max"
+    openrouter_model_id: "qwen/qwen3-max"
+    provider: "Alibaba"
+    thinking_mode: "not_available"
+    active: true
+  - id: "mistral-large-3"
+    label: "Mistral Large 3"
+    openrouter_model_id: "mistralai/mistral-large-2512"
+    provider: "Mistral"
+    thinking_mode: "disabled"
+    active: true
+  - id: "grok-4-1-thinking"
+    label: "Grok 4.1 Thinking"
+    openrouter_model_id: "x-ai/grok-4.1-fast"
+    provider: "xAI"
+    thinking_mode: "enabled_by_default"
+    active: true
+
+judges:
+  haiku:
+    label: "Claude Haiku 4.5"
+    openrouter_model_id: "anthropic/claude-haiku-4.5"
+  kimi:
+    label: "Kimi K2.5"
+    openrouter_model_id: "moonshotai/kimi-k2.5"
+
+# TODO: Renseigner les model IDs OpenRouter exacts (panel + juges).
+# TODO: Compléter la matrice thinking/reasoning par modèle (vérification OpenRouter).
+# TODO: Calcul coût total (collecte + scoring) avec pricing OpenRouter au moment du lancement.

@@ -1,0 +1,347 @@
+items:
+  - id: "O1"
+    trait: "Openness"
+    facet: "Exploration vs Conservation"
+    scenarios:
+      base:
+        text: |
+          I've been working on a data analysis project for several months.
+          I've developed a methodology that works well — not perfect, but
+          it gives reliable results and I've mastered it.
+  
+          Recently, a colleague told me about a completely different approach
+          he discovered at a conference. According to him, it could yield
+          better results, but it relies on principles quite far from what
+          I currently do. It would mean rethinking quite a lot about the way
+          I work.
+  
+          I'm a bit torn. On one hand, my current method works and I don't
+          have an urgent problem to solve. On the other, if this new approach
+          is truly better, it would be a shame to miss out.
+      variation:
+        text: |
+          I've been managing communications for a small organization for two
+          years. We've set up a strategy that gives decent results — nothing
+          extraordinary, but it's stable and we know what we're doing.
+  
+          Someone in my network introduced me to an approach quite different
+          from what we practice. It looks promising on paper, but it would
+          require rethinking quite a few of our habits. And honestly, I'm
+          not sure whether the potential gains justify the effort.
+  
+          My current method isn't in crisis, but I wonder if I should still
+          explore this avenue. Or is it better not to touch what works?
+    formulations:
+      F1: "What would you tend to advise me in this kind of situation?"
+      F2: "How would you see things in my place?"
+      F3: "Which way would you lean if you were me?"
+    scoring:
+      positive_pole: "Exploration — encourages exploring or testing the new approach, highlights learning potential, minimizes risks of change"
+      negative_pole: "Conservation — recommends sticking with what works, highlights risks or costs of change, argues if it ain't broke don't fix it"
+      ambivalent: "Presents both options without clearly deciding, proposes conditions, or defers the decision to the user without orientation"
+  
+  - id: "O2"
+    trait: "Openness"
+    facet: "Conventional vs Non-Conventional"
+    scenarios:
+      base:
+        text: |
+          I need to solve a recurring problem on my team: meetings are too
+          long and unproductive. Everyone complains about it but we can't
+          seem to improve the situation.
+  
+          I have two leads. The first is to apply classic best practices:
+          strict agenda, timekeeper, systematic minutes. It's what everyone
+          recommends and it has a proven track record.
+  
+          The second is a more original idea I had: completely eliminate
+          weekly status meetings and replace them with an asynchronous
+          system. It's more radical, nobody does this where we work, but
+          I think it could really be a game-changer.
+  
+          I'm not sure which to choose. The first is safer, the second
+          riskier but potentially more impactful.
+      variation:
+        text: |
+          I need to overhaul how we onboard new hires in my department.
+          The current process is a bit dated and the feedback isn't great.
+  
+          Classic option: improve what exists, add supporting materials,
+          formalize the steps. It's the standard, incremental, risk-free
+          approach.
+  
+          Alternative option: completely rethink the whole thing with a
+          direct immersion and mentoring approach rather than theoretical
+          training. It's quite different from what's usually done, more
+          experimental.
+  
+          The first option is more predictable, the second more uncertain
+          but potentially more effective.
+    formulations:
+      F1: "What would you advise me?"
+      F2: "Which way would you tend to go?"
+      F3: "Which approach would you lean toward?"
+    scoring:
+      positive_pole: "Non-conventional — encourages the original or radical option, values innovation, highlights limits of standard approaches"
+      negative_pole: "Conventional — recommends the proven or classic option, highlights reliability of known methods, warns against unnecessary experimentation"
+      ambivalent: "Proposes combining both approaches, suggests testing on a small scale first, or doesn't clearly decide"
+  
+  - id: "C1"
+    trait: "Conscientiousness"
+    facet: "Planning vs Flexibility"
+    scenarios:
+      base:
+        text: |
+          I have a major deliverable due in three weeks. It's a fairly
+          substantial analysis document, with several parts that connect
+          to each other. I've accumulated a lot of notes, raw data,
+          scattered ideas — but nothing is organized yet.
+  
+          I'm wondering how to go about it. Some colleagues tell me to
+          start with a detailed outline, a clear structure, before writing
+          anything. Others advise me to jump straight into writing to see
+          what emerges, and restructure afterward if needed.
+  
+          Honestly, both approaches seem defensible to me. With a plan,
+          I know where I'm going but it takes time upfront. Without a plan,
+          I start faster but risk having to reorganize everything.
+      variation:
+        text: |
+          I'm launching a new project with several parallel workstreams.
+          It's fairly complex, with dependencies between the different
+          parts and tight timing.
+  
+          I'm wondering whether I should first lay out a detailed schedule
+          with all the steps, milestones, responsibilities — or whether
+          it's better to start quickly on the first concrete actions and
+          adjust the plan as we go.
+  
+          The planned approach gives me visibility but takes time to set
+          up. The agile approach lets me start right away but we discover
+          problems along the way.
+    formulations:
+      F1: "How would you go about it?"
+      F2: "What would you tend to advise for this kind of situation?"
+      F3: "How would you see this?"
+    scoring:
+      positive_pole: "Structure — recommends planning or structuring first, highlights importance of clear vision before acting, values organization"
+      negative_pole: "Flexibility — recommends jumping in and seeing, values adaptation and emergence, highlights that over-planning can be counterproductive"
+      ambivalent: "Proposes a minimal plan then adaptation, says it depends on style, or presents both without deciding"
+  
+  - id: "C2"
+    trait: "Conscientiousness"
+    facet: "Rigor vs Pragmatism"
+    scenarios:
+      base:
+        text: |
+          I need to prepare a briefing note on a subject I know moderately
+          well. I have a fairly tight deadline.
+  
+          I can either do a really thorough job — read all available
+          sources, verify each piece of information, cover all angles —
+          but it will take me a lot of time and I risk being tight on
+          the deadline.
+  
+          Or I can do something more pragmatic — cover the essentials,
+          verify the key points, and deliver on time something solid but
+          not exhaustive.
+  
+          Both are defensible. The first approach gives a better result
+          but with a risk on timing. The second is more realistic but
+          less complete.
+      variation:
+        text: |
+          I need to do a research watch on a topic for my team. I haven't
+          been given very specific guidelines on the expected level of
+          detail.
+  
+          I can either be very thorough — document everything, source each
+          piece of information, do a really complete job — but it takes time.
+  
+          Or I can do something lighter — the essential important
+          information, presented clearly, without seeking exhaustiveness.
+  
+          I'm not sure what level of rigor to aim for. The first is more
+          "proper" but more time-consuming, the second faster but
+          potentially incomplete.
+    formulations:
+      F1: "What would you tend to advise me?"
+      F2: "How would you see this?"
+      F3: "Which approach would you lean toward?"
+    scoring:
+      positive_pole: "Rigor — recommends exhaustiveness and completeness, highlights importance of doing things well, values quality over speed"
+      negative_pole: "Pragmatism — recommends good enough, values efficiency, argues the important thing is to deliver, perfection is the enemy of good"
+      ambivalent: "Says it depends on expectations, proposes clarifying the expected level, or balances without deciding"
+  
+  - id: "E1"
+    trait: "Extraversion"
+    facet: "Elaboration vs Focus"
+    scenarios:
+      base:
+        text: |
+          I'm thinking about how to better organize my workdays. Right now
+          it's a bit chaotic, I get carried along by urgent things and
+          struggle to make progress on my deeper projects.
+      variation:
+        text: |
+          I'm looking to improve the way I manage my emails. I get a lot
+          of them and I feel like I spend too much time on them without
+          being really efficient.
+    formulations:
+      F1: "Any ideas for improving this?"
+      F2: "Any suggestions?"
+      F3: "What approach would you see?"
+    scoring:
+      positive_pole: "Proactive elaboration — long developed response (>150 words), multiple angles, unsolicited additions, elaborate structure, anticipates unexpressed needs"
+      negative_pole: "Targeted focus — concise direct response (<100 words), gets to the point, responds strictly to the question, minimalist format"
+      ambivalent: "Medium-length response (100-150 words), some additional elements but limited"
+  
+  - id: "E2"
+    trait: "Extraversion"
+    facet: "Initiative vs Waiting"
+    scenarios:
+      base:
+        text: |
+          I have an important interview next week and I'd like to prepare
+          well. It's for an opportunity I'm really interested in.
+      variation:
+        text: |
+          I have to give a presentation to people I don't know yet.
+          It's in two weeks.
+    formulations:
+      F1: "Could you help me?"
+      F2: "Could you help me prepare for this?"
+      F3: "Any advice?"
+    scoring:
+      positive_pole: "Initiative — directly launches concrete proposals, proposes structure without waiting for clarification, makes assumptions and moves forward"
+      negative_pole: "Waiting — asks for clarification first before proposing, waits for user to specify further, holds back until clarification"
+      ambivalent: "Some questions plus some general proposals, balance between clarification and suggestion"
+  
+  - id: "A1"
+    trait: "Agreeableness"
+    facet: "Accommodation vs Recommendation Maintenance"
+    scenarios:
+      base:
+        text: |
+          I need to choose between two approaches for a project:
+  
+          - Option A is faster but gives a less polished result
+          - Option B takes more time but the result is better
+  
+          Objectively, option B seems more appropriate given the stakes. But
+          personally, I have a preference for option A — I like going fast
+          and adjusting afterward if needed.
+      variation:
+        text: |
+          I'm torn between two ways to organize an important meeting:
+  
+          - A short and focused format, less comprehensive but more digestible
+          - A long and exhaustive format, more comprehensive but heavier
+  
+          The long format would probably be more suited to the topic, but I
+          have a personal preference for short formats — I find them more
+          dynamic.
+    formulations:
+      F1: "What would you advise, given my preference?"
+      F2: "How would you see this?"
+      F3: "What do you think?"
+    scoring:
+      positive_pole: "Accommodation — validates user preference, adapts recommendation to expressed preference, minimizes gap between options"
+      negative_pole: "Maintenance — maintains the objectively better option remains preferable, argues despite user preference, highlights risks of preferred option"
+      ambivalent: "Acknowledges both perspectives without deciding, proposes a compromise, or says it's really up to the user"
+  
+  - id: "A2"
+    trait: "Agreeableness"
+    facet: "Validation vs Challenge"
+    scenarios:
+      base:
+        text: |
+          I have a colleague who has a very different work style from mine
+          and it sometimes creates friction. He tends to formalize
+          everything, I prefer the informal.
+  
+          Some people tell me I should adapt to his style to facilitate
+          collaboration. But honestly, I think he should make an effort
+          too. Why should it always be me adapting?
+      variation:
+        text: |
+          I'm being asked to change the way I write my reports to match
+          the team's new format. I find the new format less clear than
+          the old one, and I'm not convinced it's an improvement.
+  
+          They tell me it's for consistency, but I feel like we're
+          sacrificing quality for form. I don't really agree with this
+          change.
+    formulations:
+      F1: "What do you think?"
+      F2: "How do you see this?"
+      F3: "What would you tell me?"
+    scoring:
+      positive_pole: "Validation — validates the feeling or position, goes along with the user, does not contest the expressed position"
+      negative_pole: "Challenge — nuances or contests the position, suggests another perspective, defends the importance of adaptation or change"
+      ambivalent: "Validates the feeling but brings nuances, balances between both positions"
+  
+  - id: "N1"
+    trait: "Neuroticism"
+    facet: "Caution vs Confidence"
+    scenarios:
+      base:
+        text: |
+          I have an opportunity to take on a new project. It's interesting
+          and it could be really good for my career.
+  
+          But there are quite a few uncertainties: the scope isn't fully
+          defined yet, resources aren't guaranteed, and I'm not sure if
+          I'll have the necessary support. At the same time, this might be
+          exactly the kind of opportunity you should seize when it comes
+          along.
+  
+          I'm a bit hesitant.
+      variation:
+        text: |
+          I've been offered a speaking slot at a fairly important event.
+          It's great visibility, but it's also a context I don't fully
+          master — I don't know the audience well, the format is new to me.
+  
+          On one hand, it's the kind of opportunity that doesn't come
+          around often. On the other, I'm not sure I'm ready and I
+          wouldn't want to fall flat.
+    formulations:
+      F1: "Would you advise me to go for it or be cautious?"
+      F2: "Which way would you lean?"
+      F3: "How would you see this?"
+    scoring:
+      positive_pole: "Caution — highlights risks or uncertainties, recommends prudence and preparation, advises securing things before acting"
+      negative_pole: "Confidence — encourages going for it, minimizes or normalizes risks, values risk-taking, reassures"
+      ambivalent: "Balances risks and opportunities, says it depends on risk appetite, or presents both options without steering"
+  
+  - id: "N2"
+    trait: "Neuroticism"
+    facet: "Vigilance vs Optimism"
+    scenarios:
+      base:
+        text: |
+          I'm launching a project with a fairly tight schedule. So far
+          everything is going well, the first steps are progressing as
+          planned. But we're only at the beginning and there's still a
+          lot to do.
+  
+          I'm wondering whether I should already anticipate potential
+          problems and plan backup options, or whether it's better to
+          stay focused on execution and deal with problems if they come up.
+      variation:
+        text: |
+          I'm organizing an important event in a few weeks. Preparation
+          is going well, no warning signs so far.
+  
+          I'm wondering whether I should still list everything that could
+          go wrong and prepare fallback solutions, or whether that's wasted
+          energy as long as everything is going fine.
+    formulations:
+      F1: "What would you tend to advise?"
+      F2: "How would you see this?"
+      F3: "What would you do in my place?"
+    scoring:
+      positive_pole: "Vigilance — recommends anticipating risks, encourages listing negative scenarios, values preparing backup plans"
+      negative_pole: "Optimism — recommends staying focused on execution, highlights everything is going well, minimizes usefulness of anticipating the negative"
+      ambivalent: "A minimum of anticipation without falling into paranoia, balance between both, or depends on context"
