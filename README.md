@@ -3,6 +3,7 @@
 Pipeline Python pour collecter, scorer, analyser et visualiser des reponses LLM selon le protocole SoulBench.
 
 Guide non-technique: `GUIDE_NON_TECHNIQUE.md`.
+Protocole experimental detaille: `PROTOCOLE_EXPERIMENTAL_SNAP_v2_1.md`.
 
 ## Etat actuel de la codebase (snapshot du 4 mars 2026)
 
