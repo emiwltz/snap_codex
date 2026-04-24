@@ -1,6 +1,8 @@
 collection:
-  temperatures: [0.1, 1.0]
-  runs: 7
+  # The active POC design is defined in config/protocol.yaml.
+  # These values are kept as collection defaults and documentation.
+  temperatures: [0.0, 0.5, 1.0]
+  runs: 10
   min_delay_seconds: 1.0
   max_tokens: 2048
   api_endpoint: "https://openrouter.ai/api/v1/chat/completions"

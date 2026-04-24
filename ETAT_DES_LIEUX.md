@@ -1,6 +1,12 @@
 # SoulBench — État des lieux du pipeline
 *Généré le 18 février 2026*
 
+> **Note actuelle**: ce document décrit l'ancien état full-factorial/v2.1 du
+> pipeline. Le design actif du dépôt est un POC v3.1 compact, défini
+> dans `config/protocol.yaml` et documenté dans
+> `PROTOCOLE_EXPERIMENTAL_SNAP_v3_1.md`. La v1.1 et la v2.1 restent conservées
+> comme traces historiques.
+
 ## 1. Vue d'ensemble
 SoulBench est une pipeline Python qui orchestre une expérience de stabilité des valeurs chez des LLMs en variant systématiquement le contexte de réponse. Le flux commence par la lecture de fichiers YAML de configuration (modèles, items, prompts système, rubriques de scoring). Pour chaque modèle, la collecte génère toutes les conditions expérimentales possibles (items x scénarios x formulations x prompts système x températures x runs), puis interroge OpenRouter et stocke chaque réponse brute dans SQLite. Ensuite, deux juges LLM relisent chaque réponse avec une consigne de codage stricte et attribuent un score discret (`+1`, `0`, `-1`, `REFUS`). Les désaccords sont résolus automatiquement quand ils sont mineurs, et envoyés en adjudication humaine quand ils sont majeurs ou de type différent. Une étape de vérification manuelle permet d’exporter un échantillon CSV, réimporter des codages humains, puis calculer des kappas d’accord. Enfin, le pipeline génère des rapports statistiques JSON (stabilité, sensibilité, décomposition de variance) et des figures PNG. À date, le code est structurellement complet, les tests unitaires passent, mais aucune sortie expérimentale réelle n’est présente dans `data/` ou `outputs/`.
 

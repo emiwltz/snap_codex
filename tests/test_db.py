@@ -33,7 +33,9 @@ def test_schema_and_indexes_created(tmp_path: Path) -> None:
                 "SELECT name FROM sqlite_master WHERE type='table';"
             ).fetchall()
         }
-        assert {"responses", "collection_metadata", "manual_verification"}.issubset(tables)
+        assert {"responses", "collection_metadata", "manual_verification"}.issubset(
+            tables
+        )
 
         indexes = {
             row["name"]
@@ -86,7 +88,9 @@ def test_checkpoint_completed_keys_skip_errors(tmp_path: Path) -> None:
         )
 
 
-def test_error_row_can_be_replaced_by_success_for_same_condition(tmp_path: Path) -> None:
+def test_error_row_can_be_replaced_by_success_for_same_condition(
+    tmp_path: Path,
+) -> None:
     db_path = tmp_path / "test.db"
     with SoulBenchDB(db_path) as db:
         inserted_error = db.insert_response(
@@ -107,15 +111,13 @@ def test_error_row_can_be_replaced_by_success_for_same_condition(tmp_path: Path)
         assert inserted_error is True
         assert inserted_success is True
 
-        row = db._conn.execute(
-            """
+        row = db._conn.execute("""
             SELECT is_error, error_type, raw_response
             FROM responses
             WHERE model = 'test-model'
               AND item_id = 'O1'
               AND run = 1;
-            """
-        ).fetchone()
+            """).fetchone()
         assert int(row["is_error"]) == 0
         assert row["error_type"] is None
         assert row["raw_response"] == "Recovered response"

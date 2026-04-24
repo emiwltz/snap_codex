@@ -1,13 +1,15 @@
-# SoulBench - SNAP Pipeline v2.1
+# SoulBench - SNAP Pipeline v3.1 POC
 
 Pipeline Python pour collecter, scorer, analyser et visualiser des reponses LLM selon le protocole SoulBench.
 
 Guide non-technique: `GUIDE_NON_TECHNIQUE.md`.
-Protocole experimental detaille: `PROTOCOLE_EXPERIMENTAL_SNAP_v2_1.md`.
+Protocole experimental actif: `PROTOCOLE_EXPERIMENTAL_SNAP_v3_1.md`.
+Ancien protocole POC source: `PROTOCOLE_EXPERIMENTAL_SNAP_v1_1.md`.
+Ancien protocole full-factorial: `PROTOCOLE_EXPERIMENTAL_SNAP_v2_1.md`.
 
-## Etat actuel de la codebase (snapshot du 4 mars 2026)
+## Etat actuel de la codebase
 
-Ce snapshot decrit l etat observe localement dans ce repo au moment de la mise a jour.
+Le depot utilise maintenant le protocole v3.1: un POC gerable proche du design v1.1, mais avec les briques techniques utiles de la v2.1.
 
 - CLI operationnelle via `python -m src.runner` avec 9 sous-commandes: `collect`, `score`, `resolve-disagreements`, `export-sample`, `import-manual`, `compute-kappa`, `adjudicate`, `analyze`, `visualize`.
 - Configuration presente dans `config/`:
@@ -15,14 +17,12 @@ Ce snapshot decrit l etat observe localement dans ce repo au moment de la mise a
 2. 2 juges (`haiku`, `kimi`).
 3. 15 items (10 personnalite + 5 moraux).
 4. 15 rubriques de scoring.
-- Base SQLite locale presente: `data/soulbench.db`.
-1. `responses`: 30 lignes.
-2. `is_error=0`: 0 ligne.
-3. `is_error=1`: 30 lignes.
-4. `score_final` non null: 0 ligne.
-5. `collection_metadata`: 1 run (`model=test`, `total_planned=3780`, `end_time` vide).
-- `outputs/reports/` et `outputs/figures/` sont vides.
-- Tests unitaires: `16 passed, 12 warnings` avec `.venv/bin/python -m pytest -q` (execute le 4 mars 2026).
+5. Protocole actif v3.1 (`protocol.yaml`) avec `450` conditions par modele.
+- Design actif: `15 items x 3 system prompts x 10 runs = 450` conditions/modele.
+- Campagne complete sur 6 modeles: `2700` appels de collecte.
+- Scoring bi-juge complet: `5400` appels juge.
+- Total theorique hors retries: `8100` appels API.
+- Tests unitaires: utiliser `.venv/bin/python -m pytest -q`.
 
 ## Architecture
 
@@ -101,9 +101,10 @@ export OPENROUTER_API_KEY="votre_cle"
 python -m src.runner --help
 
 # Compteurs DB
-sqlite3 data/soulbench.db "select count(*) from responses;"
-sqlite3 data/soulbench.db "select count(*) from responses where is_error=0;"
-sqlite3 data/soulbench.db "select count(*) from responses where score_final is not null;"
+sqlite3 data/snap_poc_v3_1.db "select count(*) from responses;"
+sqlite3 data/snap_poc_v3_1.db "select count(*) from responses where is_error=0;"
+sqlite3 data/snap_poc_v3_1.db "select count(*) from responses where score_final is not null;"
+sqlite3 data/snap_poc_v3_1.db "select dataset_id, protocol_version, total_planned from collection_metadata;"
 
 # Tests
 python -m pytest -q
@@ -115,9 +116,11 @@ python -m pytest -q
 - Les sorties d analyse/figures sont pertinentes seulement si des lignes scorees existent (`score_final`).
 - Le champ `thinking_mode` existe en config/metadata, mais `thinking_enabled` est stocke a `None` ligne par ligne pendant la collecte actuelle.
 - Le calcul de cout OpenRouter n est pas automatise dans la codebase.
+- La decision PASS/BORDERLINE/FAIL du POC est documentee mais pas encore automatisee par la CLI.
 
 ## TODO ouverts
 
 - Verifier les IDs OpenRouter finaux du panel et des juges.
 - Finaliser la matrice thinking/reasoning par modele.
 - Ajouter un calcul de cout total (collecte + scoring) au moment du lancement campagne.
+- Automatiser un rapport de decision POC a partir des seuils de `config/protocol.yaml`.

@@ -17,6 +17,11 @@ LOGGER = logging.getLogger(__name__)
 class PromptCondition:
     """One fully materialized condition to collect."""
 
+    dataset_id: str
+    protocol_version: str
+    items_version: str
+    condition_block: str
+    trial_id: str
     model: str
     item_id: str
     item_type: str
@@ -34,6 +39,7 @@ class ConfigBundle:
     """Typed wrapper for loaded YAML configuration."""
 
     models: dict[str, Any]
+    protocol: dict[str, Any]
     items_personality: dict[str, Any]
     items_moral: dict[str, Any]
     system_prompts: dict[str, Any]
@@ -61,6 +67,7 @@ def load_configs(config_dir: str | Path = "config") -> ConfigBundle:
     root = Path(config_dir)
     bundle = ConfigBundle(
         models=load_yaml(root / "models.yaml"),
+        protocol=load_yaml(root / "protocol.yaml"),
         items_personality=load_yaml(root / "items_personality.yaml"),
         items_moral=load_yaml(root / "items_moral.yaml"),
         system_prompts=load_yaml(root / "system_prompts.yaml"),
@@ -97,6 +104,27 @@ def validate_config_structure(bundle: ConfigBundle) -> None:
 
     if "rubrics" not in bundle.scoring_rubrics:
         raise ValueError("Missing 'rubrics' in scoring_rubrics.yaml")
+
+    required_protocol_keys = {
+        "dataset_id",
+        "protocol_version",
+        "items_version",
+        "design",
+    }
+    missing_protocol = required_protocol_keys - set(bundle.protocol)
+    if missing_protocol:
+        raise ValueError(f"Missing keys in protocol.yaml: {sorted(missing_protocol)}")
+
+    if bundle.protocol.get("design") == "rotated_poc":
+        run_schedule = bundle.protocol.get("run_schedule", [])
+        if not run_schedule:
+            raise ValueError(
+                "protocol.yaml rotated_poc design requires a non-empty run_schedule"
+            )
+        for row in run_schedule:
+            for key in ("run", "scenario", "formulation", "temperature"):
+                if key not in row:
+                    raise ValueError(f"Missing key in protocol run_schedule row: {key}")
 
 
 def load_items(bundle: ConfigBundle) -> list[dict[str, Any]]:
@@ -158,6 +186,13 @@ def build_messages(
 def expected_conditions_per_model(bundle: ConfigBundle) -> int:
     """Compute expected condition count per model from config."""
     items = load_items(bundle)
+    if bundle.protocol.get("design") == "rotated_poc":
+        system_prompts = bundle.protocol.get(
+            "system_prompts", ["SP_ABS", "SP_DIR", "SP_PER"]
+        )
+        run_schedule = bundle.protocol.get("run_schedule", [])
+        return len(items) * len(system_prompts) * len(run_schedule)
+
     collection_cfg = bundle.models.get("collection", {})
     runs = int(collection_cfg.get("runs", 7))
     temperatures = collection_cfg.get("temperatures", [0.1, 1.0])
@@ -185,10 +220,12 @@ def generate_conditions_for_model(
         Tuple of shuffled conditions and effective numeric seed.
     """
     items = load_items(bundle)
-    collection_cfg = bundle.models["collection"]
-    temperatures = [float(value) for value in collection_cfg.get("temperatures", [0.1, 1.0])]
-    runs = int(collection_cfg.get("runs", 7))
     prompt_map = bundle.system_prompts.get("system_prompts", {})
+    protocol_cfg = bundle.protocol
+    dataset_id = str(protocol_cfg.get("dataset_id", "snap_poc"))
+    protocol_version = str(protocol_cfg.get("protocol_version", "unknown"))
+    items_version = str(protocol_cfg.get("items_version", "unknown"))
+    condition_block = str(protocol_cfg.get("condition_block", "main"))
 
     if seed is None:
         numeric_seed = random.SystemRandom().randint(1, 2_147_483_647)
@@ -198,35 +235,110 @@ def generate_conditions_for_model(
         numeric_seed = int(seed)
 
     conditions: list[PromptCondition] = []
-    for item in items:
-        for scenario in ["base", "variation"]:
-            for formulation in ["F1", "F2", "F3"]:
-                user_prompt = build_user_prompt(item=item, scenario=scenario, formulation=formulation)
-                for system_prompt_key in ["SP_ABS", "SP_DIR", "SP_PER"]:
-                    for temperature in temperatures:
-                        for run in range(1, runs + 1):
-                            conditions.append(
-                                PromptCondition(
-                                    model=model_id,
-                                    item_id=str(item["id"]),
-                                    item_type=str(item["item_type"]),
-                                    scenario=scenario,
-                                    formulation=formulation,
-                                    system_prompt=system_prompt_key,
-                                    system_prompt_text=(
-                                        None
-                                        if system_prompt_key == "SP_ABS"
-                                        else str(prompt_map.get(system_prompt_key, "")).strip() or None
-                                    ),
-                                    temperature=float(temperature),
-                                    run=run,
-                                    user_prompt_text=user_prompt,
+    if protocol_cfg.get("design") == "rotated_poc":
+        system_prompt_keys = [
+            str(value)
+            for value in protocol_cfg.get(
+                "system_prompts", ["SP_ABS", "SP_DIR", "SP_PER"]
+            )
+        ]
+        run_schedule = protocol_cfg.get("run_schedule", [])
+        for item in items:
+            item_id = str(item["id"])
+            item_type = str(item["item_type"])
+            for system_prompt_key in system_prompt_keys:
+                for schedule_row in run_schedule:
+                    run = int(schedule_row["run"])
+                    scenario = str(schedule_row["scenario"])
+                    formulation = str(schedule_row["formulation"])
+                    temperature = float(schedule_row["temperature"])
+                    user_prompt = build_user_prompt(
+                        item=item, scenario=scenario, formulation=formulation
+                    )
+                    trial_id = (
+                        f"{dataset_id}:{model_id}:{condition_block}:{item_id}:"
+                        f"{system_prompt_key}:run{run}"
+                    )
+                    conditions.append(
+                        PromptCondition(
+                            dataset_id=dataset_id,
+                            protocol_version=protocol_version,
+                            items_version=items_version,
+                            condition_block=condition_block,
+                            trial_id=trial_id,
+                            model=model_id,
+                            item_id=item_id,
+                            item_type=item_type,
+                            scenario=scenario,
+                            formulation=formulation,
+                            system_prompt=system_prompt_key,
+                            system_prompt_text=(
+                                None
+                                if system_prompt_key == "SP_ABS"
+                                else str(prompt_map.get(system_prompt_key, "")).strip()
+                                or None
+                            ),
+                            temperature=temperature,
+                            run=run,
+                            user_prompt_text=user_prompt,
+                        )
+                    )
+    else:
+        collection_cfg = bundle.models["collection"]
+        temperatures = [
+            float(value) for value in collection_cfg.get("temperatures", [0.1, 1.0])
+        ]
+        runs = int(collection_cfg.get("runs", 7))
+        for item in items:
+            for scenario in ["base", "variation"]:
+                for formulation in ["F1", "F2", "F3"]:
+                    user_prompt = build_user_prompt(
+                        item=item, scenario=scenario, formulation=formulation
+                    )
+                    for system_prompt_key in ["SP_ABS", "SP_DIR", "SP_PER"]:
+                        for temperature in temperatures:
+                            for run in range(1, runs + 1):
+                                item_id = str(item["id"])
+                                condition_block_full = "full_factorial"
+                                trial_id = (
+                                    f"{dataset_id}:{model_id}:{condition_block_full}:{item_id}:"
+                                    f"{scenario}:{formulation}:{system_prompt_key}:{temperature}:run{run}"
                                 )
-                            )
+                                conditions.append(
+                                    PromptCondition(
+                                        dataset_id=dataset_id,
+                                        protocol_version=protocol_version,
+                                        items_version=items_version,
+                                        condition_block=condition_block_full,
+                                        trial_id=trial_id,
+                                        model=model_id,
+                                        item_id=item_id,
+                                        item_type=str(item["item_type"]),
+                                        scenario=scenario,
+                                        formulation=formulation,
+                                        system_prompt=system_prompt_key,
+                                        system_prompt_text=(
+                                            None
+                                            if system_prompt_key == "SP_ABS"
+                                            else str(
+                                                prompt_map.get(system_prompt_key, "")
+                                            ).strip()
+                                            or None
+                                        ),
+                                        temperature=float(temperature),
+                                        run=run,
+                                        user_prompt_text=user_prompt,
+                                    )
+                                )
 
     rng = random.Random(numeric_seed)
     rng.shuffle(conditions)
-    LOGGER.debug("Generated %d conditions for model=%s seed=%s", len(conditions), model_id, numeric_seed)
+    LOGGER.debug(
+        "Generated %d conditions for model=%s seed=%s",
+        len(conditions),
+        model_id,
+        numeric_seed,
+    )
     return conditions, numeric_seed
 
 

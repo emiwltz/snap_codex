@@ -157,7 +157,9 @@ class OpenRouterClient:
 
             started = time.perf_counter()
             try:
-                response = await self._client.post(self.endpoint, json=payload, headers=headers)
+                response = await self._client.post(
+                    self.endpoint, json=payload, headers=headers
+                )
             except httpx.TimeoutException as exc:
                 timeout_attempts += 1
                 if timeout_attempts >= 3:
@@ -325,7 +327,9 @@ class OpenRouterClient:
             return ApiCallResult(
                 content=str(content),
                 prompt_tokens=int(prompt_tokens) if prompt_tokens is not None else None,
-                completion_tokens=int(completion_tokens) if completion_tokens is not None else None,
+                completion_tokens=(
+                    int(completion_tokens) if completion_tokens is not None else None
+                ),
                 response_time_ms=response_time_ms,
                 status_code=status_code,
                 error=None,

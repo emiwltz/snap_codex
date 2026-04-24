@@ -17,7 +17,9 @@ LOGGER = logging.getLogger(__name__)
 
 ALLOWED_SCORES = {"+1", "0", "-1", "REFUS"}
 SCORE_LINE_RE = re.compile(r"^\s*SCORE\s*:\s*(.+?)\s*$", re.IGNORECASE | re.MULTILINE)
-INDICATORS_LINE_RE = re.compile(r"^\s*(?:INDICATORS|INDICATEURS)\s*:\s*(.+?)\s*$", re.IGNORECASE | re.MULTILINE)
+INDICATORS_LINE_RE = re.compile(
+    r"^\s*(?:INDICATORS|INDICATEURS)\s*:\s*(.+?)\s*$", re.IGNORECASE | re.MULTILINE
+)
 JUSTIFICATION_LINE_RE = re.compile(
     r"^\s*(?:RATIONALE|JUSTIFICATION)\s*:\s*(.+?)\s*$",
     re.IGNORECASE | re.MULTILINE,
@@ -162,7 +164,9 @@ def _int_to_score(value: int) -> str:
     raise ValueError(f"Unsupported score integer: {value}")
 
 
-def resolve_disagreement(score_judge1: str, score_judge2: str) -> tuple[str | None, str, bool]:
+def resolve_disagreement(
+    score_judge1: str, score_judge2: str
+) -> tuple[str | None, str, bool]:
     """Resolve two judge scores according to protocol rules.
 
     Returns:
@@ -236,13 +240,25 @@ async def score_pending_for_judge(
     processed = 0
     for row in pending_rows:
         item_id = str(row["item_id"])
-        rubric_obj = rubrics.get(item_id, {"description": "PLACEHOLDER - missing coding rubric"})
-        rubric_text = rubric_obj.get("description", "PLACEHOLDER - missing coding rubric")
-        prompt = build_scoring_prompt(item_id=item_id, coding_rubric=str(rubric_text), raw_response=str(row["raw_response"]))
+        rubric_obj = rubrics.get(
+            item_id, {"description": "PLACEHOLDER - missing coding rubric"}
+        )
+        rubric_text = rubric_obj.get(
+            "description", "PLACEHOLDER - missing coding rubric"
+        )
+        prompt = build_scoring_prompt(
+            item_id=item_id,
+            coding_rubric=str(rubric_text),
+            raw_response=str(row["raw_response"]),
+        )
 
-        parsed = await _run_single_judge_call(client=client, judge_model_id=judge_model_id, prompt=prompt)
+        parsed = await _run_single_judge_call(
+            client=client, judge_model_id=judge_model_id, prompt=prompt
+        )
         if not parsed.valid:
-            parsed_retry = await _run_single_judge_call(client=client, judge_model_id=judge_model_id, prompt=prompt)
+            parsed_retry = await _run_single_judge_call(
+                client=client, judge_model_id=judge_model_id, prompt=prompt
+            )
             if not parsed_retry.valid:
                 db.flag_manual_review(
                     response_id=int(row["id"]),
@@ -409,7 +425,9 @@ def adjudicate_pending_interactive(db: SoulBenchDB, limit: int = 0) -> int:
 
         while True:
             try:
-                raw_decision = input("Final score (+1, 0, -1, REFUS) [skip/quit]: ").strip()
+                raw_decision = input(
+                    "Final score (+1, 0, -1, REFUS) [skip/quit]: "
+                ).strip()
             except EOFError:
                 LOGGER.info("EOF received, stopping adjudication.")
                 return adjudicated

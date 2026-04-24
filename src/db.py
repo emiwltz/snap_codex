@@ -58,6 +58,11 @@ class ResponseRecord:
     system_prompt: str
     temperature: float
     run: int
+    dataset_id: str | None = None
+    protocol_version: str | None = None
+    items_version: str | None = None
+    condition_block: str | None = None
+    trial_id: str | None = None
     timestamp: str | None = None
     response_time_ms: int | None = None
     prompt_tokens: int | None = None
@@ -160,6 +165,11 @@ class SoulBenchDB:
         schema_sql = """
         CREATE TABLE IF NOT EXISTS responses (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+            dataset_id TEXT,
+            protocol_version TEXT,
+            items_version TEXT,
+            condition_block TEXT,
+            trial_id TEXT,
             model TEXT NOT NULL,
             item_id TEXT NOT NULL,
             item_type TEXT NOT NULL,
@@ -203,6 +213,9 @@ class SoulBenchDB:
 
         CREATE TABLE IF NOT EXISTS collection_metadata (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+            dataset_id TEXT,
+            protocol_version TEXT,
+            items_version TEXT,
             model TEXT NOT NULL,
             start_time TEXT,
             end_time TEXT,
@@ -228,7 +241,25 @@ class SoulBenchDB:
         );
         """
         self._conn.executescript(schema_sql)
+        self._ensure_column("responses", "dataset_id", "TEXT")
+        self._ensure_column("responses", "protocol_version", "TEXT")
+        self._ensure_column("responses", "items_version", "TEXT")
+        self._ensure_column("responses", "condition_block", "TEXT")
+        self._ensure_column("responses", "trial_id", "TEXT")
+        self._ensure_column("collection_metadata", "dataset_id", "TEXT")
+        self._ensure_column("collection_metadata", "protocol_version", "TEXT")
+        self._ensure_column("collection_metadata", "items_version", "TEXT")
         self._conn.commit()
+
+    def _ensure_column(self, table: str, column: str, column_type: str) -> None:
+        existing = {
+            row["name"]
+            for row in self._conn.execute(f"PRAGMA table_info({table});").fetchall()
+        }
+        if column not in existing:
+            self._conn.execute(
+                f"ALTER TABLE {table} ADD COLUMN {column} {column_type};"
+            )
 
     def insert_response(self, record: ResponseRecord) -> bool:
         """Insert one response row.
@@ -240,6 +271,11 @@ class SoulBenchDB:
             True if row inserted, False if ignored due to unique key.
         """
         payload = {
+            "dataset_id": record.dataset_id,
+            "protocol_version": record.protocol_version,
+            "items_version": record.items_version,
+            "condition_block": record.condition_block,
+            "trial_id": record.trial_id,
             "model": record.model,
             "item_id": record.item_id,
             "item_type": record.item_type,
@@ -253,7 +289,11 @@ class SoulBenchDB:
             "prompt_tokens": record.prompt_tokens,
             "completion_tokens": record.completion_tokens,
             "random_seed": record.random_seed,
-            "thinking_enabled": None if record.thinking_enabled is None else int(record.thinking_enabled),
+            "thinking_enabled": (
+                None
+                if record.thinking_enabled is None
+                else int(record.thinking_enabled)
+            ),
             "system_prompt_text": record.system_prompt_text,
             "user_prompt_text": record.user_prompt_text,
             "raw_response": record.raw_response or "",
@@ -276,6 +316,7 @@ class SoulBenchDB:
         cur = self._conn.execute(
             """
             INSERT INTO responses (
+                dataset_id, protocol_version, items_version, condition_block, trial_id,
                 model, item_id, item_type, scenario, formulation, system_prompt,
                 temperature, run, timestamp, response_time_ms,
                 prompt_tokens, completion_tokens, random_seed, thinking_enabled,
@@ -286,6 +327,7 @@ class SoulBenchDB:
                 agreement_status, manual_review_needed, manual_score,
                 is_refusal, is_truncated, is_error, error_type, notes
             ) VALUES (
+                :dataset_id, :protocol_version, :items_version, :condition_block, :trial_id,
                 :model, :item_id, :item_type, :scenario, :formulation, :system_prompt,
                 :temperature, :run, :timestamp, :response_time_ms,
                 :prompt_tokens, :completion_tokens, :random_seed, :thinking_enabled,
@@ -299,6 +341,11 @@ class SoulBenchDB:
             ON CONFLICT(model, item_id, item_type, scenario, formulation, system_prompt, temperature, run)
             DO UPDATE SET
                 timestamp = excluded.timestamp,
+                dataset_id = excluded.dataset_id,
+                protocol_version = excluded.protocol_version,
+                items_version = excluded.items_version,
+                condition_block = excluded.condition_block,
+                trial_id = excluded.trial_id,
                 response_time_ms = excluded.response_time_ms,
                 prompt_tokens = excluded.prompt_tokens,
                 completion_tokens = excluded.completion_tokens,
@@ -384,6 +431,9 @@ class SoulBenchDB:
         randomization_seed: str,
         thinking_mode: str,
         api_endpoint: str,
+        dataset_id: str | None = None,
+        protocol_version: str | None = None,
+        items_version: str | None = None,
         model_version: str | None = None,
         start_time: str | None = None,
         end_time: str | None = None,
@@ -404,6 +454,9 @@ class SoulBenchDB:
                 UPDATE collection_metadata
                 SET start_time = COALESCE(?, start_time),
                     end_time = COALESCE(?, end_time),
+                    dataset_id = COALESCE(?, dataset_id),
+                    protocol_version = COALESCE(?, protocol_version),
+                    items_version = COALESCE(?, items_version),
                     total_planned = ?,
                     total_completed = ?,
                     total_errors = ?,
@@ -418,6 +471,9 @@ class SoulBenchDB:
                 (
                     start_time,
                     end_time,
+                    dataset_id,
+                    protocol_version,
+                    items_version,
                     total_planned,
                     total_completed,
                     total_errors,
@@ -434,12 +490,16 @@ class SoulBenchDB:
             self._conn.execute(
                 """
                 INSERT INTO collection_metadata (
+                    dataset_id, protocol_version, items_version,
                     model, start_time, end_time, total_planned, total_completed,
                     total_errors, total_refusals, randomization_seed,
                     thinking_mode, api_endpoint, model_version, notes
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
                 """,
                 (
+                    dataset_id,
+                    protocol_version,
+                    items_version,
                     model,
                     start_time,
                     end_time,
@@ -456,7 +516,9 @@ class SoulBenchDB:
             )
         self._conn.commit()
 
-    def finalize_collection_metadata(self, model: str, notes: str | None = None) -> None:
+    def finalize_collection_metadata(
+        self, model: str, notes: str | None = None
+    ) -> None:
         """Update end-of-collection counters for a model."""
         existing = self._conn.execute(
             "SELECT id, total_planned, randomization_seed, thinking_mode, api_endpoint, model_version, start_time, notes "
@@ -469,7 +531,9 @@ class SoulBenchDB:
 
         merged_notes = existing["notes"]
         if notes:
-            merged_notes = f"{existing['notes']} | {notes}" if existing["notes"] else notes
+            merged_notes = (
+                f"{existing['notes']} | {notes}" if existing["notes"] else notes
+            )
 
         self._conn.execute(
             """
@@ -502,7 +566,9 @@ class SoulBenchDB:
             return None
         return row["randomization_seed"]
 
-    def get_pending_for_scoring(self, judge: str, max_rows: int = 100) -> list[dict[str, Any]]:
+    def get_pending_for_scoring(
+        self, judge: str, max_rows: int = 100
+    ) -> list[dict[str, Any]]:
         """Fetch pending rows for one judge.
 
         Args:
@@ -539,7 +605,13 @@ class SoulBenchDB:
                     is_refusal = CASE WHEN ? = 'REFUS' THEN 1 ELSE is_refusal END
                 WHERE id = ?;
                 """,
-                (update.score, update.indicators, update.justification, update.score, update.response_id),
+                (
+                    update.score,
+                    update.indicators,
+                    update.justification,
+                    update.score,
+                    update.response_id,
+                ),
             )
         elif update.judge_name == "kimi":
             self._conn.execute(
@@ -551,7 +623,13 @@ class SoulBenchDB:
                     is_refusal = CASE WHEN ? = 'REFUS' THEN 1 ELSE is_refusal END
                 WHERE id = ?;
                 """,
-                (update.score, update.indicators, update.justification, update.score, update.response_id),
+                (
+                    update.score,
+                    update.indicators,
+                    update.justification,
+                    update.score,
+                    update.response_id,
+                ),
             )
         else:
             raise ValueError(f"Unsupported judge_name: {update.judge_name}")
@@ -686,7 +764,9 @@ class SoulBenchDB:
         )
         self._conn.commit()
 
-    def sample_for_manual_verification(self, n: int, seed: int = 42) -> list[dict[str, Any]]:
+    def sample_for_manual_verification(
+        self, n: int, seed: int = 42
+    ) -> list[dict[str, Any]]:
         """Return a stratified sample by model/item/SP/temperature.
 
         Args:
@@ -696,15 +776,13 @@ class SoulBenchDB:
         if n <= 0:
             return []
 
-        rows = self._conn.execute(
-            """
+        rows = self._conn.execute("""
             SELECT id, model, item_id, system_prompt, temperature, raw_response, score_final
             FROM responses
             WHERE score_final IS NOT NULL
               AND id NOT IN (SELECT response_id FROM manual_verification)
             ORDER BY id;
-            """
-        ).fetchall()
+            """).fetchall()
         records = [dict(row) for row in rows]
         if not records:
             return []
@@ -714,7 +792,12 @@ class SoulBenchDB:
 
         groups: dict[tuple[Any, ...], list[dict[str, Any]]] = {}
         for row in records:
-            key = (row["model"], row["item_id"], row["system_prompt"], float(row["temperature"]))
+            key = (
+                row["model"],
+                row["item_id"],
+                row["system_prompt"],
+                float(row["temperature"]),
+            )
             groups.setdefault(key, []).append(row)
 
         allocations: dict[tuple[Any, ...], int] = {}
@@ -756,7 +839,9 @@ class SoulBenchDB:
         sampled.sort(key=lambda row: int(row["id"]))
         return sampled[:target]
 
-    def export_manual_sample_csv(self, output_file: str | Path, n: int, seed: int = 42) -> int:
+    def export_manual_sample_csv(
+        self, output_file: str | Path, n: int, seed: int = 42
+    ) -> int:
         """Export stratified manual verification sample to CSV."""
         rows = self.sample_for_manual_verification(n=n, seed=seed)
         out_path = Path(output_file)
@@ -822,29 +907,27 @@ class SoulBenchDB:
 
     def get_interjudge_pairs(self) -> list[tuple[str, str]]:
         """Return score pairs for inter-judge kappa."""
-        rows = self._conn.execute(
-            """
+        rows = self._conn.execute("""
             SELECT score_judge1, score_judge2
             FROM responses
             WHERE score_judge1 IS NOT NULL
               AND score_judge2 IS NOT NULL;
-            """
-        ).fetchall()
+            """).fetchall()
         return [(row["score_judge1"], row["score_judge2"]) for row in rows]
 
     def get_human_machine_pairs(self) -> list[dict[str, Any]]:
         """Return merged judge/human pairs for manual verification rows."""
-        rows = self._conn.execute(
-            """
+        rows = self._conn.execute("""
             SELECT mv.id, mv.response_id, mv.human_score, r.score_judge1, r.score_judge2
             FROM manual_verification mv
             JOIN responses r ON r.id = mv.response_id
             WHERE mv.human_score IS NOT NULL;
-            """
-        ).fetchall()
+            """).fetchall()
         return [dict(row) for row in rows]
 
-    def update_manual_kappas(self, kappa_judge1: float | None, kappa_judge2: float | None) -> None:
+    def update_manual_kappas(
+        self, kappa_judge1: float | None, kappa_judge2: float | None
+    ) -> None:
         """Persist the latest human-machine kappas on all manual rows."""
         self._conn.execute(
             "UPDATE manual_verification SET kappa_judge1 = ?, kappa_judge2 = ?;",
@@ -856,7 +939,8 @@ class SoulBenchDB:
         """Return scored rows as a pandas DataFrame."""
         query = """
             SELECT
-                id, model, item_id, item_type, scenario, formulation, system_prompt,
+                id, dataset_id, protocol_version, items_version, condition_block, trial_id,
+                model, item_id, item_type, scenario, formulation, system_prompt,
                 temperature, run, score_final, score_judge1, score_judge2,
                 manual_review_needed, manual_score, is_refusal, is_error
             FROM responses;
@@ -876,14 +960,12 @@ class SoulBenchDB:
 
     def list_models(self) -> list[str]:
         """Return known model identifiers from responses or metadata."""
-        rows = self._conn.execute(
-            """
+        rows = self._conn.execute("""
             SELECT DISTINCT model FROM responses
             UNION
             SELECT DISTINCT model FROM collection_metadata
             ORDER BY model;
-            """
-        ).fetchall()
+            """).fetchall()
         return [row["model"] for row in rows]
 
     def save_json_report(self, report: dict[str, Any], output_file: str | Path) -> None:

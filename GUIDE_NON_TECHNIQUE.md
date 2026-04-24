@@ -1,23 +1,21 @@
 # Guide Non Technique
-## SoulBench SNAP Pipeline v2.1
+## SoulBench SNAP Pipeline v3.1 POC
 
 Ce guide explique comment utiliser la pipeline sans lire le code.
 
-## 0) Etat reel aujourd hui (4 mars 2026)
+## 0) Etat reel aujourd hui
 
-Etat observe localement dans ce repo:
+Etat actuel du repo:
 
 - Le pipeline est executable de bout en bout via la CLI.
-- La configuration experimentale est deja remplie (modeles, items, rubriques).
-- Les tests passent: `16 passed, 12 warnings`.
-- Une base existe deja (`data/soulbench.db`) avec une run `test` inachevee:
-1. 30 reponses stockees.
-2. 30 erreurs API.
-3. 0 reponse valide.
-4. 0 score final.
-- Aucun rapport JSON ni figure PNG n est encore genere dans `outputs/`.
+- La configuration experimentale est remplie: modeles, items, rubriques, protocole v3.1.
+- Le protocole actif est `config/protocol.yaml`.
+- Le design actif prevoit `450` conditions par modele.
+- Avec 6 modeles actifs, une campagne complete represente `2700` appels de collecte.
+- Le scoring complet par 2 juges represente `5400` appels supplementaires.
+- Les tests se lancent avec `.venv/bin/python -m pytest -q`.
 
-Conclusion simple: l outillage est pret, mais il n y a pas encore de resultats experimentaux exploitables.
+Conclusion simple: l outillage est pret pour un POC gerable, mais il faut lancer une campagne scoree avant toute interpretation scientifique.
 
 ## 1) Ce que fait le projet
 
@@ -57,17 +55,17 @@ pip install -r requirements.txt
 
 ## 4) Avant de lancer une vraie campagne
 
-Point critique: une ancienne base `data/soulbench.db` est deja presente avec des erreurs.
+Point critique: choisir explicitement une base de campagne pour eviter de melanger des essais.
 
 Recommandation pratique pour eviter toute confusion:
 
-- Soit repartir sur une nouvelle base avec `--db-path`.
-- Soit supprimer/archiver la base existante avant campagne.
+- Repartir sur une nouvelle base avec `--db-path`.
+- Garder le `dataset_id` et le `protocol_version` du fichier `config/protocol.yaml`.
 
 Exemple avec nouvelle base:
 
 ```bash
-python -m src.runner --db-path data/soulbench_campaign_20260304.db collect --model claude-sonnet-4-5
+python -m src.runner --db-path data/snap_poc_v3_1.db collect --model claude-sonnet-4-5
 ```
 
 ## 5) Procedure complete (pas a pas)
@@ -169,7 +167,7 @@ python -m src.runner visualize --all
 
 ### Donnees brutes
 
-- Base SQLite: `data/soulbench.db` (ou votre chemin `--db-path`).
+- Base SQLite: votre chemin `--db-path`, par exemple `data/snap_poc_v3_1.db`.
 
 ### CSV de verification manuelle
 
@@ -318,4 +316,4 @@ Interpretation:
 
 - Le calcul de cout OpenRouter n est pas automatise.
 - Le suivi fin du `thinking_enabled` n est pas encore renseigne ligne par ligne.
-- La base locale actuelle contient surtout un run de test en erreur, pas une campagne complete.
+- La decision PASS/BORDERLINE/FAIL est documentee dans le protocole mais pas encore automatisee.

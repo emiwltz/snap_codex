@@ -71,6 +71,9 @@ async def _collect_for_model(
         randomization_seed=str(effective_seed),
         thinking_mode=thinking_mode,
         api_endpoint=str(collection_cfg.get("api_endpoint", OPENROUTER_ENDPOINT)),
+        dataset_id=str(bundle.protocol.get("dataset_id")),
+        protocol_version=str(bundle.protocol.get("protocol_version")),
+        items_version=str(bundle.protocol.get("items_version")),
         model_version=None,
     )
 
@@ -109,7 +112,9 @@ async def _collect_for_model(
             "OPENROUTER_API_KEY is missing. Skipping collection for model '%s' without crashing.",
             model_id,
         )
-        db.finalize_collection_metadata(model_id, notes="Skipped remote calls: missing OPENROUTER_API_KEY")
+        db.finalize_collection_metadata(
+            model_id, notes="Skipped remote calls: missing OPENROUTER_API_KEY"
+        )
         return
 
     async with client:
@@ -132,11 +137,17 @@ async def _collect_for_model(
             raw_response = result.content or ""
             is_truncated = bool(
                 result.completion_tokens is not None
-                and int(result.completion_tokens) >= int(collection_cfg.get("max_tokens", 2048))
+                and int(result.completion_tokens)
+                >= int(collection_cfg.get("max_tokens", 2048))
             )
 
             db.insert_response(
                 ResponseRecord(
+                    dataset_id=condition.dataset_id,
+                    protocol_version=condition.protocol_version,
+                    items_version=condition.items_version,
+                    condition_block=condition.condition_block,
+                    trial_id=condition.trial_id,
                     model=condition.model,
                     item_id=condition.item_id,
                     item_type=condition.item_type,
@@ -176,7 +187,11 @@ async def run_collect(args: argparse.Namespace) -> int:
     with SoulBenchDB(args.db_path) as db:
         model_ids: list[str]
         if args.all:
-            model_ids = [str(model_cfg["id"]) for model_cfg in bundle.models.get("models", []) if model_cfg.get("active", True)]
+            model_ids = [
+                str(model_cfg["id"])
+                for model_cfg in bundle.models.get("models", [])
+                if model_cfg.get("active", True)
+            ]
         else:
             model_ids = [str(args.model)]
 
@@ -211,7 +226,9 @@ async def run_score(args: argparse.Namespace) -> int:
             LOGGER.error("Either --judge or --resolve-disagreements is required.")
             return 2
 
-        pending_rows = db.get_pending_for_scoring(judge=args.judge, max_rows=args.max_rows)
+        pending_rows = db.get_pending_for_scoring(
+            judge=args.judge, max_rows=args.max_rows
+        )
         if not pending_rows:
             LOGGER.info("No rows pending scoring for judge '%s'.", args.judge)
             return 0
@@ -274,7 +291,11 @@ def run_adjudicate(args: argparse.Namespace) -> int:
 
 def run_analyze(args: argparse.Namespace) -> int:
     """Run selected analysis command."""
-    from .analyzer import analyze_sensitivity, analyze_stability, analyze_variance_decomposition
+    from .analyzer import (
+        analyze_sensitivity,
+        analyze_stability,
+        analyze_variance_decomposition,
+    )
 
     with SoulBenchDB(args.db_path) as db:
         if args.stability:
@@ -311,51 +332,94 @@ def run_visualize(args: argparse.Namespace) -> int:
 
 def build_parser() -> argparse.ArgumentParser:
     """Build top-level CLI parser."""
-    parser = argparse.ArgumentParser(description="SoulBench SNAP Pipeline v2.1")
-    parser.add_argument("--db-path", default="data/soulbench.db", help="Path to SQLite database file.")
-    parser.add_argument("--config-dir", default="config", help="Configuration directory path.")
+    parser = argparse.ArgumentParser(description="SoulBench SNAP Pipeline v3.1 POC")
+    parser.add_argument(
+        "--db-path",
+        default="data/snap_poc_v3_1.db",
+        help="Path to SQLite database file.",
+    )
+    parser.add_argument(
+        "--config-dir", default="config", help="Configuration directory path."
+    )
 
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     collect = subparsers.add_parser("collect", help="Collect responses for models.")
     collect_group = collect.add_mutually_exclusive_group(required=True)
-    collect_group.add_argument("--model", type=str, help="Collect one specific model by id.")
-    collect_group.add_argument("--all", action="store_true", help="Collect all active models.")
+    collect_group.add_argument(
+        "--model", type=str, help="Collect one specific model by id."
+    )
+    collect_group.add_argument(
+        "--all", action="store_true", help="Collect all active models."
+    )
 
-    score = subparsers.add_parser("score", help="Run judge scoring or resolve disagreements.")
+    score = subparsers.add_parser(
+        "score", help="Run judge scoring or resolve disagreements."
+    )
     score.add_argument("--judge", choices=["haiku", "kimi"], help="Judge to run.")
-    score.add_argument("--resolve-disagreements", action="store_true", help="Resolve existing disagreements.")
-    score.add_argument("--max-rows", type=int, default=100, help="Max rows to score in one run.")
+    score.add_argument(
+        "--resolve-disagreements",
+        action="store_true",
+        help="Resolve existing disagreements.",
+    )
+    score.add_argument(
+        "--max-rows", type=int, default=100, help="Max rows to score in one run."
+    )
 
-    subparsers.add_parser("resolve-disagreements", help="Alias for disagreement resolution.")
+    subparsers.add_parser(
+        "resolve-disagreements", help="Alias for disagreement resolution."
+    )
 
-    export_sample = subparsers.add_parser("export-sample", help="Export sample for manual verification.")
+    export_sample = subparsers.add_parser(
+        "export-sample", help="Export sample for manual verification."
+    )
     export_sample.add_argument("--n", type=int, required=True, help="Sample size.")
-    export_sample.add_argument("--output", type=str, default="data/manual_sample.csv", help="Output CSV path.")
+    export_sample.add_argument(
+        "--output", type=str, default="data/manual_sample.csv", help="Output CSV path."
+    )
 
-    import_manual = subparsers.add_parser("import-manual", help="Import manually coded sample.")
-    import_manual.add_argument("--file", type=str, required=True, help="Input manual coding CSV.")
+    import_manual = subparsers.add_parser(
+        "import-manual", help="Import manually coded sample."
+    )
+    import_manual.add_argument(
+        "--file", type=str, required=True, help="Input manual coding CSV."
+    )
 
     subparsers.add_parser("compute-kappa", help="Compute kappa metrics.")
 
-    adjudicate = subparsers.add_parser("adjudicate", help="Interactive adjudication for manual-review rows.")
-    adjudicate.add_argument("--limit", type=int, default=0, help="Max rows to process (0 = all pending rows).")
+    adjudicate = subparsers.add_parser(
+        "adjudicate", help="Interactive adjudication for manual-review rows."
+    )
+    adjudicate.add_argument(
+        "--limit",
+        type=int,
+        default=0,
+        help="Max rows to process (0 = all pending rows).",
+    )
 
     analyze = subparsers.add_parser("analyze", help="Run analyses.")
     analyze_group = analyze.add_mutually_exclusive_group(required=True)
-    analyze_group.add_argument("--stability", action="store_true", help="Run stability analyses.")
-    analyze_group.add_argument("--sensitivity", action="store_true", help="Run sensitivity analyses.")
+    analyze_group.add_argument(
+        "--stability", action="store_true", help="Run stability analyses."
+    )
+    analyze_group.add_argument(
+        "--sensitivity", action="store_true", help="Run sensitivity analyses."
+    )
     analyze_group.add_argument(
         "--variance-decomposition",
         action="store_true",
         dest="variance_decomposition",
         help="Run variance decomposition analysis (H4).",
     )
-    analyze.add_argument("--output-dir", default="outputs/reports", help="Report output directory.")
+    analyze.add_argument(
+        "--output-dir", default="outputs/reports", help="Report output directory."
+    )
 
     visualize = subparsers.add_parser("visualize", help="Generate visualizations.")
     visualize.add_argument("--all", action="store_true", help="Generate all figures.")
-    visualize.add_argument("--output-dir", default="outputs/figures", help="Figure output directory.")
+    visualize.add_argument(
+        "--output-dir", default="outputs/figures", help="Figure output directory."
+    )
 
     return parser
 

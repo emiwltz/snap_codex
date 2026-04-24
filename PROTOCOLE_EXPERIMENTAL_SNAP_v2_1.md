@@ -1,5 +1,10 @@
 # Protocole experimental SoulBench SNAP v2.1
 
+> **Statut actuel**: document historique. Le design actif du depot est revenu
+> a un POC v3.1 plus compact, defini dans `config/protocol.yaml` et documente
+> dans `PROTOCOLE_EXPERIMENTAL_SNAP_v3_1.md`. La v3.1 reprend l'esprit compact
+> de la v1.1 en gardant des briques techniques de la v2.1.
+
 **Version du document**: 2.1  
 **Date du snapshot local**: 2026-03-07  
 **Codebase de reference**: `/Users/emi/code/side/snap_codex`
@@ -1595,4 +1600,3 @@ genuine moral objection or just irrational disgust.
 - `outputs/figures/variance_eta_squared.png`
 - `outputs/figures/cross_temperature_profiles.png`
 - `outputs/figures/cross_sp_profiles.png`
-

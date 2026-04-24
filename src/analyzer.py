@@ -26,8 +26,8 @@ from .db import SoulBenchDB
 LOGGER = logging.getLogger(__name__)
 
 MIN_RUNS_FOR_RELIABILITY = 5
-SPLIT_HALF_EARLY_RUNS = [1, 2, 3]
-SPLIT_HALF_LATE_RUNS = [5, 6, 7]
+SPLIT_HALF_EARLY_RUNS = [1, 2, 3, 4, 5]
+SPLIT_HALF_LATE_RUNS = [6, 7, 8, 9, 10]
 
 TRAIT_BY_PREFIX = {
     "O": "Openness",
@@ -66,8 +66,8 @@ class Analyzer:
             "n_rows_after_exclusions": int(len(df)),
             "models": {},
             "reliability_rules": {
-                "primary_metric": "ICC on runs 1..7",
-                "secondary_metric": "Pearson split-half (runs 1-3 vs 5-7, run 4 excluded)",
+                "primary_metric": "ICC on protocol runs",
+                "secondary_metric": "Pearson split-half (runs 1-5 vs 6-10 for POC v3.1)",
                 "minimum_runs_required": MIN_RUNS_FOR_RELIABILITY,
                 "exclusions": [
                     "is_error = 1",
@@ -86,9 +86,23 @@ class Analyzer:
             return report
 
         for model, group in df.groupby("model"):
-            overall_target_cols = ["item_id", "scenario", "formulation", "system_prompt", "temperature"]
-            split_half = _compute_split_half_pearson(group, target_cols=overall_target_cols, min_runs=MIN_RUNS_FOR_RELIABILITY)
-            icc = _compute_icc(group, target_cols=overall_target_cols, min_runs=MIN_RUNS_FOR_RELIABILITY)
+            overall_target_cols = [
+                "item_id",
+                "scenario",
+                "formulation",
+                "system_prompt",
+                "temperature",
+            ]
+            split_half = _compute_split_half_pearson(
+                group,
+                target_cols=overall_target_cols,
+                min_runs=MIN_RUNS_FOR_RELIABILITY,
+            )
+            icc = _compute_icc(
+                group,
+                target_cols=overall_target_cols,
+                min_runs=MIN_RUNS_FOR_RELIABILITY,
+            )
 
             by_item = _compute_reliability_by_item(group)
             by_aggregation = _compute_reliability_by_aggregation_group(group)
@@ -124,7 +138,9 @@ class Analyzer:
 
         if df.empty:
             report["status"] = "empty"
-            self.db.save_json_report(report, self.output_dir / "sensitivity_report.json")
+            self.db.save_json_report(
+                report, self.output_dir / "sensitivity_report.json"
+            )
             return report
 
         for model, group in df.groupby("model"):
@@ -156,10 +172,20 @@ class Analyzer:
         if df.empty:
             report["status"] = "empty"
             report["confirmatory_lmm"] = {"status": "empty"}
-            self.db.save_json_report(report, self.output_dir / "variance_decomposition_report.json")
+            self.db.save_json_report(
+                report, self.output_dir / "variance_decomposition_report.json"
+            )
             return report
 
-        factors = ["model", "system_prompt", "temperature", "scenario", "formulation", "item_id", "run"]
+        factors = [
+            "model",
+            "system_prompt",
+            "temperature",
+            "scenario",
+            "formulation",
+            "item_id",
+            "run",
+        ]
         eta_values = {factor: _compute_eta_squared(df, factor) for factor in factors}
         sorted_factors = sorted(
             eta_values.items(),
@@ -171,7 +197,9 @@ class Analyzer:
         report["ranking"] = [factor for factor, _ in sorted_factors]
         report["confirmatory_lmm"] = _fit_h4_lmm(df)
         report["status"] = "ok"
-        self.db.save_json_report(report, self.output_dir / "variance_decomposition_report.json")
+        self.db.save_json_report(
+            report, self.output_dir / "variance_decomposition_report.json"
+        )
         return report
 
 
@@ -183,12 +211,16 @@ def _apply_protocol_exclusions(df: pd.DataFrame) -> pd.DataFrame:
     working = df.copy()
 
     if "is_error" in working.columns:
-        working["is_error"] = pd.to_numeric(working["is_error"], errors="coerce").fillna(0).astype(int)
+        working["is_error"] = (
+            pd.to_numeric(working["is_error"], errors="coerce").fillna(0).astype(int)
+        )
         working = working[working["is_error"] == 0]
 
     if "manual_review_needed" in working.columns:
         working["manual_review_needed"] = (
-            pd.to_numeric(working["manual_review_needed"], errors="coerce").fillna(0).astype(int)
+            pd.to_numeric(working["manual_review_needed"], errors="coerce")
+            .fillna(0)
+            .astype(int)
         )
 
     if "manual_review_needed" in working.columns and "manual_score" in working.columns:
@@ -197,7 +229,9 @@ def _apply_protocol_exclusions(df: pd.DataFrame) -> pd.DataFrame:
         working = working[~pending_manual]
 
     if "score_final" in working.columns:
-        working = working[working["score_final"].fillna("").astype(str).str.upper() != "REFUS"]
+        working = working[
+            working["score_final"].fillna("").astype(str).str.upper() != "REFUS"
+        ]
 
     working["run"] = pd.to_numeric(working["run"], errors="coerce")
     working = working[working["run"].notna()].copy()
@@ -210,7 +244,14 @@ def _compute_cronbach_alpha(df: pd.DataFrame) -> float | None:
     if df.empty:
         return None
     pivot = df.pivot_table(
-        index=["model", "scenario", "formulation", "system_prompt", "temperature", "run"],
+        index=[
+            "model",
+            "scenario",
+            "formulation",
+            "system_prompt",
+            "temperature",
+            "run",
+        ],
         columns="item_id",
         values="score_numeric",
         aggfunc="mean",
@@ -254,7 +295,9 @@ def _compute_split_half_pearson(
     target_cols: list[str],
     min_runs: int,
 ) -> dict[str, Any]:
-    working, n_eligible_targets, n_total_targets = _filter_targets_with_min_runs(df, target_cols, min_runs)
+    working, n_eligible_targets, n_total_targets = _filter_targets_with_min_runs(
+        df, target_cols, min_runs
+    )
     if working.empty:
         return {
             "value": None,
@@ -275,7 +318,9 @@ def _compute_split_half_pearson(
             "total_targets": n_total_targets,
         }
 
-    pivot = working.pivot_table(index="target", columns="run", values="score_numeric", aggfunc="mean")
+    pivot = working.pivot_table(
+        index="target", columns="run", values="score_numeric", aggfunc="mean"
+    )
     early_cols = [run for run in SPLIT_HALF_EARLY_RUNS if run in pivot.columns]
     late_cols = [run for run in SPLIT_HALF_LATE_RUNS if run in pivot.columns]
     if not early_cols or not late_cols:
@@ -336,7 +381,9 @@ def _compute_icc(
             "reason": "pingouin not available",
         }
 
-    working, n_eligible_targets, n_total_targets = _filter_targets_with_min_runs(df, target_cols, min_runs)
+    working, n_eligible_targets, n_total_targets = _filter_targets_with_min_runs(
+        df, target_cols, min_runs
+    )
     if working.empty:
         return {
             "value": None,
@@ -395,7 +442,9 @@ def _compute_reliability_by_item(df: pd.DataFrame) -> dict[str, Any]:
     for item_id, group in df.groupby("item_id"):
         target_cols = ["scenario", "formulation", "system_prompt", "temperature"]
         metrics_by_item[str(item_id)] = {
-            "icc_runs": _compute_icc(group, target_cols=target_cols, min_runs=MIN_RUNS_FOR_RELIABILITY),
+            "icc_runs": _compute_icc(
+                group, target_cols=target_cols, min_runs=MIN_RUNS_FOR_RELIABILITY
+            ),
             "split_half_pearson": _compute_split_half_pearson(
                 group,
                 target_cols=target_cols,
@@ -421,13 +470,23 @@ def _aggregation_group_from_item(item_id: str) -> str:
 
 def _compute_reliability_by_aggregation_group(df: pd.DataFrame) -> dict[str, Any]:
     working = df.copy()
-    working["aggregation_group"] = working["item_id"].astype(str).map(_aggregation_group_from_item)
+    working["aggregation_group"] = (
+        working["item_id"].astype(str).map(_aggregation_group_from_item)
+    )
 
     metrics_by_group: dict[str, Any] = {}
     for group_name, group in working.groupby("aggregation_group"):
-        target_cols = ["item_id", "scenario", "formulation", "system_prompt", "temperature"]
+        target_cols = [
+            "item_id",
+            "scenario",
+            "formulation",
+            "system_prompt",
+            "temperature",
+        ]
         metrics_by_group[str(group_name)] = {
-            "icc_runs": _compute_icc(group, target_cols=target_cols, min_runs=MIN_RUNS_FOR_RELIABILITY),
+            "icc_runs": _compute_icc(
+                group, target_cols=target_cols, min_runs=MIN_RUNS_FOR_RELIABILITY
+            ),
             "split_half_pearson": _compute_split_half_pearson(
                 group,
                 target_cols=target_cols,
@@ -449,9 +508,15 @@ def _summarize_reliability_map(metrics_map: dict[str, Any]) -> dict[str, Any]:
             "split_half_computable": 0,
         }
 
-    icc_computable = sum(1 for entry in metrics_map.values() if entry["icc_runs"].get("value") is not None)
+    icc_computable = sum(
+        1
+        for entry in metrics_map.values()
+        if entry["icc_runs"].get("value") is not None
+    )
     split_half_computable = sum(
-        1 for entry in metrics_map.values() if entry["split_half_pearson"].get("value") is not None
+        1
+        for entry in metrics_map.values()
+        if entry["split_half_pearson"].get("value") is not None
     )
     return {
         "total": int(len(metrics_map)),
@@ -470,20 +535,27 @@ def _compute_cross_temperature_corr(df: pd.DataFrame) -> float | None:
         values="score_numeric",
         aggfunc="mean",
     )
-    if 0.1 not in pivot.columns or 1.0 not in pivot.columns:
+    temperatures = sorted(float(value) for value in pivot.columns)
+    if len(temperatures) < 2:
         return None
-    paired = pivot[[0.1, 1.0]].dropna()
+    low_temp = temperatures[0]
+    high_temp = temperatures[-1]
+    paired = pivot[[low_temp, high_temp]].dropna()
     if len(paired) < 2:
         return None
-    if paired[0.1].nunique() < 2 or paired[1.0].nunique() < 2:
+    if paired[low_temp].nunique() < 2 or paired[high_temp].nunique() < 2:
         return None
-    corr, _ = stats.pearsonr(paired[0.1], paired[1.0])
+    corr, _ = stats.pearsonr(paired[low_temp], paired[high_temp])
     return _safe_float(corr)
 
 
 def _compute_cross_sp_corr(df: pd.DataFrame) -> dict[str, float | None]:
     if df.empty:
-        return {"SP_ABS_vs_SP_DIR": None, "SP_ABS_vs_SP_PER": None, "SP_DIR_vs_SP_PER": None}
+        return {
+            "SP_ABS_vs_SP_DIR": None,
+            "SP_ABS_vs_SP_PER": None,
+            "SP_DIR_vs_SP_PER": None,
+        }
 
     pivot = df.pivot_table(
         index=["item_id", "scenario", "formulation", "temperature"],
@@ -546,7 +618,9 @@ def _compute_formulation_effect(df: pd.DataFrame) -> dict[str, float | None]:
         return {"statistic": None, "p_value": None}
 
     try:
-        stat, p_value = stats.friedmanchisquare(paired["F1"], paired["F2"], paired["F3"])
+        stat, p_value = stats.friedmanchisquare(
+            paired["F1"], paired["F2"], paired["F3"]
+        )
         return {"statistic": _safe_float(stat), "p_value": _safe_float(p_value)}
     except ValueError:
         return {"statistic": None, "p_value": None}
@@ -596,7 +670,15 @@ def _fit_h4_lmm(df: pd.DataFrame) -> dict[str, Any]:
         }
 
     working = df.copy()
-    for col in ["model", "system_prompt", "temperature", "scenario", "formulation", "item_id", "run"]:
+    for col in [
+        "model",
+        "system_prompt",
+        "temperature",
+        "scenario",
+        "formulation",
+        "item_id",
+        "run",
+    ]:
         working[col] = working[col].astype(str)
     working["model_random"] = working["model"]
 
@@ -623,7 +705,9 @@ def _fit_h4_lmm(df: pd.DataFrame) -> dict[str, Any]:
 
         converged = bool(getattr(fit, "converged", False))
         if not converged:
-            attempts.append({"model": label, "status": "failed", "error": "non_converged"})
+            attempts.append(
+                {"model": label, "status": "failed", "error": "non_converged"}
+            )
             continue
 
         params = {str(k): _safe_float(v) for k, v in fit.params.items()}
@@ -681,16 +765,22 @@ def _safe_float(value: Any) -> float | None:
     return None
 
 
-def analyze_stability(db: SoulBenchDB, output_dir: str | Path = "outputs/reports") -> dict[str, Any]:
+def analyze_stability(
+    db: SoulBenchDB, output_dir: str | Path = "outputs/reports"
+) -> dict[str, Any]:
     """Convenience wrapper for stability analysis."""
     return Analyzer(db=db, output_dir=Path(output_dir)).analyze_stability()
 
 
-def analyze_sensitivity(db: SoulBenchDB, output_dir: str | Path = "outputs/reports") -> dict[str, Any]:
+def analyze_sensitivity(
+    db: SoulBenchDB, output_dir: str | Path = "outputs/reports"
+) -> dict[str, Any]:
     """Convenience wrapper for sensitivity analysis."""
     return Analyzer(db=db, output_dir=Path(output_dir)).analyze_sensitivity()
 
 
-def analyze_variance_decomposition(db: SoulBenchDB, output_dir: str | Path = "outputs/reports") -> dict[str, Any]:
+def analyze_variance_decomposition(
+    db: SoulBenchDB, output_dir: str | Path = "outputs/reports"
+) -> dict[str, Any]:
     """Convenience wrapper for variance decomposition analysis."""
     return Analyzer(db=db, output_dir=Path(output_dir)).analyze_variance_decomposition()

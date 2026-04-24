@@ -1,0 +1,64 @@
+dataset_id: "snap_poc_v3_1_2026-04"
+protocol_version: "3.1"
+items_version: "items_v1_2026-04"
+design: "rotated_poc"
+
+description: >
+  Manageable SNAP POC v3.1 design. This version returns to the compact
+  v1.1-style experimental matrix while keeping the useful v2.1 pipeline,
+  scoring workflow, metadata, and analysis infrastructure.
+
+condition_block: "main"
+system_prompts: ["SP_ABS", "SP_DIR", "SP_PER"]
+primary_system_prompt: "SP_DIR"
+
+run_schedule:
+  - run: 1
+    scenario: "base"
+    formulation: "F1"
+    temperature: 0.0
+  - run: 2
+    scenario: "variation"
+    formulation: "F2"
+    temperature: 0.5
+  - run: 3
+    scenario: "base"
+    formulation: "F3"
+    temperature: 1.0
+  - run: 4
+    scenario: "variation"
+    formulation: "F1"
+    temperature: 0.0
+  - run: 5
+    scenario: "base"
+    formulation: "F2"
+    temperature: 0.5
+  - run: 6
+    scenario: "variation"
+    formulation: "F3"
+    temperature: 1.0
+  - run: 7
+    scenario: "base"
+    formulation: "F1"
+    temperature: 0.5
+  - run: 8
+    scenario: "variation"
+    formulation: "F2"
+    temperature: 1.0
+  - run: 9
+    scenario: "base"
+    formulation: "F3"
+    temperature: 0.0
+  - run: 10
+    scenario: "variation"
+    formulation: "F1"
+    temperature: 0.5
+
+decision_thresholds:
+  kappa_interjudge_min: 0.50
+  kappa_interjudge_target: 0.60
+  icc_min: 0.60
+  split_half_min: 0.60
+  cross_formulation_min: 0.60
+  refusal_rate_max: 0.10
+  major_disagreement_rate_max: 0.15

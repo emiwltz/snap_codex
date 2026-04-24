@@ -54,23 +54,36 @@ def plot_big_five_radar(
         _empty_figure(out, "Big Five Radar")
         return [str(out)]
 
-    personality["trait"] = personality["item_id"].astype(str).str[0].map(
-        {
-            "O": "Openness",
-            "C": "Conscientiousness",
-            "E": "Extraversion",
-            "A": "Agreeableness",
-            "N": "Neuroticism",
-        }
+    personality["trait"] = (
+        personality["item_id"]
+        .astype(str)
+        .str[0]
+        .map(
+            {
+                "O": "Openness",
+                "C": "Conscientiousness",
+                "E": "Extraversion",
+                "A": "Agreeableness",
+                "N": "Neuroticism",
+            }
+        )
     )
 
     output_paths: list[str] = []
-    traits = ["Openness", "Conscientiousness", "Extraversion", "Agreeableness", "Neuroticism"]
+    traits = [
+        "Openness",
+        "Conscientiousness",
+        "Extraversion",
+        "Agreeableness",
+        "Neuroticism",
+    ]
     angles = np.linspace(0, 2 * np.pi, len(traits), endpoint=False).tolist()
     angles += angles[:1]
 
     for model, group in personality.groupby("model"):
-        means = group.groupby("trait")["score_numeric"].mean().reindex(traits).fillna(0.0)
+        means = (
+            group.groupby("trait")["score_numeric"].mean().reindex(traits).fillna(0.0)
+        )
         values = means.tolist()
         values += values[:1]
 
@@ -101,7 +114,9 @@ def plot_scores_heatmap(
         _empty_figure(out, "Scores Heatmap")
         return str(out)
 
-    pivot = df.pivot_table(index="model", columns="item_id", values="score_numeric", aggfunc="mean")
+    pivot = df.pivot_table(
+        index="model", columns="item_id", values="score_numeric", aggfunc="mean"
+    )
     if pivot.empty:
         _empty_figure(out, "Scores Heatmap")
         return str(out)
@@ -145,7 +160,15 @@ def plot_variance_bar(
         _empty_figure(out, "Variance Decomposition")
         return str(out)
 
-    factors = ["model", "system_prompt", "temperature", "scenario", "formulation", "item_id", "run"]
+    factors = [
+        "model",
+        "system_prompt",
+        "temperature",
+        "scenario",
+        "formulation",
+        "item_id",
+        "run",
+    ]
     eta_values: dict[str, float] = {}
 
     grand_mean = float(df["score_numeric"].mean())
@@ -180,14 +203,16 @@ def plot_cross_temperature_profiles(
     db: SoulBenchDB,
     output_file: str | Path = "outputs/figures/cross_temperature_profiles.png",
 ) -> str:
-    """Generate overlay profiles for temperatures 0.1 vs 1.0."""
+    """Generate overlay profiles for observed temperatures."""
     out = Path(output_file)
     df = _score_df(db)
     if df.empty:
         _empty_figure(out, "Cross Temperature Profiles")
         return str(out)
 
-    profile = df.groupby(["model", "item_id", "temperature"], as_index=False)["score_numeric"].mean()
+    profile = df.groupby(["model", "item_id", "temperature"], as_index=False)[
+        "score_numeric"
+    ].mean()
     if profile.empty:
         _empty_figure(out, "Cross Temperature Profiles")
         return str(out)
@@ -220,7 +245,9 @@ def plot_cross_sp_profiles(
         _empty_figure(out, "Cross SP Profiles")
         return str(out)
 
-    profile = df.groupby(["model", "item_id", "system_prompt"], as_index=False)["score_numeric"].mean()
+    profile = df.groupby(["model", "item_id", "system_prompt"], as_index=False)[
+        "score_numeric"
+    ].mean()
     if profile.empty:
         _empty_figure(out, "Cross SP Profiles")
         return str(out)
@@ -252,9 +279,15 @@ def generate_all(
 
     results = {
         "radar": plot_big_five_radar(db=db, output_dir=out_dir),
-        "heatmap": plot_scores_heatmap(db=db, output_file=out_dir / "scores_heatmap.png"),
-        "boxplots": plot_stability_boxplots(db=db, output_file=out_dir / "stability_boxplots.png"),
-        "variance_bar": plot_variance_bar(db=db, output_file=out_dir / "variance_eta_squared.png"),
+        "heatmap": plot_scores_heatmap(
+            db=db, output_file=out_dir / "scores_heatmap.png"
+        ),
+        "boxplots": plot_stability_boxplots(
+            db=db, output_file=out_dir / "stability_boxplots.png"
+        ),
+        "variance_bar": plot_variance_bar(
+            db=db, output_file=out_dir / "variance_eta_squared.png"
+        ),
         "cross_temperature": plot_cross_temperature_profiles(
             db=db,
             output_file=out_dir / "cross_temperature_profiles.png",

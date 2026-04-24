@@ -4,7 +4,11 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from src.analyzer import analyze_sensitivity, analyze_stability, analyze_variance_decomposition
+from src.analyzer import (
+    analyze_sensitivity,
+    analyze_stability,
+    analyze_variance_decomposition,
+)
 from src.db import ResponseRecord, SoulBenchDB
 
 
