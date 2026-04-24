@@ -1,0 +1,20 @@
+{
+  "analysis": "stability",
+  "n_rows_raw": 0,
+  "n_rows_after_exclusions": 0,
+  "models": {},
+  "reliability_rules": {
+    "primary_metric": "ICC on protocol runs",
+    "secondary_metric": "Pearson split-half (runs 1-5 vs 6-10 for POC v3.1)",
+    "minimum_runs_required": 5,
+    "exclusions": [
+      "is_error = 1",
+      "score_final = REFUS",
+      "manual_review_needed = 1 and manual_score is missing"
+    ]
+  },
+  "notes": [
+    "Alpha moral par fondement incalculable avec 1 item/fondement."
+  ],
+  "status": "empty"
+}
