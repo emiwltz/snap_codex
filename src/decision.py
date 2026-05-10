@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from .db import SoulBenchDB
-from .prompt_builder import ConfigBundle
+from .prompt_builder import ConfigBundle, expected_conditions_per_model
 
 
 def build_decision_report(
@@ -62,6 +62,28 @@ def build_decision_report(
             },
         }
 
+    campaign_completion = _check_campaign_completion(
+        db=db,
+        bundle=bundle,
+        scored_df=scored_df,
+    )
+    if campaign_completion["status"] != "complete":
+        return {
+            "report": "poc_decision",
+            "generated_at": datetime.now(timezone.utc).isoformat(),
+            "decision": "NOT_READY",
+            "reason": "The configured campaign is not fully collected yet.",
+            "dataset_id": str(bundle.protocol.get("dataset_id")),
+            "protocol_version": str(bundle.protocol.get("protocol_version")),
+            "checks": [],
+            "campaign_completion": campaign_completion,
+            "summary": {
+                "response_count": response_count,
+                "scored_count": scored_count,
+                "non_error_count": non_error_count,
+            },
+        }
+
     stability_report = _load_json_report(Path(reports_dir) / "stability_report.json")
     checks = [
         _check_kappa(db, thresholds),
@@ -101,6 +123,7 @@ def build_decision_report(
         "protocol_version": str(bundle.protocol.get("protocol_version")),
         "thresholds": thresholds,
         "checks": checks,
+        "campaign_completion": campaign_completion,
         "summary": {
             "response_count": response_count,
             "scored_count": scored_count,
@@ -109,6 +132,102 @@ def build_decision_report(
             "borderline_checks": len(borderline),
             "missing_checks": len(missing),
         },
+    }
+
+
+def _check_campaign_completion(
+    db: SoulBenchDB,
+    bundle: ConfigBundle,
+    scored_df: Any,
+) -> dict[str, Any]:
+    """Check whether all active model conditions are collected and scored."""
+    active_models = [
+        str(model_cfg.get("id"))
+        for model_cfg in bundle.models.get("models", [])
+        if model_cfg.get("active", True)
+    ]
+    expected_per_model = expected_conditions_per_model(bundle)
+    progress_by_model = {
+        str(row.get("model")): row for row in db.get_collection_progress()
+    }
+
+    if scored_df.empty:
+        non_error_counts: dict[str, int] = {}
+        scored_counts: dict[str, int] = {}
+    else:
+        non_error_df = scored_df[scored_df["is_error"].fillna(0).astype(int) == 0]
+        non_error_counts = {
+            str(model): int(count)
+            for model, count in non_error_df.groupby("model").size().items()
+        }
+        scored_counts = {
+            str(model): int(count)
+            for model, count in non_error_df[non_error_df["score_final"].notna()]
+            .groupby("model")
+            .size()
+            .items()
+        }
+
+    model_reports: dict[str, Any] = {}
+    incomplete_models: list[str] = []
+
+    for model_id in active_models:
+        row = progress_by_model.get(model_id)
+        reasons: list[str] = []
+        total_planned = _safe_int(row.get("total_planned")) if row else None
+        total_completed = _safe_int(row.get("total_completed")) if row else None
+        total_errors = _safe_int(row.get("total_errors")) if row else None
+        non_error_count = non_error_counts.get(model_id, 0)
+        scored_count = scored_counts.get(model_id, 0)
+
+        if row is None:
+            reasons.append("missing_collection_metadata")
+        if total_planned != expected_per_model:
+            reasons.append("total_planned_does_not_match_protocol")
+        if total_completed is None or total_completed < expected_per_model:
+            reasons.append("collection_incomplete")
+        if total_errors not in {0, None}:
+            reasons.append("collection_errors_present")
+        if non_error_count < expected_per_model:
+            reasons.append("missing_non_error_responses")
+        if scored_count < expected_per_model:
+            reasons.append("missing_final_scores")
+
+        complete = not reasons
+        if not complete:
+            incomplete_models.append(model_id)
+
+        model_reports[model_id] = {
+            "metadata_present": row is not None,
+            "expected_conditions": expected_per_model,
+            "total_planned": total_planned,
+            "total_completed": total_completed,
+            "total_errors": total_errors,
+            "non_error_responses": non_error_count,
+            "scored_responses": scored_count,
+            "complete": complete,
+            "reasons": reasons,
+        }
+
+    expected_total = expected_per_model * len(active_models)
+    completed_total = sum(
+        int(model_report["total_completed"] or 0)
+        for model_report in model_reports.values()
+    )
+    scored_total = sum(
+        int(model_report["scored_responses"] or 0)
+        for model_report in model_reports.values()
+    )
+
+    return {
+        "status": "complete" if not incomplete_models else "incomplete",
+        "expected_models": active_models,
+        "expected_conditions_per_model": expected_per_model,
+        "expected_total_conditions": expected_total,
+        "completed_total": completed_total,
+        "scored_total": scored_total,
+        "incomplete_models": incomplete_models,
+        "models": model_reports,
     }
 
 
@@ -255,6 +374,13 @@ def _threshold(thresholds: dict[str, Any], key: str) -> float | None:
         return None
     try:
         return float(thresholds[key])
+    except (TypeError, ValueError):
+        return None
+
+
+def _safe_int(value: Any) -> int | None:
+    try:
+        return int(value)
     except (TypeError, ValueError):
         return None
 

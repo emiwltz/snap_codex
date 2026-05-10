@@ -985,8 +985,23 @@ class SoulBenchDB:
             UNION
             SELECT DISTINCT model FROM collection_metadata
             ORDER BY model;
-            """).fetchall()
+        """).fetchall()
         return [row["model"] for row in rows]
+
+    def get_collection_progress(self) -> list[dict[str, Any]]:
+        """Return latest collection metadata row for each model."""
+        rows = self._conn.execute("""
+            SELECT cm.*
+            FROM collection_metadata cm
+            JOIN (
+                SELECT model, MAX(id) AS latest_id
+                FROM collection_metadata
+                GROUP BY model
+            ) latest
+              ON latest.latest_id = cm.id
+            ORDER BY cm.model;
+            """).fetchall()
+        return [dict(row) for row in rows]
 
     def save_json_report(self, report: dict[str, Any], output_file: str | Path) -> None:
         """Save a report dictionary as JSON."""
