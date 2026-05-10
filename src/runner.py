@@ -46,16 +46,49 @@ def _progress_log(model_id: str, completed: int, total: int) -> None:
     LOGGER.info("%s: %d/%d (%.2f%%)", model_id, completed, total, pct)
 
 
+def _disabled_request_parameters(model_cfg: dict[str, Any]) -> set[str]:
+    """Return OpenRouter request parameters intentionally omitted for a model."""
+    raw_values = model_cfg.get("disabled_request_parameters") or []
+    if not isinstance(raw_values, list):
+        return set()
+    return {str(value).strip() for value in raw_values if str(value).strip()}
+
+
+def _thinking_enabled_from_mode(thinking_mode: str) -> bool | None:
+    """Map configured thinking mode to the row-level trace field."""
+    normalized = thinking_mode.strip().lower()
+    if normalized in {"enabled_by_default", "enabled", "explicitly_enabled"}:
+        return True
+    if normalized in {"disabled", "not_available"}:
+        return False
+    return None
+
+
 async def _collect_for_model(
     db: SoulBenchDB,
     bundle: Any,
     model_cfg: dict[str, Any],
+    max_rows: int | None = None,
 ) -> None:
     model_id = str(model_cfg["id"])
     model_openrouter_id = str(model_cfg.get("openrouter_model_id", "PLACEHOLDER"))
     thinking_mode = str(model_cfg.get("thinking_mode", "not_available"))
+    thinking_enabled = _thinking_enabled_from_mode(thinking_mode)
+    disabled_parameters = _disabled_request_parameters(model_cfg)
     collection_cfg = bundle.models["collection"]
     total_planned = expected_conditions_per_model(bundle)
+
+    request_policy_notes: list[str] = []
+    if disabled_parameters:
+        disabled_display = ",".join(sorted(disabled_parameters))
+        request_policy_notes.append(
+            f"Disabled request parameters for provider compatibility: {disabled_display}"
+        )
+        LOGGER.info(
+            "%s: omitting configured request parameter(s): %s",
+            model_id,
+            disabled_display,
+        )
 
     existing_seed = db.get_model_seed(model_id)
     conditions, effective_seed = generate_conditions_for_model(
@@ -75,6 +108,7 @@ async def _collect_for_model(
         protocol_version=str(bundle.protocol.get("protocol_version")),
         items_version=str(bundle.protocol.get("items_version")),
         model_version=None,
+        notes=" | ".join(request_policy_notes) if request_policy_notes else None,
     )
 
     completed_keys = db.get_completed_condition_keys(model_id)
@@ -94,6 +128,17 @@ async def _collect_for_model(
         not in completed_keys
     ]
 
+    limit_note = None
+    if max_rows is not None:
+        limit_note = f"Limited collection run: max_rows={max_rows}"
+        if len(pending_conditions) > max_rows:
+            LOGGER.info(
+                "Limiting collection for model '%s' to %d pending condition(s).",
+                model_id,
+                max_rows,
+            )
+            pending_conditions = pending_conditions[:max_rows]
+
     completed_count = db.get_completed_count(model_id)
     _progress_log(model_id, completed_count, total_planned)
 
@@ -112,8 +157,12 @@ async def _collect_for_model(
             "OPENROUTER_API_KEY is missing. Skipping collection for model '%s' without crashing.",
             model_id,
         )
+        missing_key_note = "Skipped remote calls: missing OPENROUTER_API_KEY"
         db.finalize_collection_metadata(
-            model_id, notes="Skipped remote calls: missing OPENROUTER_API_KEY"
+            model_id,
+            notes=(
+                f"{limit_note} | {missing_key_note}" if limit_note else missing_key_note
+            ),
         )
         return
 
@@ -127,9 +176,17 @@ async def _collect_for_model(
             result = await client.generate(
                 model_id=model_openrouter_id,
                 messages=messages,
-                temperature=condition.temperature,
+                temperature=(
+                    None
+                    if "temperature" in disabled_parameters
+                    else condition.temperature
+                ),
                 max_tokens=int(collection_cfg.get("max_tokens", 2048)),
-                top_p=float(collection_cfg.get("top_p", 1.0)),
+                top_p=(
+                    None
+                    if "top_p" in disabled_parameters
+                    else float(collection_cfg.get("top_p", 1.0))
+                ),
             )
 
             is_error = result.error is not None
@@ -161,7 +218,9 @@ async def _collect_for_model(
                     prompt_tokens=result.prompt_tokens,
                     completion_tokens=result.completion_tokens,
                     random_seed=str(effective_seed),
-                    thinking_enabled=None,
+                    temperature_applied="temperature" not in disabled_parameters,
+                    top_p_applied="top_p" not in disabled_parameters,
+                    thinking_enabled=thinking_enabled,
                     system_prompt_text=condition.system_prompt_text,
                     user_prompt_text=condition.user_prompt_text,
                     raw_response=raw_response,
@@ -178,11 +237,15 @@ async def _collect_for_model(
             if idx % 50 == 0 or idx == len(pending_conditions):
                 _progress_log(model_id, completed_count, total_planned)
 
-    db.finalize_collection_metadata(model_id)
+    db.finalize_collection_metadata(model_id, notes=limit_note)
 
 
 async def run_collect(args: argparse.Namespace) -> int:
     """Run collection stage for one or all models."""
+    if args.max_rows is not None and args.max_rows <= 0:
+        LOGGER.error("--max-rows must be a positive integer when provided.")
+        return 2
+
     bundle = load_configs(args.config_dir)
     with SoulBenchDB(args.db_path) as db:
         model_ids: list[str]
@@ -211,7 +274,12 @@ async def run_collect(args: argparse.Namespace) -> int:
                     "openrouter_model_id": "PLACEHOLDER",
                     "thinking_mode": "not_available",
                 }
-            await _collect_for_model(db=db, bundle=bundle, model_cfg=model_cfg)
+            await _collect_for_model(
+                db=db,
+                bundle=bundle,
+                model_cfg=model_cfg,
+                max_rows=args.max_rows,
+            )
     return 0
 
 
@@ -278,6 +346,76 @@ def run_compute_kappa(args: argparse.Namespace) -> int:
     with SoulBenchDB(args.db_path) as db:
         result = compute_kappa(db=db)
     LOGGER.info("Kappa metrics: %s", result)
+    return 0
+
+
+def run_init_db(args: argparse.Namespace) -> int:
+    """Create an empty v3.1 database or reset the target DB."""
+    db_path = Path(args.db_path)
+    if args.reset:
+        for candidate in [db_path, Path(f"{db_path}-wal"), Path(f"{db_path}-shm")]:
+            if candidate.exists():
+                candidate.unlink()
+
+    with SoulBenchDB(db_path) as db:
+        response_count = int(
+            db._conn.execute("SELECT COUNT(*) AS n FROM responses;").fetchone()["n"]
+        )
+        if response_count > 0 and not args.allow_existing:
+            LOGGER.error(
+                "DB '%s' already contains %d response(s). Use --reset or --allow-existing.",
+                db_path,
+                response_count,
+            )
+            return 2
+
+    LOGGER.info("DB ready: %s", db_path)
+    return 0
+
+
+def run_preflight(args: argparse.Namespace) -> int:
+    """Verify model IDs, pricing, cost estimate, and DB readiness."""
+    from .preflight import (
+        build_preflight_report,
+        fetch_openrouter_catalog,
+        save_preflight_report,
+    )
+
+    bundle = load_configs(args.config_dir)
+    catalog = fetch_openrouter_catalog(catalog_url=args.catalog_url)
+    report = build_preflight_report(
+        bundle=bundle,
+        catalog=catalog,
+        db_path=args.db_path,
+        catalog_source=args.catalog_url,
+        chars_per_token=args.chars_per_token,
+        expected_response_tokens=args.expected_response_tokens,
+        scoring_completion_tokens=args.scoring_completion_tokens,
+    )
+    save_preflight_report(report, args.output)
+    LOGGER.info(
+        "Preflight status=%s expected_total_cost=%s max_total_cost=%s output=%s",
+        report.get("status"),
+        report.get("cost_estimate", {}).get("expected", {}).get("total"),
+        report.get("cost_estimate", {}).get("max_budget", {}).get("total"),
+        args.output,
+    )
+    return 2 if report.get("status") == "blocked" else 0
+
+
+def run_decision(args: argparse.Namespace) -> int:
+    """Build PASS/BORDERLINE/FAIL report for the scored POC."""
+    from .decision import build_decision_report, save_decision_report
+
+    bundle = load_configs(args.config_dir)
+    with SoulBenchDB(args.db_path) as db:
+        report = build_decision_report(
+            db=db,
+            bundle=bundle,
+            reports_dir=args.reports_dir,
+        )
+    save_decision_report(report, args.output)
+    LOGGER.info("POC decision=%s output=%s", report.get("decision"), args.output)
     return 0
 
 
@@ -352,6 +490,12 @@ def build_parser() -> argparse.ArgumentParser:
     collect_group.add_argument(
         "--all", action="store_true", help="Collect all active models."
     )
+    collect.add_argument(
+        "--max-rows",
+        type=int,
+        default=None,
+        help="Limit pending conditions collected per model; useful for smoke tests.",
+    )
 
     score = subparsers.add_parser(
         "score", help="Run judge scoring or resolve disagreements."
@@ -386,6 +530,66 @@ def build_parser() -> argparse.ArgumentParser:
     )
 
     subparsers.add_parser("compute-kappa", help="Compute kappa metrics.")
+
+    init_db = subparsers.add_parser(
+        "init-db", help="Create or reset the v3.1 SQLite database."
+    )
+    init_db.add_argument(
+        "--reset",
+        action="store_true",
+        help="Delete the target DB/WAL/SHM files before creating the schema.",
+    )
+    init_db.add_argument(
+        "--allow-existing",
+        action="store_true",
+        help="Return success even if the target DB already contains responses.",
+    )
+
+    preflight = subparsers.add_parser(
+        "preflight", help="Check OpenRouter IDs, pricing, cost, and DB readiness."
+    )
+    preflight.add_argument(
+        "--output",
+        default="outputs/reports/preflight_report.json",
+        help="Output JSON report path.",
+    )
+    preflight.add_argument(
+        "--catalog-url",
+        default="https://openrouter.ai/api/v1/models",
+        help="OpenRouter model catalog URL.",
+    )
+    preflight.add_argument(
+        "--chars-per-token",
+        type=float,
+        default=4.0,
+        help="Character/token ratio used for prompt-token estimation.",
+    )
+    preflight.add_argument(
+        "--expected-response-tokens",
+        type=int,
+        default=800,
+        help="Expected collected response length used for planning cost.",
+    )
+    preflight.add_argument(
+        "--scoring-completion-tokens",
+        type=int,
+        default=256,
+        help="Expected judge output tokens per scoring call.",
+    )
+
+    decision = subparsers.add_parser(
+        "decision", help="Generate the POC PASS/BORDERLINE/FAIL report."
+    )
+    decision.add_argument(
+        "--reports-dir",
+        default="outputs/reports",
+        help="Directory containing analysis reports.",
+    )
+    decision.add_argument(
+        "--output",
+        default="outputs/reports/decision_report.json",
+        help="Output JSON report path.",
+    )
 
     adjudicate = subparsers.add_parser(
         "adjudicate", help="Interactive adjudication for manual-review rows."
@@ -442,6 +646,12 @@ def main(argv: list[str] | None = None) -> int:
         return run_import_manual(args)
     if args.command == "compute-kappa":
         return run_compute_kappa(args)
+    if args.command == "init-db":
+        return run_init_db(args)
+    if args.command == "preflight":
+        return run_preflight(args)
+    if args.command == "decision":
+        return run_decision(args)
     if args.command == "adjudicate":
         return run_adjudicate(args)
     if args.command == "analyze":

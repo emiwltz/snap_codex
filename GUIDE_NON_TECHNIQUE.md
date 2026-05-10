@@ -76,7 +76,21 @@ python -m src.runner --db-path data/snap_poc_v3_1.db collect --model claude-sonn
 python -m src.runner --help
 ```
 
-### Etape B - Verifier que les tests passent
+### Etape B - Creer une base v3.1 propre
+
+```bash
+python -m src.runner init-db --reset
+```
+
+### Etape C - Verifier OpenRouter et le cout estime
+
+```bash
+python -m src.runner preflight
+```
+
+Le rapport est ecrit dans `outputs/reports/preflight_report.json`.
+
+### Etape D - Verifier que les tests passent
 
 ```bash
 python -m pytest -q
@@ -84,13 +98,19 @@ python -m pytest -q
 
 Attendu: tests verts.
 
-### Etape C - Definir la cle API
+### Etape E - Definir la cle API
 
 ```bash
 export OPENROUTER_API_KEY="votre_cle"
 ```
 
-### Etape D - Lancer la collecte
+### Etape F - Lancer la collecte
+
+Smoke test limite:
+
+```bash
+python -m src.runner collect --model claude-sonnet-4-5 --max-rows 10
+```
 
 Un modele:
 
@@ -104,7 +124,7 @@ Tous les modeles actifs:
 python -m src.runner collect --all
 ```
 
-### Etape E - Lancer le scoring
+### Etape G - Lancer le scoring
 
 ```bash
 python -m src.runner score --judge haiku --max-rows 100
@@ -123,7 +143,7 @@ Alias equivalent:
 python -m src.runner resolve-disagreements
 ```
 
-### Etape F - Verification humaine
+### Etape H - Verification humaine
 
 Exporter un echantillon:
 
@@ -149,7 +169,7 @@ Calculer les kappas:
 python -m src.runner compute-kappa
 ```
 
-### Etape G - Generer les rapports
+### Etape I - Generer les rapports
 
 ```bash
 python -m src.runner analyze --stability
@@ -157,11 +177,19 @@ python -m src.runner analyze --sensitivity
 python -m src.runner analyze --variance-decomposition
 ```
 
-### Etape H - Generer les figures
+### Etape J - Generer les figures
 
 ```bash
 python -m src.runner visualize --all
 ```
+
+### Etape K - Generer la decision POC
+
+```bash
+python -m src.runner decision
+```
+
+Le rapport est ecrit dans `outputs/reports/decision_report.json`.
 
 ## 6) Ou recuperer les resultats
 
@@ -208,6 +236,8 @@ Lecture simple:
 
 - Plus c est eleve, plus les scores sont stables.
 - Plus c est bas, plus les scores changent selon le contexte.
+- En v3.1, la stabilite est calculee sur `item_id x system_prompt` observe
+  sur les 10 runs.
 
 ### Sensibilite
 
@@ -296,8 +326,10 @@ Interpretation:
 
 1. Environnement Python pret.
 2. Tests verts.
-3. Cle API definie.
-4. Choix explicite du `--db-path` de campagne.
+3. Base v3.1 propre creee avec `init-db --reset`.
+4. Preflight OpenRouter OK.
+5. Cle API definie.
+6. Choix explicite du `--db-path` de campagne.
 
 ### Pendant campagne
 
@@ -310,10 +342,15 @@ Interpretation:
 1. Kappa calcule.
 2. Rapports JSON generes.
 3. Figures PNG generees.
-4. Verification qualite faite avant interpretation.
+4. Rapport `decision` genere.
+5. Verification qualite faite avant interpretation.
 
 ## 11) Limites actuelles a garder en tete
 
-- Le calcul de cout OpenRouter n est pas automatise.
-- Le suivi fin du `thinking_enabled` n est pas encore renseigne ligne par ligne.
-- La decision PASS/BORDERLINE/FAIL est documentee dans le protocole mais pas encore automatisee.
+- Certains providers ne supportent pas tous les parametres OpenRouter. Quand un
+  parametre est omis par modele, la DB trace `temperature_applied` et
+  `top_p_applied`.
+- `thinking_enabled` est derive du `thinking_mode` configure pour le modele. Ce
+  n est pas une observation du contenu interne de la reponse.
+- Le cout OpenRouter de `preflight` est une estimation avant campagne, pas une facture finale.
+- `decision` retourne `NOT_READY` tant que les donnees scorees et les rapports d analyse ne sont pas disponibles.

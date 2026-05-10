@@ -28,6 +28,10 @@ LOGGER = logging.getLogger(__name__)
 MIN_RUNS_FOR_RELIABILITY = 5
 SPLIT_HALF_EARLY_RUNS = [1, 2, 3, 4, 5]
 SPLIT_HALF_LATE_RUNS = [6, 7, 8, 9, 10]
+V31_RELIABILITY_TARGET_COLS = ["item_id", "system_prompt"]
+V31_BY_ITEM_TARGET_COLS = ["system_prompt"]
+V31_BY_AGGREGATION_TARGET_COLS = ["item_id", "system_prompt"]
+V31_SENSITIVITY_PAIRING_COLS = ["item_id", "system_prompt"]
 
 TRAIT_BY_PREFIX = {
     "O": "Openness",
@@ -68,12 +72,18 @@ class Analyzer:
             "reliability_rules": {
                 "primary_metric": "ICC on protocol runs",
                 "secondary_metric": "Pearson split-half (runs 1-5 vs 6-10 for POC v3.1)",
+                "target_identifier": V31_RELIABILITY_TARGET_COLS,
                 "minimum_runs_required": MIN_RUNS_FOR_RELIABILITY,
                 "exclusions": [
                     "is_error = 1",
                     "score_final = REFUS",
                     "manual_review_needed = 1 and manual_score is missing",
                 ],
+                "design_note": (
+                    "In v3.1, scenario/formulation/temperature are assigned by "
+                    "the run schedule. Reliability therefore treats item x "
+                    "system_prompt as the repeated target observed across runs."
+                ),
             },
             "notes": [
                 "Alpha moral par fondement incalculable avec 1 item/fondement.",
@@ -86,21 +96,14 @@ class Analyzer:
             return report
 
         for model, group in df.groupby("model"):
-            overall_target_cols = [
-                "item_id",
-                "scenario",
-                "formulation",
-                "system_prompt",
-                "temperature",
-            ]
             split_half = _compute_split_half_pearson(
                 group,
-                target_cols=overall_target_cols,
+                target_cols=V31_RELIABILITY_TARGET_COLS,
                 min_runs=MIN_RUNS_FOR_RELIABILITY,
             )
             icc = _compute_icc(
                 group,
-                target_cols=overall_target_cols,
+                target_cols=V31_RELIABILITY_TARGET_COLS,
                 min_runs=MIN_RUNS_FOR_RELIABILITY,
             )
 
@@ -113,6 +116,7 @@ class Analyzer:
                 "test_retest_pearson_split_half": split_half,
                 "icc": icc.get("value"),
                 "icc_runs": icc,
+                "request_parameters": _summarize_request_parameters(group),
                 "cross_temperature_corr": _compute_cross_temperature_corr(group),
                 "cross_sp_corr": _compute_cross_sp_corr(group),
                 "aggregation_levels": {
@@ -147,6 +151,7 @@ class Analyzer:
             report["models"][model] = {
                 "scenario_effect_wilcoxon": _compute_scenario_effect(group),
                 "formulation_effect_friedman": _compute_formulation_effect(group),
+                "temperature_effect": _compute_temperature_effect(group),
             }
 
         report["status"] = "ok"
@@ -440,14 +445,15 @@ def _compute_icc(
 def _compute_reliability_by_item(df: pd.DataFrame) -> dict[str, Any]:
     metrics_by_item: dict[str, Any] = {}
     for item_id, group in df.groupby("item_id"):
-        target_cols = ["scenario", "formulation", "system_prompt", "temperature"]
         metrics_by_item[str(item_id)] = {
             "icc_runs": _compute_icc(
-                group, target_cols=target_cols, min_runs=MIN_RUNS_FOR_RELIABILITY
+                group,
+                target_cols=V31_BY_ITEM_TARGET_COLS,
+                min_runs=MIN_RUNS_FOR_RELIABILITY,
             ),
             "split_half_pearson": _compute_split_half_pearson(
                 group,
-                target_cols=target_cols,
+                target_cols=V31_BY_ITEM_TARGET_COLS,
                 min_runs=MIN_RUNS_FOR_RELIABILITY,
             ),
         }
@@ -476,20 +482,15 @@ def _compute_reliability_by_aggregation_group(df: pd.DataFrame) -> dict[str, Any
 
     metrics_by_group: dict[str, Any] = {}
     for group_name, group in working.groupby("aggregation_group"):
-        target_cols = [
-            "item_id",
-            "scenario",
-            "formulation",
-            "system_prompt",
-            "temperature",
-        ]
         metrics_by_group[str(group_name)] = {
             "icc_runs": _compute_icc(
-                group, target_cols=target_cols, min_runs=MIN_RUNS_FOR_RELIABILITY
+                group,
+                target_cols=V31_BY_AGGREGATION_TARGET_COLS,
+                min_runs=MIN_RUNS_FOR_RELIABILITY,
             ),
             "split_half_pearson": _compute_split_half_pearson(
                 group,
-                target_cols=target_cols,
+                target_cols=V31_BY_AGGREGATION_TARGET_COLS,
                 min_runs=MIN_RUNS_FOR_RELIABILITY,
             ),
         }
@@ -528,9 +529,11 @@ def _summarize_reliability_map(metrics_map: dict[str, Any]) -> dict[str, Any]:
 def _compute_cross_temperature_corr(df: pd.DataFrame) -> float | None:
     if df.empty:
         return None
+    if not _temperature_parameter_applied(df):
+        return None
 
     pivot = df.pivot_table(
-        index=["item_id", "scenario", "formulation", "system_prompt"],
+        index=V31_RELIABILITY_TARGET_COLS,
         columns="temperature",
         values="score_numeric",
         aggfunc="mean",
@@ -558,7 +561,7 @@ def _compute_cross_sp_corr(df: pd.DataFrame) -> dict[str, float | None]:
         }
 
     pivot = df.pivot_table(
-        index=["item_id", "scenario", "formulation", "temperature"],
+        index=["item_id", "run"],
         columns="system_prompt",
         values="score_numeric",
         aggfunc="mean",
@@ -582,48 +585,176 @@ def _compute_cross_sp_corr(df: pd.DataFrame) -> dict[str, float | None]:
     }
 
 
-def _compute_scenario_effect(df: pd.DataFrame) -> dict[str, float | None]:
+def _compute_scenario_effect(df: pd.DataFrame) -> dict[str, Any]:
+    return _compute_rotated_factor_effect(
+        df=df,
+        factor="scenario",
+        levels=["base", "variation"],
+        test="wilcoxon",
+        method="paired_means_by_item_system_prompt",
+    )
+
+
+def _compute_formulation_effect(df: pd.DataFrame) -> dict[str, Any]:
+    return _compute_rotated_factor_effect(
+        df=df,
+        factor="formulation",
+        levels=["F1", "F2", "F3"],
+        test="friedman",
+        method="paired_means_by_item_system_prompt",
+    )
+
+
+def _compute_temperature_effect(df: pd.DataFrame) -> dict[str, Any]:
+    temperatures = sorted(float(value) for value in df["temperature"].dropna().unique())
+    if not _temperature_parameter_applied(df):
+        return {
+            "status": "not_applicable",
+            "reason": "Temperature parameter was not sent for this model.",
+            "statistic": None,
+            "p_value": None,
+            "n_pairs": 0,
+            "levels": temperatures,
+            "method": "not_applicable",
+            "pairing_unit": V31_SENSITIVITY_PAIRING_COLS,
+        }
+    if len(temperatures) < 2:
+        return {
+            "status": "not_computable",
+            "reason": "Need at least 2 observed temperature levels",
+            "statistic": None,
+            "p_value": None,
+            "n_pairs": 0,
+            "levels": temperatures,
+        }
+
+    test = "wilcoxon" if len(temperatures) == 2 else "friedman"
+    return _compute_rotated_factor_effect(
+        df=df,
+        factor="temperature",
+        levels=temperatures,
+        test=test,
+        method="paired_means_by_item_system_prompt",
+    )
+
+
+def _compute_rotated_factor_effect(
+    df: pd.DataFrame,
+    factor: str,
+    levels: list[Any],
+    test: str,
+    method: str,
+) -> dict[str, Any]:
+    """Compute exploratory factor effects for the v3.1 rotated schedule.
+
+    The POC rotation does not repeat every scenario/formulation/temperature
+    inside every run. We therefore pair mean scores at the stable
+    item x system_prompt target level.
+    """
+    if df.empty or factor not in df.columns:
+        return {
+            "status": "not_computable",
+            "reason": f"Missing factor column: {factor}",
+            "statistic": None,
+            "p_value": None,
+            "n_pairs": 0,
+            "levels": levels,
+            "method": method,
+            "pairing_unit": V31_SENSITIVITY_PAIRING_COLS,
+        }
+
     pivot = df.pivot_table(
-        index=["item_id", "formulation", "system_prompt", "temperature", "run"],
-        columns="scenario",
+        index=V31_SENSITIVITY_PAIRING_COLS,
+        columns=factor,
         values="score_numeric",
         aggfunc="mean",
     )
-    if "base" not in pivot.columns or "variation" not in pivot.columns:
-        return {"statistic": None, "p_value": None}
+    missing_levels = [level for level in levels if level not in pivot.columns]
+    if missing_levels:
+        return {
+            "status": "not_computable",
+            "reason": f"Missing levels for {factor}: {missing_levels}",
+            "statistic": None,
+            "p_value": None,
+            "n_pairs": 0,
+            "levels": levels,
+            "method": method,
+            "pairing_unit": V31_SENSITIVITY_PAIRING_COLS,
+        }
 
-    paired = pivot[["base", "variation"]].dropna()
+    paired = pivot[levels].dropna()
     if len(paired) < 2:
-        return {"statistic": None, "p_value": None}
+        return {
+            "status": "not_computable",
+            "reason": "Not enough paired item x system_prompt targets",
+            "statistic": None,
+            "p_value": None,
+            "n_pairs": int(len(paired)),
+            "levels": levels,
+            "method": method,
+            "pairing_unit": V31_SENSITIVITY_PAIRING_COLS,
+        }
 
     try:
-        stat, p_value = stats.wilcoxon(paired["base"], paired["variation"])
-        return {"statistic": _safe_float(stat), "p_value": _safe_float(p_value)}
-    except ValueError:
-        return {"statistic": None, "p_value": None}
+        if test == "wilcoxon":
+            stat, p_value = stats.wilcoxon(paired[levels[0]], paired[levels[1]])
+        elif test == "friedman":
+            stat, p_value = stats.friedmanchisquare(
+                *[paired[level] for level in levels]
+            )
+        else:
+            raise ValueError(f"Unsupported test: {test}")
+    except ValueError as exc:
+        return {
+            "status": "not_computable",
+            "reason": str(exc),
+            "statistic": None,
+            "p_value": None,
+            "n_pairs": int(len(paired)),
+            "levels": levels,
+            "method": method,
+            "pairing_unit": V31_SENSITIVITY_PAIRING_COLS,
+        }
+
+    return {
+        "status": "ok",
+        "statistic": _safe_float(stat),
+        "p_value": _safe_float(p_value),
+        "n_pairs": int(len(paired)),
+        "levels": levels,
+        "method": method,
+        "pairing_unit": V31_SENSITIVITY_PAIRING_COLS,
+        "note": (
+            "Exploratory v3.1 estimate: factor levels are compared after "
+            "averaging across the rotated schedule at item x system_prompt level."
+        ),
+    }
 
 
-def _compute_formulation_effect(df: pd.DataFrame) -> dict[str, float | None]:
-    pivot = df.pivot_table(
-        index=["item_id", "scenario", "system_prompt", "temperature", "run"],
-        columns="formulation",
-        values="score_numeric",
-        aggfunc="mean",
-    )
-    if not {"F1", "F2", "F3"}.issubset(set(pivot.columns)):
-        return {"statistic": None, "p_value": None}
+def _summarize_request_parameters(df: pd.DataFrame) -> dict[str, Any]:
+    return {
+        "temperature_applied": _summarize_nullable_bool(df, "temperature_applied"),
+        "top_p_applied": _summarize_nullable_bool(df, "top_p_applied"),
+        "thinking_enabled": _summarize_nullable_bool(df, "thinking_enabled"),
+    }
 
-    paired = pivot[["F1", "F2", "F3"]].dropna()
-    if len(paired) < 2:
-        return {"statistic": None, "p_value": None}
 
-    try:
-        stat, p_value = stats.friedmanchisquare(
-            paired["F1"], paired["F2"], paired["F3"]
-        )
-        return {"statistic": _safe_float(stat), "p_value": _safe_float(p_value)}
-    except ValueError:
-        return {"statistic": None, "p_value": None}
+def _summarize_nullable_bool(df: pd.DataFrame, column: str) -> dict[str, int]:
+    if column not in df.columns:
+        return {"true": 0, "false": 0, "unknown": int(len(df))}
+    values = pd.to_numeric(df[column], errors="coerce")
+    return {
+        "true": int((values == 1).sum()),
+        "false": int((values == 0).sum()),
+        "unknown": int(values.isna().sum()),
+    }
+
+
+def _temperature_parameter_applied(df: pd.DataFrame) -> bool:
+    if "temperature_applied" not in df.columns:
+        return True
+    values = pd.to_numeric(df["temperature_applied"], errors="coerce").dropna()
+    return bool(values.empty or (values == 1).all())
 
 
 def _compute_eta_squared(df: pd.DataFrame, factor: str) -> float | None:

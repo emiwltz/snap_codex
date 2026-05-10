@@ -95,9 +95,9 @@ class OpenRouterClient:
         self,
         model_id: str,
         messages: list[dict[str, str]],
-        temperature: float,
+        temperature: float | None,
         max_tokens: int = 2048,
-        top_p: float = 1.0,
+        top_p: float | None = 1.0,
         extra_body: dict[str, Any] | None = None,
     ) -> ApiCallResult:
         """Run one generation call with protocol-specific retries.
@@ -105,9 +105,10 @@ class OpenRouterClient:
         Args:
             model_id: OpenRouter model identifier.
             messages: OpenAI-compatible chat messages.
-            temperature: Sampling temperature.
+            temperature: Sampling temperature, or None when the provider does not
+                support a temperature parameter.
             max_tokens: Max completion tokens.
-            top_p: Top-p sampling parameter.
+            top_p: Top-p sampling parameter, or None when omitted for this model.
             extra_body: Additional provider parameters.
 
         Returns:
@@ -143,10 +144,12 @@ class OpenRouterClient:
             payload: dict[str, Any] = {
                 "model": model_id,
                 "messages": messages,
-                "temperature": temperature,
                 "max_tokens": max_tokens,
-                "top_p": top_p,
             }
+            if temperature is not None:
+                payload["temperature"] = temperature
+            if top_p is not None:
+                payload["top_p"] = top_p
             if extra_body:
                 payload.update(extra_body)
 

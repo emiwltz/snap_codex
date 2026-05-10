@@ -128,9 +128,16 @@ La v3.1 enregistre dans la base:
 - `items_version`;
 - `condition_block`;
 - `trial_id`.
+- `temperature_applied` et `top_p_applied`, pour distinguer la valeur prevue
+  par le protocole de ce qui a réellement ete envoye au provider;
+- `thinking_enabled`, derive du `thinking_mode` configure pour le modele.
 
 Ces champs servent a separer clairement les campagnes et a eviter de melanger
 des resultats de protocoles differents.
+
+La v3.1 ne manipule pas le reasoning/thinking comme facteur experimental. Le
+champ `thinking_enabled` est une trace de configuration provider/default, pas
+une mesure du raisonnement interne.
 
 ## 9. Scoring
 
@@ -169,6 +176,20 @@ Le POC doit prioriser:
 - profils par system prompt;
 - profils par temperature.
 
+Dans le design rotatif v3.1, l'unite repetee pour l'ICC et le split-half est:
+
+```text
+item_id x system_prompt
+```
+
+Les variables `scenario`, `formulation` et `temperature` sont assignees par le
+calendrier de runs. Les effets de sensibilite sur ces facteurs sont donc lus
+comme des analyses exploratoires sur moyennes pairées par `item_id x
+system_prompt`, pas comme des tests full-factorial exhaustifs.
+
+Si `temperature_applied = 0` pour un modele, les sorties liees a la temperature
+sont marquees comme non applicables pour ce modele.
+
 La decomposition de variance reste exploratoire.
 
 ## 11. Seuils de decision POC
@@ -183,5 +204,11 @@ Lecture recommandee:
 - `FAIL`: scoring non fiable, instabilite forte ou trop de reponses non
   interpretables.
 
-La decision PASS/BORDERLINE/FAIL n'est pas encore automatisee dans la CLI.
-Elle doit etre etablie a partir des rapports et des kappas.
+La decision PASS/BORDERLINE/FAIL est automatisee par la commande:
+
+```bash
+python -m src.runner decision
+```
+
+Avant scoring complet et generation des rapports d analyse, cette commande
+retourne `NOT_READY` plutot qu'une conclusion experimentale.

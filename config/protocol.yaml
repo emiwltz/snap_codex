@@ -59,6 +59,6 @@ decision_thresholds:
   kappa_interjudge_target: 0.60
   icc_min: 0.60
   split_half_min: 0.60
-  cross_formulation_min: 0.60
+  cross_context_corr_min: 0.60
   refusal_rate_max: 0.10
   major_disagreement_rate_max: 0.15

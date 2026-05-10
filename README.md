@@ -11,7 +11,7 @@ Ancien protocole full-factorial: `PROTOCOLE_EXPERIMENTAL_SNAP_v2_1.md`.
 
 Le depot utilise maintenant le protocole v3.1: un POC gerable proche du design v1.1, mais avec les briques techniques utiles de la v2.1.
 
-- CLI operationnelle via `python -m src.runner` avec 9 sous-commandes: `collect`, `score`, `resolve-disagreements`, `export-sample`, `import-manual`, `compute-kappa`, `adjudicate`, `analyze`, `visualize`.
+- CLI operationnelle via `python -m src.runner` avec 12 sous-commandes: `init-db`, `preflight`, `collect`, `score`, `resolve-disagreements`, `export-sample`, `import-manual`, `compute-kappa`, `adjudicate`, `analyze`, `visualize`, `decision`.
 - Configuration presente dans `config/`:
 1. 6 modeles actifs (`models.yaml`).
 2. 2 juges (`haiku`, `kimi`).
@@ -29,10 +29,12 @@ Le depot utilise maintenant le protocole v3.1: un POC gerable proche du design v
 - `src/runner.py`: orchestrateur CLI.
 - `src/prompt_builder.py`: chargement YAML et generation des conditions.
 - `src/api_client.py`: client OpenRouter async (retry/backoff/ratelimit).
+- `src/preflight.py`: verification catalogue OpenRouter + estimation de cout.
 - `src/db.py`: schema SQLite, reprise idempotente, export/import manuel, rapports JSON.
 - `src/scorer.py`: scoring bi-juge, parsing, resolution des desaccords, kappa.
 - `src/analyzer.py`: analyses statistiques.
 - `src/visualizer.py`: figures PNG.
+- `src/decision.py`: rapport POC `PASS/BORDERLINE/FAIL`.
 - `tests/`: tests unitaires.
 
 ## Prerequis
@@ -53,8 +55,13 @@ pip install -r requirements.txt
 ## Commandes CLI
 
 ```bash
+# Preparation
+python -m src.runner init-db --reset
+python -m src.runner preflight
+
 # Collecte
 python -m src.runner collect --model <model_id>
+python -m src.runner collect --model <model_id> --max-rows 10
 python -m src.runner collect --all
 
 # Scoring
@@ -77,6 +84,9 @@ python -m src.runner analyze --variance-decomposition
 # Visualisation
 python -m src.runner visualize --all
 
+# Decision POC
+python -m src.runner decision
+
 # Tests
 python -m pytest -v
 ```
@@ -84,15 +94,24 @@ python -m pytest -v
 ## Flux de travail recommande
 
 1. Valider l environnement (`pip install`, puis `pytest`).
-2. Exporter la cle API:
+2. Creer une base v3.1 propre:
+```bash
+python -m src.runner init-db --reset
+```
+3. Verifier les IDs OpenRouter, les prix et le cout estime:
+```bash
+python -m src.runner preflight
+```
+4. Exporter la cle API:
 ```bash
 export OPENROUTER_API_KEY="votre_cle"
 ```
-3. Lancer une collecte smoke sur 1 modele.
-4. Lancer le scoring sur les 2 juges.
-5. Resoudre les desaccords.
-6. Export/import manuel si necessaire, puis `compute-kappa`.
-7. Produire les rapports (`analyze`) puis les figures (`visualize`).
+5. Lancer une collecte smoke sur 1 modele avec `--max-rows 10`.
+6. Lancer le scoring sur les 2 juges.
+7. Resoudre les desaccords.
+8. Export/import manuel si necessaire, puis `compute-kappa`.
+9. Produire les rapports (`analyze`) puis les figures (`visualize`).
+10. Generer la decision POC avec `decision`.
 
 ## Verification rapide de l etat local
 
@@ -114,13 +133,13 @@ python -m pytest -q
 
 - Sans `OPENROUTER_API_KEY`, `collect` et `score` sont skips (warning) et n ecrivent pas de resultats utiles.
 - Les sorties d analyse/figures sont pertinentes seulement si des lignes scorees existent (`score_final`).
-- Le champ `thinking_mode` existe en config/metadata, mais `thinking_enabled` est stocke a `None` ligne par ligne pendant la collecte actuelle.
-- Le calcul de cout OpenRouter n est pas automatise dans la codebase.
-- La decision PASS/BORDERLINE/FAIL du POC est documentee mais pas encore automatisee par la CLI.
+- Les analyses v3.1 traitent `item_id x system_prompt` comme cible repetee sur les 10 runs; `scenario`, `formulation` et `temperature` sont des attributs de rotation.
+- Les parametres OpenRouter peuvent etre adaptes par modele via `disabled_request_parameters`; dans ce cas la DB trace `temperature_applied` et `top_p_applied`.
+- Le champ `thinking_enabled` est derive de `thinking_mode` en config. Il trace le mode provider/default attendu, pas une mesure introspective de la reponse.
+- Le cout OpenRouter produit par `preflight` est une estimation fondee sur le catalogue courant et des hypotheses de tokens, pas une facture finale.
+- La decision `PASS/BORDERLINE/FAIL` depend de rapports d analyse deja generes; avant scoring complet, `decision` peut retourner `NOT_READY`.
 
 ## TODO ouverts
 
-- Verifier les IDs OpenRouter finaux du panel et des juges.
-- Finaliser la matrice thinking/reasoning par modele.
-- Ajouter un calcul de cout total (collecte + scoring) au moment du lancement campagne.
-- Automatiser un rapport de decision POC a partir des seuils de `config/protocol.yaml`.
+- Revalider les model IDs, les parametres supportes et le pricing OpenRouter juste avant la campagne.
+- Ajouter une strategie formelle de double codage humain si le POC passe en campagne plus large.

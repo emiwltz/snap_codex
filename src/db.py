@@ -68,6 +68,8 @@ class ResponseRecord:
     prompt_tokens: int | None = None
     completion_tokens: int | None = None
     random_seed: str | None = None
+    temperature_applied: bool | None = None
+    top_p_applied: bool | None = None
     thinking_enabled: bool | None = None
     system_prompt_text: str | None = None
     user_prompt_text: str = ""
@@ -183,6 +185,8 @@ class SoulBenchDB:
             prompt_tokens INTEGER,
             completion_tokens INTEGER,
             random_seed TEXT,
+            temperature_applied BOOLEAN,
+            top_p_applied BOOLEAN,
             thinking_enabled BOOLEAN,
             system_prompt_text TEXT,
             user_prompt_text TEXT NOT NULL,
@@ -246,6 +250,8 @@ class SoulBenchDB:
         self._ensure_column("responses", "items_version", "TEXT")
         self._ensure_column("responses", "condition_block", "TEXT")
         self._ensure_column("responses", "trial_id", "TEXT")
+        self._ensure_column("responses", "temperature_applied", "BOOLEAN")
+        self._ensure_column("responses", "top_p_applied", "BOOLEAN")
         self._ensure_column("collection_metadata", "dataset_id", "TEXT")
         self._ensure_column("collection_metadata", "protocol_version", "TEXT")
         self._ensure_column("collection_metadata", "items_version", "TEXT")
@@ -289,6 +295,14 @@ class SoulBenchDB:
             "prompt_tokens": record.prompt_tokens,
             "completion_tokens": record.completion_tokens,
             "random_seed": record.random_seed,
+            "temperature_applied": (
+                None
+                if record.temperature_applied is None
+                else int(record.temperature_applied)
+            ),
+            "top_p_applied": (
+                None if record.top_p_applied is None else int(record.top_p_applied)
+            ),
             "thinking_enabled": (
                 None
                 if record.thinking_enabled is None
@@ -319,7 +333,8 @@ class SoulBenchDB:
                 dataset_id, protocol_version, items_version, condition_block, trial_id,
                 model, item_id, item_type, scenario, formulation, system_prompt,
                 temperature, run, timestamp, response_time_ms,
-                prompt_tokens, completion_tokens, random_seed, thinking_enabled,
+                prompt_tokens, completion_tokens, random_seed,
+                temperature_applied, top_p_applied, thinking_enabled,
                 system_prompt_text, user_prompt_text, raw_response,
                 score_judge1, score_judge2, score_final,
                 judge1_indicators, judge2_indicators,
@@ -330,7 +345,8 @@ class SoulBenchDB:
                 :dataset_id, :protocol_version, :items_version, :condition_block, :trial_id,
                 :model, :item_id, :item_type, :scenario, :formulation, :system_prompt,
                 :temperature, :run, :timestamp, :response_time_ms,
-                :prompt_tokens, :completion_tokens, :random_seed, :thinking_enabled,
+                :prompt_tokens, :completion_tokens, :random_seed,
+                :temperature_applied, :top_p_applied, :thinking_enabled,
                 :system_prompt_text, :user_prompt_text, :raw_response,
                 :score_judge1, :score_judge2, :score_final,
                 :judge1_indicators, :judge2_indicators,
@@ -350,6 +366,8 @@ class SoulBenchDB:
                 prompt_tokens = excluded.prompt_tokens,
                 completion_tokens = excluded.completion_tokens,
                 random_seed = excluded.random_seed,
+                temperature_applied = excluded.temperature_applied,
+                top_p_applied = excluded.top_p_applied,
                 thinking_enabled = excluded.thinking_enabled,
                 system_prompt_text = excluded.system_prompt_text,
                 user_prompt_text = excluded.user_prompt_text,
@@ -942,7 +960,9 @@ class SoulBenchDB:
                 id, dataset_id, protocol_version, items_version, condition_block, trial_id,
                 model, item_id, item_type, scenario, formulation, system_prompt,
                 temperature, run, score_final, score_judge1, score_judge2,
-                manual_review_needed, manual_score, is_refusal, is_error
+                agreement_status, manual_review_needed, manual_score,
+                temperature_applied, top_p_applied, thinking_enabled,
+                is_refusal, is_error
             FROM responses;
         """
         return pd.read_sql_query(query, self._conn)
