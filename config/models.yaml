@@ -54,6 +54,9 @@ judges:
   kimi:
     label: "Kimi K2.5"
     openrouter_model_id: "moonshotai/kimi-k2.5"
+    extra_body:
+      reasoning:
+        enabled: false
 
 # Run `python -m src.runner preflight` just before collection to refresh model
 # availability, parameter support, and pricing from the OpenRouter catalog.

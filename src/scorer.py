@@ -196,12 +196,14 @@ async def _run_single_judge_call(
     client: OpenRouterClient,
     judge_model_id: str,
     prompt: str,
+    extra_body: dict[str, Any] | None = None,
 ) -> JudgeParseResult:
     result = await client.generate(
         model_id=judge_model_id,
         messages=[{"role": "user", "content": prompt}],
         temperature=0.0,
         max_tokens=512,
+        extra_body=extra_body,
     )
     if result.error:
         return JudgeParseResult(
@@ -230,6 +232,9 @@ async def score_pending_for_judge(
         raise ValueError(f"Unknown judge in config: {judge}")
 
     judge_model_id = str(judge_cfg.get("openrouter_model_id", "PLACEHOLDER"))
+    judge_extra_body = judge_cfg.get("extra_body")
+    if not isinstance(judge_extra_body, dict):
+        judge_extra_body = None
     rubrics = bundle.scoring_rubrics.get("rubrics", {})
 
     pending_rows = db.get_pending_for_scoring(judge=judge, max_rows=max_rows)
@@ -253,11 +258,17 @@ async def score_pending_for_judge(
         )
 
         parsed = await _run_single_judge_call(
-            client=client, judge_model_id=judge_model_id, prompt=prompt
+            client=client,
+            judge_model_id=judge_model_id,
+            prompt=prompt,
+            extra_body=judge_extra_body,
         )
         if not parsed.valid:
             parsed_retry = await _run_single_judge_call(
-                client=client, judge_model_id=judge_model_id, prompt=prompt
+                client=client,
+                judge_model_id=judge_model_id,
+                prompt=prompt,
+                extra_body=judge_extra_body,
             )
             if not parsed_retry.valid:
                 db.flag_manual_review(

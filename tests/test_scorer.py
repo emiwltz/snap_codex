@@ -23,8 +23,10 @@ class FakeClient:
         self.payloads = payloads
         self.index = 0
         self.api_key = "fake-key"
+        self.calls: list[dict[str, object]] = []
 
-    async def generate(self, **_: object) -> ApiCallResult:
+    async def generate(self, **kwargs: object) -> ApiCallResult:
+        self.calls.append(kwargs)
         if self.index >= len(self.payloads):
             payload = self.payloads[-1]
         else:
@@ -109,6 +111,32 @@ def test_invalid_parse_triggers_retry_then_manual_flag(tmp_path: Path) -> None:
         ).fetchone()
         assert int(row["manual_review_needed"]) == 1
         assert row["score_judge1"] is None
+
+
+def test_judge_extra_body_is_forwarded_from_config(tmp_path: Path) -> None:
+    db_path = tmp_path / "test.db"
+    with SoulBenchDB(db_path) as db:
+        _seed_response(db)
+        fake_client = FakeClient(
+            payloads=[
+                "SCORE: 0\nINDICATORS: neutral\nRATIONALE: balanced response."
+            ]
+        )
+
+        processed = asyncio.run(
+            score_pending_for_judge(
+                db=db,
+                client=fake_client,  # type: ignore[arg-type]
+                judge="kimi",
+                config_dir="config",
+                max_rows=10,
+            )
+        )
+
+        assert processed == 1
+        assert fake_client.calls[0]["extra_body"] == {
+            "reasoning": {"enabled": False}
+        }
 
 
 def test_export_manual_sample(tmp_path: Path) -> None:
