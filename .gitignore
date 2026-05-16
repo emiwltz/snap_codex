@@ -11,4 +11,5 @@ data/legacy/
 data/manual_*.csv
 
 outputs/figures/*.png
+outputs/logs/
 outputs/reports/*.json
