@@ -40,9 +40,9 @@ models:
     provider: "Mistral"
     thinking_mode: "disabled"
     active: true
-  - id: "grok-4-1-thinking"
-    label: "Grok 4.1 Thinking"
-    openrouter_model_id: "x-ai/grok-4.1-fast"
+  - id: "grok-4-3"
+    label: "Grok 4.3"
+    openrouter_model_id: "x-ai/grok-4.3"
     provider: "xAI"
     thinking_mode: "enabled_by_default"
     active: true
