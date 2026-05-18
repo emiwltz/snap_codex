@@ -699,6 +699,7 @@ class SoulBenchDB:
                 system_prompt,
                 temperature,
                 run,
+                user_prompt_text,
                 raw_response,
                 score_judge1,
                 score_judge2,

@@ -424,6 +424,8 @@ def adjudicate_pending_interactive(db: SoulBenchDB, limit: int = 0) -> int:
             f"Condition: type={row['item_type']} scenario={row['scenario']} "
             f"formulation={row['formulation']} sp={row['system_prompt']} temp={row['temperature']}"
         )
+        print("\n--- Condition Text ---")
+        print(str(row.get("user_prompt_text") or ""))
         print("\n--- Raw Response ---")
         print(str(row.get("raw_response") or ""))
         print("\n--- Judge 1 (haiku) ---")

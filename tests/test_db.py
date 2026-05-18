@@ -138,6 +138,7 @@ def test_manual_adjudication_flow(tmp_path: Path) -> None:
         pending = db.get_pending_manual_review_rows(limit=10)
         assert len(pending) == 1
         assert int(pending[0]["id"]) >= 1
+        assert pending[0]["user_prompt_text"] == "Scenario text\n\nQuestion text"
 
         response_id = int(pending[0]["id"])
         db.apply_manual_adjudication(
