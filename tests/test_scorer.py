@@ -9,6 +9,7 @@ from src.api_client import ApiCallResult
 from src.db import ResponseRecord, SoulBenchDB
 from src.scorer import (
     JudgeParseResult,
+    adjudicate_pending_interactive,
     export_manual_sample,
     parse_judge_output,
     resolve_disagreement,
@@ -164,3 +165,64 @@ def test_export_manual_sample(tmp_path: Path) -> None:
         exported = export_manual_sample(db=db, n=3, output_file=output_file)
         assert exported == 3
         assert output_file.exists()
+
+
+def test_manual_adjudication_prints_item_context(
+    monkeypatch, capsys, tmp_path: Path
+) -> None:
+    db_path = tmp_path / "test.db"
+    with SoulBenchDB(db_path) as db:
+        db.insert_response(
+            ResponseRecord(
+                model="test-model",
+                item_id="O1",
+                item_type="personality",
+                scenario="base",
+                formulation="F1",
+                system_prompt="SP_ABS",
+                temperature=0.1,
+                run=1,
+                user_prompt_text="Scenario\n\nQuestion",
+                raw_response="Response",
+                score_judge1="+1",
+                score_judge2="-1",
+                manual_review_needed=True,
+            )
+        )
+        db.insert_response(
+            ResponseRecord(
+                model="test-model",
+                item_id="M_CH",
+                item_type="moral",
+                scenario="base",
+                formulation="F1",
+                system_prompt="SP_ABS",
+                temperature=0.1,
+                run=1,
+                user_prompt_text="Scenario\n\nQuestion",
+                raw_response="Response",
+                score_judge1="+1",
+                score_judge2="-1",
+                manual_review_needed=True,
+            )
+        )
+
+        decisions = iter(["skip", "skip"])
+        monkeypatch.setattr("builtins.input", lambda _: next(decisions))
+
+        adjudicated = adjudicate_pending_interactive(
+            db=db,
+            limit=2,
+            config_dir="config",
+        )
+
+    output = capsys.readouterr().out
+    assert adjudicated == 0
+    assert "--- Tested Item ---" in output
+    assert "Trait: Openness" in output
+    assert "Facet: Exploration vs Conservation" in output
+    assert "Value: Care/Harm" in output
+    assert "+1: Exploration" in output
+    assert "-1: Conservation" in output
+    assert "+1: Recommends Mode 1 / Config A" in output
+    assert "-1: Recommends Mode 2 / Config B" in output

@@ -11,12 +11,17 @@ from typing import Any
 
 from .api_client import OpenRouterClient
 from .db import ResolutionUpdate, ScoringUpdate, SoulBenchDB
-from .prompt_builder import load_configs
+from .prompt_builder import ConfigBundle, load_configs, load_items
 
 LOGGER = logging.getLogger(__name__)
 
 ALLOWED_SCORES = {"+1", "0", "-1", "REFUS"}
 SCORE_LINE_RE = re.compile(r"^\s*SCORE\s*:\s*(.+?)\s*$", re.IGNORECASE | re.MULTILINE)
+RUBRIC_SCORE_RE = re.compile(
+    r"Score\s+(?P<score>\+1|-1)\s*:\s*"
+    r"(?P<meaning>.*?)(?=\n\s*Score\s+(?:\+1|-1|0|REFUS)\s*:|\Z)",
+    re.IGNORECASE | re.DOTALL,
+)
 INDICATORS_LINE_RE = re.compile(
     r"^\s*(?:INDICATORS|INDICATEURS)\s*:\s*(.+?)\s*$", re.IGNORECASE | re.MULTILINE
 )
@@ -68,6 +73,53 @@ def build_scoring_prompt(item_id: str, coding_rubric: str, raw_response: str) ->
         "INDICATORS: <list of identified indicators>\n"
         "RATIONALE: <1-2 sentences>"
     )
+
+
+def _compact_text(value: object) -> str:
+    return " ".join(str(value or "").split())
+
+
+def _item_by_id(bundle: ConfigBundle) -> dict[str, dict[str, Any]]:
+    return {str(item.get("id")): item for item in load_items(bundle)}
+
+
+def _score_meanings_for_item(bundle: ConfigBundle, item_id: str) -> dict[str, str]:
+    rubrics = bundle.scoring_rubrics.get("rubrics", {})
+    description = str(rubrics.get(item_id, {}).get("description") or "")
+    meanings = {"+1": "", "-1": ""}
+    for match in RUBRIC_SCORE_RE.finditer(description):
+        meanings[match.group("score")] = _compact_text(match.group("meaning"))
+    return meanings
+
+
+def _format_item_context(
+    row: dict[str, Any],
+    items_by_id: dict[str, dict[str, Any]],
+    score_meanings: dict[str, str],
+) -> list[str]:
+    item_id = str(row["item_id"])
+    item = items_by_id.get(item_id, {})
+    lines = [f"Item: {item_id}"]
+
+    if row["item_type"] == "personality":
+        trait = _compact_text(item.get("trait"))
+        facet = _compact_text(item.get("facet"))
+        if trait:
+            lines.append(f"Trait: {trait}")
+        if facet:
+            lines.append(f"Facet: {facet}")
+    elif row["item_type"] == "moral":
+        foundation = _compact_text(item.get("foundation"))
+        if foundation:
+            lines.append(f"Value: {foundation}")
+
+    plus_meaning = score_meanings.get("+1")
+    minus_meaning = score_meanings.get("-1")
+    if plus_meaning:
+        lines.append(f"+1: {plus_meaning}")
+    if minus_meaning:
+        lines.append(f"-1: {minus_meaning}")
+    return lines
 
 
 def _normalize_score(raw_score: str) -> str | None:
@@ -394,7 +446,9 @@ def compute_kappa(db: SoulBenchDB) -> dict[str, float | None]:
     return result
 
 
-def adjudicate_pending_interactive(db: SoulBenchDB, limit: int = 0) -> int:
+def adjudicate_pending_interactive(
+    db: SoulBenchDB, limit: int = 0, config_dir: str | Path = "config"
+) -> int:
     """Run interactive manual adjudication for rows flagged as manual review.
 
     Args:
@@ -410,6 +464,9 @@ def adjudicate_pending_interactive(db: SoulBenchDB, limit: int = 0) -> int:
         LOGGER.info("No pending manual adjudication rows.")
         return 0
 
+    bundle = load_configs(config_dir)
+    items_by_id = _item_by_id(bundle)
+
     adjudicated = 0
     skipped = 0
     total = len(rows)
@@ -424,6 +481,17 @@ def adjudicate_pending_interactive(db: SoulBenchDB, limit: int = 0) -> int:
             f"Condition: type={row['item_type']} scenario={row['scenario']} "
             f"formulation={row['formulation']} sp={row['system_prompt']} temp={row['temperature']}"
         )
+        print("\n--- Tested Item ---")
+        score_meanings = _score_meanings_for_item(
+            bundle=bundle,
+            item_id=str(row["item_id"]),
+        )
+        for line in _format_item_context(
+            row=row,
+            items_by_id=items_by_id,
+            score_meanings=score_meanings,
+        ):
+            print(line)
         print("\n--- Condition Text ---")
         print(str(row.get("user_prompt_text") or ""))
         print("\n--- Raw Response ---")

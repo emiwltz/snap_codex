@@ -422,7 +422,11 @@ def run_decision(args: argparse.Namespace) -> int:
 def run_adjudicate(args: argparse.Namespace) -> int:
     """Run interactive manual adjudication for pending rows."""
     with SoulBenchDB(args.db_path) as db:
-        adjudicated = adjudicate_pending_interactive(db=db, limit=args.limit)
+        adjudicated = adjudicate_pending_interactive(
+            db=db,
+            limit=args.limit,
+            config_dir=args.config_dir,
+        )
     LOGGER.info("Adjudicated rows: %d", adjudicated)
     return 0
 
