@@ -166,8 +166,14 @@ Le coder manuellement, puis importer dans la copie de travail de la base, pas
 dans la base finale:
 
 ```bash
+python -m src.runner manual-score-sample --file data/manual_sample_coded.csv
 python -m src.runner --db-path data/snap_poc_v3_1_human_validation_working.db import-manual --file data/manual_sample_coded.csv
 ```
+
+La commande `manual-score-sample` remplit le CSV progressivement et peut etre
+reprise si elle est interrompue. Par defaut, elle masque `score_final` pendant
+le codage pour garder une validation humaine independante. Utiliser
+`--show-machine-score` seulement pour une revue non-blind.
 
 Si des lignes demandent une revue manuelle:
 

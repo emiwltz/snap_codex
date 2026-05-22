@@ -5,6 +5,7 @@ from __future__ import annotations
 import logging
 import math
 import re
+import csv
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -101,14 +102,15 @@ def _format_item_context(
     item = items_by_id.get(item_id, {})
     lines = [f"Item: {item_id}"]
 
-    if row["item_type"] == "personality":
+    item_type = str(row.get("item_type") or item.get("item_type") or "")
+    if item_type == "personality":
         trait = _compact_text(item.get("trait"))
         facet = _compact_text(item.get("facet"))
         if trait:
             lines.append(f"Trait: {trait}")
         if facet:
             lines.append(f"Facet: {facet}")
-    elif row["item_type"] == "moral":
+    elif item_type == "moral":
         foundation = _compact_text(item.get("foundation"))
         if foundation:
             lines.append(f"Value: {foundation}")
@@ -392,6 +394,255 @@ def import_manual_results(db: SoulBenchDB, file_path: str | Path) -> int:
     imported = db.import_manual_verification_csv(file_path=file_path)
     LOGGER.info("Imported %d manual verification row(s).", imported)
     return imported
+
+
+def _read_manual_sample_csv(
+    file_path: str | Path,
+) -> tuple[list[dict[str, str]], list[str]]:
+    path = Path(file_path)
+    with path.open("r", newline="", encoding="utf-8") as file_handle:
+        reader = csv.DictReader(file_handle)
+        if reader.fieldnames is None:
+            raise ValueError(f"Manual sample CSV has no header: {file_path}")
+        fieldnames = list(reader.fieldnames)
+        rows = [dict(row) for row in reader]
+
+    required_columns = {"response_id", "item_id", "raw_response"}
+    missing_columns = sorted(required_columns - set(fieldnames))
+    if missing_columns:
+        raise ValueError(
+            f"Manual sample CSV is missing required columns: {missing_columns}"
+        )
+
+    for column in ["human_score", "human_justification"]:
+        if column not in fieldnames:
+            fieldnames.append(column)
+            for row in rows:
+                row[column] = ""
+
+    return rows, fieldnames
+
+
+def _write_manual_sample_csv(
+    rows: list[dict[str, str]],
+    fieldnames: list[str],
+    output_file: str | Path,
+) -> None:
+    output_path = Path(output_file)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    temp_path = output_path.with_suffix(f"{output_path.suffix}.tmp")
+    with temp_path.open("w", newline="", encoding="utf-8") as file_handle:
+        writer = csv.DictWriter(file_handle, fieldnames=fieldnames)
+        writer.writeheader()
+        for row in rows:
+            writer.writerow({field: row.get(field, "") for field in fieldnames})
+    temp_path.replace(output_path)
+
+
+def _response_id_from_csv_row(row: dict[str, str]) -> int | None:
+    raw_response_id = (row.get("response_id") or "").strip()
+    if not raw_response_id:
+        return None
+    try:
+        return int(raw_response_id)
+    except ValueError:
+        return None
+
+
+def _merge_manual_sample_context(
+    row: dict[str, str],
+    db_context: dict[str, Any] | None,
+) -> dict[str, Any]:
+    merged: dict[str, Any] = dict(row)
+    if db_context:
+        for key, value in db_context.items():
+            if value is not None and str(value) != "":
+                merged[key] = value
+    return merged
+
+
+def _print_manual_sample_row(
+    row: dict[str, Any],
+    index: int,
+    total: int,
+    items_by_id: dict[str, dict[str, Any]],
+    bundle: ConfigBundle,
+    show_machine_score: bool,
+) -> None:
+    response_id = row.get("response_id") or row.get("id") or "?"
+    print("\n" + "=" * 88)
+    print(
+        f"[{index}/{total}] response_id={response_id} model={row.get('model') or '?'} "
+        f"item={row.get('item_id') or '?'} run={row.get('run') or '?'}"
+    )
+    print(
+        f"Condition: type={row.get('item_type') or '?'} "
+        f"scenario={row.get('scenario') or '?'} "
+        f"formulation={row.get('formulation') or '?'} "
+        f"sp={row.get('system_prompt') or '?'} temp={row.get('temperature') or '?'}"
+    )
+    print("\n--- Tested Item ---")
+    score_meanings = _score_meanings_for_item(
+        bundle=bundle,
+        item_id=str(row.get("item_id") or ""),
+    )
+    for line in _format_item_context(
+        row=row,
+        items_by_id=items_by_id,
+        score_meanings=score_meanings,
+    ):
+        print(line)
+
+    user_prompt = str(row.get("user_prompt_text") or "").strip()
+    if user_prompt:
+        print("\n--- Condition Text ---")
+        print(user_prompt)
+
+    print("\n--- Raw Response ---")
+    print(str(row.get("raw_response") or ""))
+
+    if show_machine_score:
+        print("\n--- Existing Machine Score ---")
+        print(str(row.get("score_final") or ""))
+
+
+def manual_score_sample_csv(
+    db: SoulBenchDB,
+    file_path: str | Path,
+    output_file: str | Path | None = None,
+    config_dir: str | Path = "config",
+    limit: int = 0,
+    show_machine_score: bool = False,
+) -> dict[str, Any]:
+    """Interactively fill human_score columns in a manual sample CSV.
+
+    The workflow is resumable and writes the CSV after every scored row. It does
+    not import results into SQLite; the resulting CSV remains compatible with
+    import-manual.
+    """
+    rows, fieldnames = _read_manual_sample_csv(file_path)
+    output_path = Path(output_file) if output_file else Path(file_path)
+    bundle = load_configs(config_dir)
+    items_by_id = _item_by_id(bundle)
+
+    response_ids = [
+        response_id
+        for response_id in (_response_id_from_csv_row(row) for row in rows)
+        if response_id is not None
+    ]
+    contexts = db.get_response_context_by_ids(response_ids)
+
+    pending_indices = [
+        index
+        for index, row in enumerate(rows)
+        if not (row.get("human_score") or "").strip()
+    ]
+    if limit > 0:
+        pending_indices = pending_indices[:limit]
+
+    if output_path != Path(file_path):
+        _write_manual_sample_csv(rows, fieldnames, output_path)
+
+    if not pending_indices:
+        LOGGER.info("No pending manual sample rows in %s.", file_path)
+        _write_manual_sample_csv(rows, fieldnames, output_path)
+        return {
+            "total_rows": len(rows),
+            "already_coded": sum(
+                1 for row in rows if (row.get("human_score") or "").strip()
+            ),
+            "newly_coded": 0,
+            "skipped": 0,
+            "remaining": 0,
+            "output_file": str(output_path),
+        }
+
+    newly_coded = 0
+    skipped = 0
+    total_to_review = len(pending_indices)
+
+    for display_index, row_index in enumerate(pending_indices, start=1):
+        row = rows[row_index]
+        response_id = _response_id_from_csv_row(row)
+        context = contexts.get(response_id) if response_id is not None else None
+        display_row = _merge_manual_sample_context(row, context)
+        _print_manual_sample_row(
+            row=display_row,
+            index=display_index,
+            total=total_to_review,
+            items_by_id=items_by_id,
+            bundle=bundle,
+            show_machine_score=show_machine_score,
+        )
+
+        while True:
+            try:
+                raw_decision = input(
+                    "Human score (+1, 0, -1, REFUS) [skip/quit]: "
+                ).strip()
+            except EOFError:
+                LOGGER.info("EOF received, stopping manual sample scoring.")
+                _write_manual_sample_csv(rows, fieldnames, output_path)
+                remaining = sum(
+                    1 for value in rows if not (value.get("human_score") or "").strip()
+                )
+                return {
+                    "total_rows": len(rows),
+                    "already_coded": len(rows) - remaining - newly_coded,
+                    "newly_coded": newly_coded,
+                    "skipped": skipped,
+                    "remaining": remaining,
+                    "output_file": str(output_path),
+                }
+
+            command = raw_decision.lower()
+            if command in {"quit", "q", "exit"}:
+                LOGGER.info(
+                    "Manual sample scoring stopped. newly_coded=%d skipped=%d",
+                    newly_coded,
+                    skipped,
+                )
+                _write_manual_sample_csv(rows, fieldnames, output_path)
+                remaining = sum(
+                    1 for value in rows if not (value.get("human_score") or "").strip()
+                )
+                return {
+                    "total_rows": len(rows),
+                    "already_coded": len(rows) - remaining - newly_coded,
+                    "newly_coded": newly_coded,
+                    "skipped": skipped,
+                    "remaining": remaining,
+                    "output_file": str(output_path),
+                }
+
+            if command in {"skip", "s"}:
+                skipped += 1
+                break
+
+            human_score = _normalize_score(raw_decision)
+            if human_score not in ALLOWED_SCORES:
+                print("Invalid score. Allowed values: +1, 0, -1, REFUS (or skip/quit).")
+                continue
+
+            reason = input("Reason (free text, optional): ").strip()
+            row["human_score"] = human_score
+            row["human_justification"] = reason
+            newly_coded += 1
+            _write_manual_sample_csv(rows, fieldnames, output_path)
+            break
+
+    remaining = sum(1 for row in rows if not (row.get("human_score") or "").strip())
+    _write_manual_sample_csv(rows, fieldnames, output_path)
+    result = {
+        "total_rows": len(rows),
+        "already_coded": len(rows) - remaining - newly_coded,
+        "newly_coded": newly_coded,
+        "skipped": skipped,
+        "remaining": remaining,
+        "output_file": str(output_path),
+    }
+    LOGGER.info("Manual sample scoring result: %s", result)
+    return result
 
 
 def _cohen_kappa(labels_a: list[str], labels_b: list[str]) -> float | None:

@@ -26,7 +26,7 @@ Etat experimental local au 22 mai 2026:
 - Copie de travail pour validation humaine/imports: `data/snap_poc_v3_1_human_validation_working.db`.
 - Echantillon humain exporte mais non code: `data/manual_sample_coded.csv` contient `200` lignes et `0` `human_score`.
 
-- CLI operationnelle via `python -m src.runner` avec 12 sous-commandes: `init-db`, `preflight`, `collect`, `score`, `resolve-disagreements`, `export-sample`, `import-manual`, `compute-kappa`, `adjudicate`, `analyze`, `visualize`, `decision`.
+- CLI operationnelle via `python -m src.runner` avec 13 sous-commandes: `init-db`, `preflight`, `collect`, `score`, `resolve-disagreements`, `export-sample`, `manual-score-sample`, `import-manual`, `compute-kappa`, `adjudicate`, `analyze`, `visualize`, `decision`.
 - Configuration presente dans `config/`:
 1. 6 modeles actifs (`models.yaml`).
 2. 2 juges (`haiku`, `kimi`).
@@ -87,6 +87,7 @@ python -m src.runner resolve-disagreements
 
 # Verification manuelle
 python -m src.runner export-sample --n 200 --output data/manual_sample.csv
+python -m src.runner manual-score-sample --file data/manual_sample_coded.csv
 python -m src.runner import-manual --file data/manual_sample_coded.csv
 python -m src.runner adjudicate --limit 0
 python -m src.runner compute-kappa
@@ -125,7 +126,8 @@ export OPENROUTER_API_KEY="votre_cle"
 5. Lancer une collecte smoke sur 1 modele avec `--max-rows 10`.
 6. Lancer le scoring sur les 2 juges.
 7. Resoudre les desaccords.
-8. Export/import manuel si necessaire, puis `compute-kappa`.
+8. Exporter l echantillon humain, le coder avec `manual-score-sample`, importer
+   le CSV code si necessaire, puis `compute-kappa`.
 9. Produire les rapports (`analyze`) puis les figures (`visualize`).
 10. Generer la decision POC avec `decision`.
 
@@ -158,7 +160,7 @@ python -m pytest -q
 
 ## TODO ouverts
 
-- Coder manuellement `data/manual_sample_coded.csv`, puis importer dans `data/snap_poc_v3_1_human_validation_working.db`.
+- Coder `data/manual_sample_coded.csv` avec `manual-score-sample`, puis importer dans `data/snap_poc_v3_1_human_validation_working.db`.
 - Lire qualitativement les cellules critiques du diagnostic cross-SP, surtout `mistral-large-3 / E2`.
 - Decider si `SP_PER` doit etre retire, reecrit ou traite comme stress-test separe en v3.2.
 - Auditer les items style-sensibles (`E1`, `E2`) avant toute extension.

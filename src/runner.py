@@ -23,6 +23,7 @@ from .scorer import (
     compute_kappa,
     export_manual_sample,
     import_manual_results,
+    manual_score_sample_csv,
     resolve_all_disagreements,
     score_pending_for_judge,
 )
@@ -341,6 +342,25 @@ def run_import_manual(args: argparse.Namespace) -> int:
     return 0
 
 
+def run_manual_score_sample(args: argparse.Namespace) -> int:
+    """Interactively fill a manual sample CSV without importing it."""
+    if args.limit < 0:
+        LOGGER.error("--limit must be >= 0.")
+        return 2
+
+    with SoulBenchDB(args.db_path) as db:
+        result = manual_score_sample_csv(
+            db=db,
+            file_path=args.file,
+            output_file=args.output,
+            config_dir=args.config_dir,
+            limit=args.limit,
+            show_machine_score=args.show_machine_score,
+        )
+    LOGGER.info("Manual sample CSV updated: %s", result)
+    return 0
+
+
 def run_compute_kappa(args: argparse.Namespace) -> int:
     """Compute kappa metrics."""
     with SoulBenchDB(args.db_path) as db:
@@ -542,6 +562,31 @@ def build_parser() -> argparse.ArgumentParser:
         "--file", type=str, required=True, help="Input manual coding CSV."
     )
 
+    manual_score_sample = subparsers.add_parser(
+        "manual-score-sample",
+        help="Interactively fill human_score values in a manual sample CSV.",
+    )
+    manual_score_sample.add_argument(
+        "--file", type=str, required=True, help="CSV to score manually."
+    )
+    manual_score_sample.add_argument(
+        "--output",
+        type=str,
+        default=None,
+        help="Optional output CSV path. Defaults to updating --file in place.",
+    )
+    manual_score_sample.add_argument(
+        "--limit",
+        type=int,
+        default=0,
+        help="Max uncoded rows to review in this session (0 = all pending).",
+    )
+    manual_score_sample.add_argument(
+        "--show-machine-score",
+        action="store_true",
+        help="Show score_final while coding. Leave off for blind validation.",
+    )
+
     subparsers.add_parser("compute-kappa", help="Compute kappa metrics.")
 
     init_db = subparsers.add_parser(
@@ -663,6 +708,8 @@ def main(argv: list[str] | None = None) -> int:
         return run_export_sample(args)
     if args.command == "import-manual":
         return run_import_manual(args)
+    if args.command == "manual-score-sample":
+        return run_manual_score_sample(args)
     if args.command == "compute-kappa":
         return run_compute_kappa(args)
     if args.command == "init-db":

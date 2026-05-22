@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import csv
 from pathlib import Path
 
 from src.api_client import ApiCallResult
@@ -12,6 +13,7 @@ from src.scorer import (
     adjudicate_pending_interactive,
     compute_kappa,
     export_manual_sample,
+    manual_score_sample_csv,
     parse_judge_output,
     resolve_disagreement,
     score_pending_for_judge,
@@ -259,3 +261,143 @@ def test_manual_adjudication_prints_item_context(
     assert "-1: Conservation" in output
     assert "+1: Recommends Mode 1 / Config A" in output
     assert "-1: Recommends Mode 2 / Config B" in output
+
+
+def test_manual_score_sample_csv_fills_human_score(
+    monkeypatch, capsys, tmp_path: Path
+) -> None:
+    db_path = tmp_path / "test.db"
+    csv_path = tmp_path / "manual_sample_coded.csv"
+    with SoulBenchDB(db_path) as db:
+        db.insert_response(
+            ResponseRecord(
+                model="test-model",
+                item_id="O1",
+                item_type="personality",
+                scenario="base",
+                formulation="F1",
+                system_prompt="SP_DIR",
+                temperature=0.5,
+                run=3,
+                user_prompt_text="Scenario text\n\nQuestion text",
+                raw_response="I would test the new method on a small pilot.",
+                score_final="-1",
+            )
+        )
+        with csv_path.open("w", newline="", encoding="utf-8") as file_handle:
+            writer = csv.DictWriter(
+                file_handle,
+                fieldnames=[
+                    "response_id",
+                    "model",
+                    "item_id",
+                    "system_prompt",
+                    "temperature",
+                    "raw_response",
+                    "score_final",
+                    "human_score",
+                    "human_justification",
+                ],
+            )
+            writer.writeheader()
+            writer.writerow(
+                {
+                    "response_id": "1",
+                    "model": "test-model",
+                    "item_id": "O1",
+                    "system_prompt": "SP_DIR",
+                    "temperature": "0.5",
+                    "raw_response": "CSV response",
+                    "score_final": "-1",
+                    "human_score": "",
+                    "human_justification": "",
+                }
+            )
+
+        decisions = iter(["+1", "mentions testing"])
+        monkeypatch.setattr("builtins.input", lambda _: next(decisions))
+
+        result = manual_score_sample_csv(
+            db=db,
+            file_path=csv_path,
+            config_dir="config",
+        )
+
+    with csv_path.open(newline="", encoding="utf-8") as file_handle:
+        rows = list(csv.DictReader(file_handle))
+
+    output = capsys.readouterr().out
+    assert result["newly_coded"] == 1
+    assert result["remaining"] == 0
+    assert rows[0]["human_score"] == "+1"
+    assert rows[0]["human_justification"] == "mentions testing"
+    assert "Trait: Openness" in output
+    assert "Scenario text" in output
+    assert "I would test the new method" in output
+    assert "--- Existing Machine Score ---" not in output
+    assert rows[0]["score_final"] == "-1"
+
+
+def test_manual_score_sample_csv_can_show_machine_score(
+    monkeypatch, capsys, tmp_path: Path
+) -> None:
+    db_path = tmp_path / "test.db"
+    csv_path = tmp_path / "manual_sample_coded.csv"
+    output_path = tmp_path / "output.csv"
+    with SoulBenchDB(db_path) as db:
+        db.insert_response(
+            ResponseRecord(
+                model="test-model",
+                item_id="M_CH",
+                item_type="moral",
+                scenario="base",
+                formulation="F1",
+                system_prompt="SP_ABS",
+                temperature=0.0,
+                run=1,
+                user_prompt_text="Scenario\n\nQuestion",
+                raw_response="I would choose Mode 1.",
+                score_final="+1",
+            )
+        )
+        with csv_path.open("w", newline="", encoding="utf-8") as file_handle:
+            writer = csv.DictWriter(
+                file_handle,
+                fieldnames=[
+                    "response_id",
+                    "item_id",
+                    "raw_response",
+                    "score_final",
+                    "human_score",
+                    "human_justification",
+                ],
+            )
+            writer.writeheader()
+            writer.writerow(
+                {
+                    "response_id": "1",
+                    "item_id": "M_CH",
+                    "raw_response": "I would choose Mode 1.",
+                    "score_final": "+1",
+                    "human_score": "",
+                    "human_justification": "",
+                }
+            )
+
+        decisions = iter(["skip"])
+        monkeypatch.setattr("builtins.input", lambda _: next(decisions))
+
+        result = manual_score_sample_csv(
+            db=db,
+            file_path=csv_path,
+            output_file=output_path,
+            config_dir="config",
+            show_machine_score=True,
+        )
+
+    output = capsys.readouterr().out
+    assert result["skipped"] == 1
+    assert result["remaining"] == 1
+    assert output_path.exists()
+    assert "--- Existing Machine Score ---" in output
+    assert "+1" in output

@@ -986,6 +986,37 @@ class SoulBenchDB:
         """
         return pd.read_sql_query(query, self._conn)
 
+    def get_response_context_by_ids(
+        self, response_ids: Iterable[int]
+    ) -> dict[int, dict[str, Any]]:
+        """Return response display context keyed by response id."""
+        ids = [int(response_id) for response_id in response_ids]
+        if not ids:
+            return {}
+
+        placeholders = ",".join("?" for _ in ids)
+        rows = self._conn.execute(
+            f"""
+            SELECT
+                id,
+                model,
+                item_id,
+                item_type,
+                scenario,
+                formulation,
+                system_prompt,
+                temperature,
+                run,
+                user_prompt_text,
+                raw_response,
+                score_final
+            FROM responses
+            WHERE id IN ({placeholders});
+            """,
+            ids,
+        ).fetchall()
+        return {int(row["id"]): dict(row) for row in rows}
+
     def update_manual_kappas(
         self, kappa_judge1: float | None, kappa_judge2: float | None
     ) -> None:
