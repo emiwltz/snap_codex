@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+import json
 import logging
 import math
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -32,6 +34,11 @@ V31_RELIABILITY_TARGET_COLS = ["item_id", "system_prompt"]
 V31_BY_ITEM_TARGET_COLS = ["system_prompt"]
 V31_BY_AGGREGATION_TARGET_COLS = ["item_id", "system_prompt"]
 V31_SENSITIVITY_PAIRING_COLS = ["item_id", "system_prompt"]
+CROSS_SP_PAIRS = [
+    ("SP_ABS", "SP_DIR"),
+    ("SP_ABS", "SP_PER"),
+    ("SP_DIR", "SP_PER"),
+]
 
 TRAIT_BY_PREFIX = {
     "O": "Openness",
@@ -207,6 +214,81 @@ class Analyzer:
         )
         return report
 
+    def analyze_cross_sp_diagnostic(
+        self,
+        top_n: int = 30,
+        examples_per_sp: int = 1,
+        response_char_limit: int = 1200,
+    ) -> dict[str, Any]:
+        """Build a targeted diagnostic report for system-prompt sensitivity."""
+        raw_df = self.db.get_response_diagnostics_dataframe()
+        df = _prepare_numeric_diagnostic_dataframe(raw_df)
+        report: dict[str, Any] = {
+            "analysis": "cross_sp_diagnostic",
+            "generated_at": datetime.now(timezone.utc).isoformat(),
+            "n_rows_raw": int(len(raw_df)),
+            "n_rows_after_exclusions": int(len(df)),
+            "system_prompt_pairs": [
+                f"{sp_a}_vs_{sp_b}" for sp_a, sp_b in CROSS_SP_PAIRS
+            ],
+            "method": {
+                "model_pair_correlations": (
+                    "Pearson correlations over item_id x run mean scores."
+                ),
+                "sp_amplitude": (
+                    "For each model x item cell, max(mean score by SP) - "
+                    "min(mean score by SP)."
+                ),
+                "examples": (
+                    "One representative raw response per SP for the highest "
+                    "amplitude model x item cells, truncated for review."
+                ),
+            },
+        }
+
+        if df.empty:
+            report["status"] = "empty"
+            self.db.save_json_report(
+                report, self.output_dir / "cross_sp_diagnostic.json"
+            )
+            return report
+
+        pair_long = _compute_cross_sp_pair_table(df)
+        pair_wide = _cross_sp_pair_wide(pair_long)
+        cell_table = _compute_sp_amplitude_cells(df)
+        item_table = _compute_item_sp_amplitude_table(cell_table)
+        top_cells = cell_table.head(top_n).copy()
+        examples = _extract_cross_sp_examples(
+            df=df,
+            top_cells=top_cells,
+            examples_per_sp=examples_per_sp,
+            response_char_limit=response_char_limit,
+        )
+
+        pair_long.to_csv(self.output_dir / "cross_sp_model_pairs.csv", index=False)
+        item_table.to_csv(self.output_dir / "cross_sp_item_amplitudes.csv", index=False)
+        top_cells.to_csv(self.output_dir / "cross_sp_top_cells.csv", index=False)
+
+        report.update(
+            {
+                "status": "ok",
+                "model_pair_correlation_table": _json_records(pair_wide),
+                "model_pair_correlation_details": _json_records(pair_long),
+                "item_sp_amplitude_table": _json_records(item_table),
+                "top_cells_by_sp_range": _json_records(top_cells),
+                "critical_response_examples": examples,
+                "csv_outputs": {
+                    "model_pairs": str(self.output_dir / "cross_sp_model_pairs.csv"),
+                    "item_amplitudes": str(
+                        self.output_dir / "cross_sp_item_amplitudes.csv"
+                    ),
+                    "top_cells": str(self.output_dir / "cross_sp_top_cells.csv"),
+                },
+            }
+        )
+        self.db.save_json_report(report, self.output_dir / "cross_sp_diagnostic.json")
+        return report
+
 
 def _apply_protocol_exclusions(df: pd.DataFrame) -> pd.DataFrame:
     """Apply agreed exclusions used across statistical analyses."""
@@ -243,6 +325,212 @@ def _apply_protocol_exclusions(df: pd.DataFrame) -> pd.DataFrame:
     working["run"] = working["run"].astype(int)
 
     return working
+
+
+def _prepare_numeric_diagnostic_dataframe(df: pd.DataFrame) -> pd.DataFrame:
+    """Apply analysis exclusions and add numeric scores for diagnostics."""
+    if df.empty:
+        return df
+    working = df.copy()
+    score_map = {"+1": 1, "0": 0, "-1": -1}
+    working["score_numeric"] = working["score_final"].map(score_map)
+    working = working[working["score_numeric"].notna()]
+    return _apply_protocol_exclusions(working)
+
+
+def _compute_cross_sp_pair_table(df: pd.DataFrame) -> pd.DataFrame:
+    records: list[dict[str, Any]] = []
+    for model, group in df.groupby("model"):
+        pivot = group.pivot_table(
+            index=["item_id", "run"],
+            columns="system_prompt",
+            values="score_numeric",
+            aggfunc="mean",
+        )
+        for sp_a, sp_b in CROSS_SP_PAIRS:
+            pair_key = f"{sp_a}_vs_{sp_b}"
+            record: dict[str, Any] = {
+                "model": model,
+                "pair": pair_key,
+                "sp_a": sp_a,
+                "sp_b": sp_b,
+                "correlation": None,
+                "n_pairs": 0,
+                "status": "not_computable",
+                "reason": None,
+            }
+            if sp_a not in pivot.columns or sp_b not in pivot.columns:
+                record["reason"] = "missing_system_prompt_level"
+            else:
+                paired = pivot[[sp_a, sp_b]].dropna()
+                record["n_pairs"] = int(len(paired))
+                if len(paired) < 2:
+                    record["reason"] = "not_enough_pairs"
+                elif paired[sp_a].nunique() < 2 or paired[sp_b].nunique() < 2:
+                    record["reason"] = "constant_input"
+                else:
+                    corr, _ = stats.pearsonr(paired[sp_a], paired[sp_b])
+                    record["correlation"] = _safe_float(corr)
+                    record["status"] = "ok"
+            records.append(record)
+    return pd.DataFrame.from_records(records)
+
+
+def _cross_sp_pair_wide(pair_long: pd.DataFrame) -> pd.DataFrame:
+    if pair_long.empty:
+        return pair_long
+    wide = pair_long.pivot_table(
+        index="model",
+        columns="pair",
+        values="correlation",
+        aggfunc="first",
+    ).reset_index()
+    return wide.sort_values("model").reset_index(drop=True)
+
+
+def _compute_sp_amplitude_cells(df: pd.DataFrame) -> pd.DataFrame:
+    grouped = (
+        df.groupby(["model", "item_id", "item_type", "system_prompt"])
+        .agg(mean_score=("score_numeric", "mean"), n=("score_numeric", "size"))
+        .reset_index()
+    )
+    means = grouped.pivot_table(
+        index=["model", "item_id", "item_type"],
+        columns="system_prompt",
+        values="mean_score",
+        aggfunc="first",
+    )
+    counts = grouped.pivot_table(
+        index=["model", "item_id", "item_type"],
+        columns="system_prompt",
+        values="n",
+        aggfunc="first",
+    )
+    rows = means.reset_index()
+    sp_columns = [sp for sp in ["SP_ABS", "SP_DIR", "SP_PER"] if sp in rows.columns]
+    rows["sp_range"] = rows[sp_columns].max(axis=1) - rows[sp_columns].min(axis=1)
+    rows["sp_min"] = rows[sp_columns].min(axis=1)
+    rows["sp_max"] = rows[sp_columns].max(axis=1)
+    for sp in ["SP_ABS", "SP_DIR", "SP_PER"]:
+        if sp not in rows.columns:
+            rows[sp] = None
+        count_col = f"n_{sp}"
+        rows[count_col] = (
+            counts[sp].reset_index(drop=True).astype("Int64")
+            if sp in counts.columns
+            else pd.Series([pd.NA] * len(rows), dtype="Int64")
+        )
+    ordered = [
+        "model",
+        "item_id",
+        "item_type",
+        "SP_ABS",
+        "SP_DIR",
+        "SP_PER",
+        "sp_min",
+        "sp_max",
+        "sp_range",
+        "n_SP_ABS",
+        "n_SP_DIR",
+        "n_SP_PER",
+    ]
+    return (
+        rows[ordered]
+        .sort_values(["sp_range", "model", "item_id"], ascending=[False, True, True])
+        .reset_index(drop=True)
+    )
+
+
+def _compute_item_sp_amplitude_table(cell_table: pd.DataFrame) -> pd.DataFrame:
+    if cell_table.empty:
+        return cell_table
+    return (
+        cell_table.groupby(["item_id", "item_type"], as_index=False)
+        .agg(
+            mean_sp_range=("sp_range", "mean"),
+            max_sp_range=("sp_range", "max"),
+            min_sp_range=("sp_range", "min"),
+            n_models=("model", "nunique"),
+        )
+        .sort_values(["mean_sp_range", "max_sp_range"], ascending=False)
+        .reset_index(drop=True)
+    )
+
+
+def _extract_cross_sp_examples(
+    df: pd.DataFrame,
+    top_cells: pd.DataFrame,
+    examples_per_sp: int,
+    response_char_limit: int,
+) -> list[dict[str, Any]]:
+    examples: list[dict[str, Any]] = []
+    if top_cells.empty:
+        return examples
+
+    for _, cell in top_cells.iterrows():
+        cell_examples: dict[str, Any] = {
+            "model": cell["model"],
+            "item_id": cell["item_id"],
+            "item_type": cell["item_type"],
+            "sp_means": {
+                sp: _safe_float(cell.get(sp)) for sp in ["SP_ABS", "SP_DIR", "SP_PER"]
+            },
+            "sp_range": _safe_float(cell.get("sp_range")),
+            "examples_by_system_prompt": {},
+        }
+        cell_rows = df[
+            (df["model"] == cell["model"]) & (df["item_id"] == cell["item_id"])
+        ].copy()
+        for sp in ["SP_ABS", "SP_DIR", "SP_PER"]:
+            sp_rows = cell_rows[cell_rows["system_prompt"] == sp].copy()
+            if sp_rows.empty:
+                cell_examples["examples_by_system_prompt"][sp] = []
+                continue
+            sp_mean = cell.get(sp)
+            if sp_mean is None or pd.isna(sp_mean):
+                sp_rows["distance_to_sp_mean"] = 0.0
+            else:
+                sp_rows["distance_to_sp_mean"] = (
+                    sp_rows["score_numeric"].astype(float) - float(sp_mean)
+                ).abs()
+            selected = sp_rows.sort_values(["distance_to_sp_mean", "run", "id"]).head(
+                examples_per_sp
+            )
+            cell_examples["examples_by_system_prompt"][sp] = [
+                {
+                    "response_id": int(row["id"]),
+                    "run": int(row["run"]),
+                    "scenario": row["scenario"],
+                    "formulation": row["formulation"],
+                    "temperature": _safe_float(row["temperature"]),
+                    "score_final": row["score_final"],
+                    "score_judge1": row.get("score_judge1"),
+                    "score_judge2": row.get("score_judge2"),
+                    "agreement_status": row.get("agreement_status"),
+                    "user_prompt_excerpt": _truncate_text(
+                        row.get("user_prompt_text"), 500
+                    ),
+                    "raw_response_excerpt": _truncate_text(
+                        row.get("raw_response"), response_char_limit
+                    ),
+                }
+                for _, row in selected.iterrows()
+            ]
+        examples.append(cell_examples)
+    return examples
+
+
+def _truncate_text(value: Any, limit: int) -> str:
+    text = str(value or "")
+    if len(text) <= limit:
+        return text
+    return text[: max(0, limit - 15)].rstrip() + "\n[...truncated]"
+
+
+def _json_records(frame: pd.DataFrame) -> list[dict[str, Any]]:
+    if frame.empty:
+        return []
+    return json.loads(frame.to_json(orient="records"))
 
 
 def _compute_cronbach_alpha(df: pd.DataFrame) -> float | None:
@@ -915,3 +1203,18 @@ def analyze_variance_decomposition(
 ) -> dict[str, Any]:
     """Convenience wrapper for variance decomposition analysis."""
     return Analyzer(db=db, output_dir=Path(output_dir)).analyze_variance_decomposition()
+
+
+def analyze_cross_sp_diagnostic(
+    db: SoulBenchDB,
+    output_dir: str | Path = "outputs/reports",
+    top_n: int = 30,
+    examples_per_sp: int = 1,
+    response_char_limit: int = 1200,
+) -> dict[str, Any]:
+    """Convenience wrapper for targeted cross-system-prompt diagnostics."""
+    return Analyzer(db=db, output_dir=Path(output_dir)).analyze_cross_sp_diagnostic(
+        top_n=top_n,
+        examples_per_sp=examples_per_sp,
+        response_char_limit=response_char_limit,
+    )

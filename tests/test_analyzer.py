@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from src.analyzer import (
+    analyze_cross_sp_diagnostic,
     analyze_sensitivity,
     analyze_stability,
     analyze_variance_decomposition,
@@ -195,3 +196,20 @@ def test_v31_temperature_effect_skips_models_without_temperature_parameter(
     temperature = sensitivity["models"][model_id]["temperature_effect"]
     assert temperature["status"] == "not_applicable"
     assert temperature["reason"] == "Temperature parameter was not sent for this model."
+
+
+def test_cross_sp_diagnostic_writes_reports(tmp_path: Path) -> None:
+    db_path = tmp_path / "test.db"
+    output_dir = tmp_path / "reports"
+
+    with SoulBenchDB(db_path) as db:
+        _insert_full_v31_rotated_campaign(db)
+        diagnostic = analyze_cross_sp_diagnostic(db=db, output_dir=output_dir)
+
+    assert diagnostic["status"] == "ok"
+    assert diagnostic["top_cells_by_sp_range"]
+    assert diagnostic["critical_response_examples"]
+    assert (output_dir / "cross_sp_diagnostic.json").exists()
+    assert (output_dir / "cross_sp_model_pairs.csv").exists()
+    assert (output_dir / "cross_sp_item_amplitudes.csv").exists()
+    assert (output_dir / "cross_sp_top_cells.csv").exists()

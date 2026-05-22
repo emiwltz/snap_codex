@@ -13,3 +13,4 @@ data/manual_*.csv
 outputs/figures/*.png
 outputs/logs/
 outputs/reports/*.json
+!outputs/reports/cross_sp_diagnostic.json

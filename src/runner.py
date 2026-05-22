@@ -434,6 +434,7 @@ def run_adjudicate(args: argparse.Namespace) -> int:
 def run_analyze(args: argparse.Namespace) -> int:
     """Run selected analysis command."""
     from .analyzer import (
+        analyze_cross_sp_diagnostic,
         analyze_sensitivity,
         analyze_stability,
         analyze_variance_decomposition,
@@ -451,6 +452,14 @@ def run_analyze(args: argparse.Namespace) -> int:
         if args.variance_decomposition:
             result = analyze_variance_decomposition(db=db, output_dir=args.output_dir)
             LOGGER.info("Variance decomposition done: status=%s", result.get("status"))
+            return 0
+        if args.cross_sp_diagnostic:
+            result = analyze_cross_sp_diagnostic(db=db, output_dir=args.output_dir)
+            LOGGER.info(
+                "Cross-SP diagnostic done: status=%s output=%s",
+                result.get("status"),
+                Path(args.output_dir) / "cross_sp_diagnostic.json",
+            )
             return 0
 
     LOGGER.error("No analysis flag provided.")
@@ -618,6 +627,12 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         dest="variance_decomposition",
         help="Run variance decomposition analysis (H4).",
+    )
+    analyze_group.add_argument(
+        "--cross-sp-diagnostic",
+        action="store_true",
+        dest="cross_sp_diagnostic",
+        help="Run targeted cross-system-prompt diagnostic analysis.",
     )
     analyze.add_argument(
         "--output-dir", default="outputs/reports", help="Report output directory."

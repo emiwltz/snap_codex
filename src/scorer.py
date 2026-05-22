@@ -434,6 +434,11 @@ def compute_kappa(db: SoulBenchDB) -> dict[str, float | None]:
         [str(row["human_score"]) for row in human_vs_judge2],
         [str(row["score_judge2"]) for row in human_vs_judge2],
     )
+    human_vs_final = [row for row in human_rows if row.get("score_final")]
+    kappa_score_final = _cohen_kappa(
+        [str(row["human_score"]) for row in human_vs_final],
+        [str(row["score_final"]) for row in human_vs_final],
+    )
 
     db.update_manual_kappas(kappa_judge1=kappa_judge1, kappa_judge2=kappa_judge2)
 
@@ -441,6 +446,7 @@ def compute_kappa(db: SoulBenchDB) -> dict[str, float | None]:
         "kappa_interjudge": interjudge_kappa,
         "kappa_human_judge1": kappa_judge1,
         "kappa_human_judge2": kappa_judge2,
+        "kappa_human_score_final": kappa_score_final,
     }
     LOGGER.info("Kappa metrics: %s", result)
     return result

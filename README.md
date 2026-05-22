@@ -6,10 +6,25 @@ Guide non-technique: `GUIDE_NON_TECHNIQUE.md`.
 Protocole experimental actif: `PROTOCOLE_EXPERIMENTAL_SNAP_v3_1.md`.
 Ancien protocole POC source: `PROTOCOLE_EXPERIMENTAL_SNAP_v1_1.md`.
 Ancien protocole full-factorial: `PROTOCOLE_EXPERIMENTAL_SNAP_v2_1.md`.
+Resume final du POC v3.1: `POC_v3_1_summary.md`.
 
 ## Etat actuel de la codebase
 
 Le depot utilise maintenant le protocole v3.1: un POC gerable proche du design v1.1, mais avec les briques techniques utiles de la v2.1.
+
+Etat experimental local au 22 mai 2026:
+
+- Campagne v3.1 complete: `2700/2700` reponses collectees, `0` erreur finale.
+- Scoring final complet: `2700/2700` lignes avec `score_final`.
+- Adjudication complete: `30` lignes `manual_adjudicated`, `0` revue manuelle restante.
+- Decision POC automatisee: `FAIL`.
+- Cause du `FAIL`: seuils de stabilite non atteints sur `minimum_model_icc` (`0.5486 < 0.60`) et `minimum_cross_sp_corr` (`0.3189 < 0.60`).
+- Les checks operationnels passent: kappa inter-juges `0.7509`, refus `0.00074`, desaccords majeurs initiaux `0.0089`.
+- Figures generees dans `outputs/figures/`.
+- Diagnostic cross-SP genere dans `outputs/reports/cross_sp_diagnostic.json`.
+- Base finale a conserver comme snapshot: `data/snap_poc_v3_1.db`.
+- Copie de travail pour validation humaine/imports: `data/snap_poc_v3_1_human_validation_working.db`.
+- Echantillon humain exporte mais non code: `data/manual_sample_coded.csv` contient `200` lignes et `0` `human_score`.
 
 - CLI operationnelle via `python -m src.runner` avec 12 sous-commandes: `init-db`, `preflight`, `collect`, `score`, `resolve-disagreements`, `export-sample`, `import-manual`, `compute-kappa`, `adjudicate`, `analyze`, `visualize`, `decision`.
 - Configuration presente dans `config/`:
@@ -80,6 +95,7 @@ python -m src.runner compute-kappa
 python -m src.runner analyze --stability
 python -m src.runner analyze --sensitivity
 python -m src.runner analyze --variance-decomposition
+python -m src.runner analyze --cross-sp-diagnostic
 
 # Visualisation
 python -m src.runner visualize --all
@@ -138,8 +154,11 @@ python -m pytest -q
 - Le champ `thinking_enabled` est derive de `thinking_mode` en config. Il trace le mode provider/default attendu, pas une mesure introspective de la reponse.
 - Le cout OpenRouter produit par `preflight` est une estimation fondee sur le catalogue courant et des hypotheses de tokens, pas une facture finale.
 - La decision `PASS/BORDERLINE/FAIL` depend de rapports d analyse deja generes; avant scoring complet, `decision` peut retourner `NOT_READY`.
+- La base finale `data/snap_poc_v3_1.db` sert maintenant de snapshot v3.1. Pour importer du codage humain ou recalculer des kappas avec annotations, utiliser une copie de travail.
 
 ## TODO ouverts
 
-- Revalider les model IDs, les parametres supportes et le pricing OpenRouter juste avant la campagne.
-- Ajouter une strategie formelle de double codage humain si le POC passe en campagne plus large.
+- Coder manuellement `data/manual_sample_coded.csv`, puis importer dans `data/snap_poc_v3_1_human_validation_working.db`.
+- Lire qualitativement les cellules critiques du diagnostic cross-SP, surtout `mistral-large-3 / E2`.
+- Decider si `SP_PER` doit etre retire, reecrit ou traite comme stress-test separe en v3.2.
+- Auditer les items style-sensibles (`E1`, `E2`) avant toute extension.

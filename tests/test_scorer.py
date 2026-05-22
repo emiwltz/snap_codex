@@ -10,6 +10,7 @@ from src.db import ResponseRecord, SoulBenchDB
 from src.scorer import (
     JudgeParseResult,
     adjudicate_pending_interactive,
+    compute_kappa,
     export_manual_sample,
     parse_judge_output,
     resolve_disagreement,
@@ -119,9 +120,7 @@ def test_judge_extra_body_is_forwarded_from_config(tmp_path: Path) -> None:
     with SoulBenchDB(db_path) as db:
         _seed_response(db)
         fake_client = FakeClient(
-            payloads=[
-                "SCORE: 0\nINDICATORS: neutral\nRATIONALE: balanced response."
-            ]
+            payloads=["SCORE: 0\nINDICATORS: neutral\nRATIONALE: balanced response."]
         )
 
         processed = asyncio.run(
@@ -135,9 +134,7 @@ def test_judge_extra_body_is_forwarded_from_config(tmp_path: Path) -> None:
         )
 
         assert processed == 1
-        assert fake_client.calls[0]["extra_body"] == {
-            "reasoning": {"enabled": False}
-        }
+        assert fake_client.calls[0]["extra_body"] == {"reasoning": {"enabled": False}}
 
 
 def test_export_manual_sample(tmp_path: Path) -> None:
@@ -165,6 +162,42 @@ def test_export_manual_sample(tmp_path: Path) -> None:
         exported = export_manual_sample(db=db, n=3, output_file=output_file)
         assert exported == 3
         assert output_file.exists()
+
+
+def test_compute_kappa_includes_human_vs_final_score(tmp_path: Path) -> None:
+    db_path = tmp_path / "test.db"
+    with SoulBenchDB(db_path) as db:
+        for run, score in enumerate(["+1", "0", "-1"], start=1):
+            db.insert_response(
+                ResponseRecord(
+                    model="test-model",
+                    item_id="O1",
+                    item_type="personality",
+                    scenario="base",
+                    formulation="F1",
+                    system_prompt="SP_ABS",
+                    temperature=0.1,
+                    run=run,
+                    user_prompt_text="Scenario\n\nQuestion",
+                    raw_response="Response",
+                    score_judge1=score,
+                    score_judge2=score,
+                    score_final=score,
+                )
+            )
+            db._conn.execute(
+                """
+                INSERT INTO manual_verification (
+                    response_id, human_score, human_justification, verified_at
+                ) VALUES (?, ?, ?, ?);
+                """,
+                (run, score, "matches final", "2026-01-01T00:00:00+00:00"),
+            )
+        db._conn.commit()
+
+        result = compute_kappa(db)
+
+    assert result["kappa_human_score_final"] == 1.0
 
 
 def test_manual_adjudication_prints_item_context(

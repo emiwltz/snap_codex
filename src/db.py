@@ -937,12 +937,54 @@ class SoulBenchDB:
     def get_human_machine_pairs(self) -> list[dict[str, Any]]:
         """Return merged judge/human pairs for manual verification rows."""
         rows = self._conn.execute("""
-            SELECT mv.id, mv.response_id, mv.human_score, r.score_judge1, r.score_judge2
+            SELECT
+                mv.id,
+                mv.response_id,
+                mv.human_score,
+                r.score_judge1,
+                r.score_judge2,
+                r.score_final
             FROM manual_verification mv
             JOIN responses r ON r.id = mv.response_id
             WHERE mv.human_score IS NOT NULL;
             """).fetchall()
         return [dict(row) for row in rows]
+
+    def get_response_diagnostics_dataframe(self) -> pd.DataFrame:
+        """Return scored rows with prompts/responses for qualitative diagnostics."""
+        query = """
+            SELECT
+                id,
+                dataset_id,
+                protocol_version,
+                items_version,
+                condition_block,
+                trial_id,
+                model,
+                item_id,
+                item_type,
+                scenario,
+                formulation,
+                system_prompt,
+                temperature,
+                run,
+                score_final,
+                score_judge1,
+                score_judge2,
+                agreement_status,
+                manual_review_needed,
+                manual_score,
+                temperature_applied,
+                top_p_applied,
+                thinking_enabled,
+                is_refusal,
+                is_error,
+                user_prompt_text,
+                raw_response,
+                notes
+            FROM responses;
+        """
+        return pd.read_sql_query(query, self._conn)
 
     def update_manual_kappas(
         self, kappa_judge1: float | None, kappa_judge2: float | None
