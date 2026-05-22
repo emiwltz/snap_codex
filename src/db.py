@@ -963,7 +963,7 @@ class SoulBenchDB:
                 temperature, run, score_final, score_judge1, score_judge2,
                 agreement_status, manual_review_needed, manual_score,
                 temperature_applied, top_p_applied, thinking_enabled,
-                is_refusal, is_error
+                is_refusal, is_error, notes
             FROM responses;
         """
         return pd.read_sql_query(query, self._conn)

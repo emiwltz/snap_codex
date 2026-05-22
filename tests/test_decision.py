@@ -143,3 +143,48 @@ def test_decision_passes_when_thresholds_are_met(tmp_path: Path) -> None:
     assert report["decision"] == "PASS"
     assert report["campaign_completion"]["status"] == "complete"
     assert all(check["status"] == "pass" for check in report["checks"])
+
+
+def test_decision_reports_initial_major_disagreements_after_adjudication(
+    tmp_path: Path,
+) -> None:
+    bundle = _single_model_bundle()
+    bundle.protocol["decision_thresholds"]["kappa_interjudge_min"] = -1.0
+    bundle.protocol["decision_thresholds"]["kappa_interjudge_target"] = -1.0
+    bundle.protocol["decision_thresholds"]["major_disagreement_rate_max"] = 0.5
+    reports_dir = tmp_path / "reports"
+    _write_stability_report(reports_dir)
+
+    with SoulBenchDB(tmp_path / "snap.db") as db:
+        _insert_passing_rows(db)
+        db._conn.execute(
+            """
+            UPDATE responses
+            SET score_judge1 = '+1',
+                score_judge2 = '-1',
+                score_final = '-1',
+                manual_score = '-1',
+                agreement_status = 'manual_adjudicated',
+                manual_review_needed = 0,
+                notes = 'manual_review_required:major_disagree'
+            WHERE run = 1;
+            """
+        )
+        db._conn.commit()
+        _insert_complete_collection_metadata(db)
+
+        report = build_decision_report(
+            db=db,
+            bundle=bundle,
+            reports_dir=reports_dir,
+        )
+
+    check = next(
+        check
+        for check in report["checks"]
+        if check["metric"] == "initial_major_disagreement_rate"
+    )
+    assert check["value"] == 1 / 6
+    assert check["initial_major_disagreements"] == 1
+    assert check["current_pending_disagreements"] == 0
+    assert check["manual_adjudicated_count"] == 1

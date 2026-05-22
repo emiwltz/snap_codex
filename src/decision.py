@@ -279,17 +279,54 @@ def _check_major_disagreement_rate(
 ) -> dict[str, Any]:
     paired = df[df["score_judge1"].notna() & df["score_judge2"].notna()]
     denominator = int(len(paired))
+    note_text = (
+        paired["notes"].fillna("").astype(str)
+        if "notes" in paired.columns
+        else paired["agreement_status"].fillna("").astype(str).str[:0]
+    )
+
+    initial_major = (
+        (paired["agreement_status"] == "major_disagree")
+        | note_text.str.contains("manual_review_required:major_disagree", regex=False)
+    )
+    initial_type = (
+        (paired["agreement_status"] == "type_disagree")
+        | note_text.str.contains("manual_review_required:type_disagree", regex=False)
+    )
+    current_pending_major = (
+        (paired["agreement_status"] == "major_disagree")
+        & (paired["manual_review_needed"].fillna(0).astype(int) == 1)
+    )
+    current_pending_type = (
+        (paired["agreement_status"] == "type_disagree")
+        & (paired["manual_review_needed"].fillna(0).astype(int) == 1)
+    )
+    current_pending_manual_reviews = (
+        df["manual_review_needed"].fillna(0).astype(int) == 1
+    )
+    manual_adjudicated = df["agreement_status"] == "manual_adjudicated"
+    paired_manual_adjudicated = paired["agreement_status"] == "manual_adjudicated"
+
     value = None
     if denominator > 0:
-        value = float(
-            (paired["agreement_status"] == "major_disagree").sum() / denominator
-        )
+        value = float(initial_major.sum() / denominator)
     maximum = _threshold(thresholds, "major_disagreement_rate_max")
     return {
-        "metric": "major_disagreement_rate",
+        "metric": "initial_major_disagreement_rate",
         "value": value,
         "threshold_max": maximum,
         "n_pairs": denominator,
+        "initial_major_disagreements": int(initial_major.sum()),
+        "initial_type_disagreements": int(initial_type.sum()),
+        "current_pending_disagreements": int(current_pending_manual_reviews.sum()),
+        "current_pending_major_disagreements": int(current_pending_major.sum()),
+        "current_pending_type_disagreements": int(current_pending_type.sum()),
+        "manual_adjudicated_count": int(manual_adjudicated.sum()),
+        "manual_adjudicated_with_judge_pairs": int(paired_manual_adjudicated.sum()),
+        "note": (
+            "Initial disagreement counts include rows later resolved through "
+            "manual adjudication."
+        ),
         "status": _max_status(value=value, maximum=maximum),
     }
 
