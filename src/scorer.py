@@ -11,7 +11,12 @@ from pathlib import Path
 from typing import Any
 
 from .api_client import OpenRouterClient
-from .db import ResolutionUpdate, ScoringUpdate, SoulBenchDB
+from .db import (
+    HUMAN_VALIDATION_SOURCE,
+    ResolutionUpdate,
+    ScoringUpdate,
+    SoulBenchDB,
+)
 from .prompt_builder import ConfigBundle, load_configs, load_items
 
 LOGGER = logging.getLogger(__name__)
@@ -673,7 +678,7 @@ def compute_kappa(db: SoulBenchDB) -> dict[str, float | None]:
     else:
         interjudge_kappa = None
 
-    human_rows = db.get_human_machine_pairs()
+    human_rows = db.get_human_machine_pairs(source=HUMAN_VALIDATION_SOURCE)
     human_vs_judge1 = [row for row in human_rows if row.get("score_judge1")]
     human_vs_judge2 = [row for row in human_rows if row.get("score_judge2")]
 
@@ -691,7 +696,11 @@ def compute_kappa(db: SoulBenchDB) -> dict[str, float | None]:
         [str(row["score_final"]) for row in human_vs_final],
     )
 
-    db.update_manual_kappas(kappa_judge1=kappa_judge1, kappa_judge2=kappa_judge2)
+    db.update_manual_kappas(
+        kappa_judge1=kappa_judge1,
+        kappa_judge2=kappa_judge2,
+        source=HUMAN_VALIDATION_SOURCE,
+    )
 
     result = {
         "kappa_interjudge": interjudge_kappa,

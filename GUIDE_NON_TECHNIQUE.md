@@ -162,18 +162,29 @@ Pour le snapshot v3.1 actuel, un fichier de travail existe deja:
 data/manual_sample_coded.csv
 ```
 
-Le coder manuellement, puis importer dans la copie de travail de la base, pas
-dans la base finale:
+Pour le snapshot v3.1 actuel, ce fichier est deja code sur `200/200` lignes.
+Il ne faut pas l importer dans la base finale. La cible recommandee est la DB
+propre de validation humaine:
+
+```bash
+python -m src.runner --db-path data/snap_poc_v3_1_human_validation_clean.db import-manual --file data/manual_sample_coded.csv
+```
+
+La commande `manual-score-sample` reste utile pour recoder un futur echantillon
+ou refaire un blind review complet:
 
 ```bash
 python -m src.runner manual-score-sample --file data/manual_sample_coded.csv
-python -m src.runner --db-path data/snap_poc_v3_1_human_validation_working.db import-manual --file data/manual_sample_coded.csv
 ```
 
-La commande `manual-score-sample` remplit le CSV progressivement et peut etre
-reprise si elle est interrompue. Par defaut, elle masque `score_final` pendant
-le codage pour garder une validation humaine independante. Utiliser
-`--show-machine-score` seulement pour une revue non-blind.
+Elle remplit le CSV progressivement et peut etre reprise si elle est
+interrompue. Par defaut, elle masque `score_final` pendant le codage pour
+garder une validation humaine independante. Utiliser `--show-machine-score`
+seulement pour une revue non-blind.
+
+L ancienne DB `data/snap_poc_v3_1_human_validation_working.db` est conservee
+comme artefact historique mixte; elle n est plus la cible recommandee pour la
+cloture methodologique de v3.1.
 
 Si des lignes demandent une revue manuelle:
 
@@ -184,11 +195,26 @@ python -m src.runner adjudicate --limit 0
 Calculer les kappas:
 
 ```bash
-python -m src.runner --db-path data/snap_poc_v3_1_human_validation_working.db compute-kappa
+python -m src.runner --db-path data/snap_poc_v3_1_human_validation_clean.db compute-kappa
 ```
 
 La commande calcule maintenant aussi `kappa_human_score_final`, en plus de
 `kappa_human_judge1` et `kappa_human_judge2`.
+
+Important: `kappa_interjudge` continue de venir de la table `responses`, mais
+les metriques humain-vs-machine utilisent uniquement
+`manual_verification.source='human_validation'`. Les lignes
+`source='adjudication'` restent tracees, mais elles n entrent plus dans ces
+calculs.
+
+Etat post-cloture verifie le `2026-05-23`:
+
+- `30` lignes `adjudication`
+- `200` lignes `human_validation`
+- `0` doublon `(response_id, source)`
+- `kappa_human_judge1 = 0.6234`
+- `kappa_human_judge2 = 0.6304`
+- `kappa_human_score_final = 0.5789`
 
 ### Etape I - Generer les rapports
 
@@ -223,6 +249,7 @@ Le rapport est ecrit dans `outputs/reports/decision_report.json`.
 
 - Export: `data/manual_sample.csv`
 - Import attendu: `data/manual_sample_coded.csv`
+- Base recommandee pour l import: `data/snap_poc_v3_1_human_validation_clean.db`
 
 ### Rapports JSON
 
@@ -386,5 +413,5 @@ Interpretation:
 - Le cout OpenRouter de `preflight` est une estimation avant campagne, pas une facture finale.
 - `decision` retourne `NOT_READY` tant que les donnees scorees et les rapports d analyse ne sont pas disponibles.
 - La base `data/snap_poc_v3_1.db` sert de snapshot final v3.1. Utiliser une copie de travail pour les imports manuels.
-- `data/manual_sample_coded.csv` est prepare mais non code: il ne faut pas importer ce fichier tant que `human_score` est vide.
+- Pour le snapshot actuel, `data/manual_sample_coded.csv` est deja code et importe dans `data/snap_poc_v3_1_human_validation_clean.db`. `manual-score-sample` reste utile pour un recodage futur ou un nouvel echantillon, pas comme etape obligatoire de cloture.
 - Le diagnostic actuel pointe une sensibilite forte au system prompt, notamment autour de `SP_PER`; une v3.2 doit traiter ce point explicitement.

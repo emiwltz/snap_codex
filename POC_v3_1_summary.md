@@ -1,6 +1,6 @@
 # SoulBench SNAP - POC v3.1 Summary
 
-Date: 2026-05-22  
+Date: 2026-05-23  
 Dataset: `snap_poc_v3_1_2026-04`  
 Protocol version: `3.1`  
 Items version: `items_v1_2026-04`  
@@ -66,11 +66,14 @@ DB copies:
 
 - Final active DB: `data/snap_poc_v3_1.db`
 - Archived final snapshot: `data/legacy/snap_poc_v3_1_final_snapshot_2026-05-22.db`
-- Working copy for human validation/imports:
+- Clean working copy for human validation/imports:
+  `data/snap_poc_v3_1_human_validation_clean.db`
+- Historical mixed working copy kept for traceability:
   `data/snap_poc_v3_1_human_validation_working.db`
 
 Rule from this point: do not import manual coding or run destructive updates on
-`data/snap_poc_v3_1.db`. Use the working copy for validation experiments.
+`data/snap_poc_v3_1.db`. Use the clean working copy for validation
+experiments.
 
 ## 3. Collection State
 
@@ -251,31 +254,47 @@ and some moral decision items.
 
 ## 8. Manual Human Validation State
 
-The representative manual sample has been exported:
+The representative manual sample has been exported and coded:
 
 ```text
 data/manual_sample.csv
 200 rows
-0 coded human_score values
 ```
 
-A working copy has been prepared for manual coding:
+The coded CSV is:
 
 ```text
 data/manual_sample_coded.csv
+200 rows
+200 coded human_score values
 ```
 
-This file must be coded by a human before import. Do not invent or auto-fill
-`human_score`; that would invalidate the purpose of independent validation.
+On 2026-05-23, this coded sample was imported into:
 
-Recommended import target:
+```text
+data/snap_poc_v3_1_human_validation_clean.db
+```
+
+This is now the recommended validation target. The older
+`data/snap_poc_v3_1_human_validation_working.db` file is preserved only as a
+historical mixed artifact.
+
+The clean validation DB now contains:
+
+```text
+30 rows with source='adjudication'
+200 rows with source='human_validation'
+0 duplicate (response_id, source) pairs
+```
+
+Recommended import / recompute commands:
 
 ```bash
-.venv/bin/python -m src.runner --db-path data/snap_poc_v3_1_human_validation_working.db import-manual --file data/manual_sample_coded.csv
-.venv/bin/python -m src.runner --db-path data/snap_poc_v3_1_human_validation_working.db compute-kappa
+.venv/bin/python -m src.runner --db-path data/snap_poc_v3_1_human_validation_clean.db import-manual --file data/manual_sample_coded.csv
+.venv/bin/python -m src.runner --db-path data/snap_poc_v3_1_human_validation_clean.db compute-kappa
 ```
 
-`compute-kappa` now reports:
+`compute-kappa` continues to report:
 
 ```text
 kappa_interjudge
@@ -283,6 +302,24 @@ kappa_human_judge1
 kappa_human_judge2
 kappa_human_score_final
 ```
+
+For human-vs-machine metrics, it now reads only
+`manual_verification.source='human_validation'`. Adjudication rows remain
+traceable but are excluded from those kappas, and their stored
+`kappa_judge1/kappa_judge2` values are kept `NULL`.
+
+Final human-validation kappas measured on 2026-05-23:
+
+```text
+kappa_human_judge1      = 0.6234
+kappa_human_judge2      = 0.6304
+kappa_human_score_final = 0.5789
+```
+
+These kappas close the manual validation workflow for v3.1. They do not change
+the automated POC decision, which remains `FAIL`, because the fail is driven by
+the stability/context-robustness checks (`minimum_model_icc`,
+`minimum_cross_sp_corr`), not by the human-validation metrics.
 
 ## 9. What This Means For The Next Protocol
 

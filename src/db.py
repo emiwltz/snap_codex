@@ -16,6 +16,11 @@ import pandas as pd
 
 LOGGER = logging.getLogger(__name__)
 
+MANUAL_VERIFICATION_SOURCES = {"adjudication", "human_validation"}
+DEFAULT_MANUAL_VERIFICATION_SOURCE = "human_validation"
+ADJUDICATION_SOURCE = "adjudication"
+HUMAN_VALIDATION_SOURCE = "human_validation"
+
 
 def _utc_now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
@@ -134,6 +139,7 @@ class ManualVerificationRow:
     human_score: str
     human_justification: str | None = None
     verified_at: str | None = None
+    source: str = DEFAULT_MANUAL_VERIFICATION_SOURCE
 
 
 class SoulBenchDB:
@@ -241,7 +247,9 @@ class SoulBenchDB:
             human_justification TEXT,
             verified_at TEXT,
             kappa_judge1 REAL,
-            kappa_judge2 REAL
+            kappa_judge2 REAL,
+            source TEXT NOT NULL DEFAULT 'human_validation'
+                CHECK (source IN ('adjudication', 'human_validation'))
         );
         """
         self._conn.executescript(schema_sql)
@@ -255,6 +263,7 @@ class SoulBenchDB:
         self._ensure_column("collection_metadata", "dataset_id", "TEXT")
         self._ensure_column("collection_metadata", "protocol_version", "TEXT")
         self._ensure_column("collection_metadata", "items_version", "TEXT")
+        self._ensure_manual_verification_schema()
         self._conn.commit()
 
     def _ensure_column(self, table: str, column: str, column_type: str) -> None:
@@ -266,6 +275,184 @@ class SoulBenchDB:
             self._conn.execute(
                 f"ALTER TABLE {table} ADD COLUMN {column} {column_type};"
             )
+
+    def _ensure_manual_verification_schema(self) -> None:
+        if self._manual_verification_requires_rebuild():
+            self._rebuild_manual_verification_table()
+        self._backfill_manual_verification_sources()
+        self._clear_adjudication_manual_kappas()
+        self._deduplicate_manual_verification_rows()
+        self._conn.execute("""
+            CREATE UNIQUE INDEX IF NOT EXISTS idx_manual_verification_response_source
+            ON manual_verification(response_id, source);
+            """)
+
+    def _manual_verification_requires_rebuild(self) -> bool:
+        table_info = self._conn.execute(
+            "PRAGMA table_info(manual_verification);"
+        ).fetchall()
+        source_column = next(
+            (row for row in table_info if row["name"] == "source"),
+            None,
+        )
+        if source_column is None:
+            return True
+
+        if int(source_column["notnull"]) != 1:
+            return True
+
+        default_value = str(source_column["dflt_value"] or "")
+        if HUMAN_VALIDATION_SOURCE not in default_value:
+            return True
+
+        table_sql_row = self._conn.execute("""
+            SELECT sql
+            FROM sqlite_master
+            WHERE type = 'table' AND name = 'manual_verification';
+            """).fetchone()
+        normalized_sql = " ".join(str(table_sql_row["sql"] or "").split())
+        return (
+            "CHECK (source IN ('adjudication', 'human_validation'))"
+            not in normalized_sql
+        )
+
+    def _rebuild_manual_verification_table(self) -> None:
+        """Rebuild manual_verification to enforce the current schema."""
+        existing_columns = {
+            row["name"]
+            for row in self._conn.execute(
+                "PRAGMA table_info(manual_verification);"
+            ).fetchall()
+        }
+        has_source_column = "source" in existing_columns
+
+        self._conn.execute("DROP TABLE IF EXISTS manual_verification__rebuilt;")
+        self._conn.execute("""
+            CREATE TABLE manual_verification__rebuilt (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                response_id INTEGER REFERENCES responses(id),
+                human_score TEXT,
+                human_justification TEXT,
+                verified_at TEXT,
+                kappa_judge1 REAL,
+                kappa_judge2 REAL,
+                source TEXT NOT NULL DEFAULT 'human_validation'
+                    CHECK (source IN ('adjudication', 'human_validation'))
+            );
+            """)
+
+        if has_source_column:
+            source_sql = """
+                CASE
+                    WHEN r.agreement_status = ? THEN ?
+                    WHEN LOWER(TRIM(COALESCE(mv.source, ''))) IN (?, ?)
+                        THEN LOWER(TRIM(COALESCE(mv.source, '')))
+                    ELSE ?
+                END
+            """
+            params = (
+                "manual_adjudicated",
+                ADJUDICATION_SOURCE,
+                ADJUDICATION_SOURCE,
+                HUMAN_VALIDATION_SOURCE,
+                HUMAN_VALIDATION_SOURCE,
+            )
+        else:
+            source_sql = """
+                CASE
+                    WHEN r.agreement_status = ? THEN ?
+                    ELSE ?
+                END
+            """
+            params = (
+                "manual_adjudicated",
+                ADJUDICATION_SOURCE,
+                HUMAN_VALIDATION_SOURCE,
+            )
+
+        self._conn.execute(
+            f"""
+            INSERT INTO manual_verification__rebuilt (
+                id,
+                response_id,
+                human_score,
+                human_justification,
+                verified_at,
+                kappa_judge1,
+                kappa_judge2,
+                source
+            )
+            SELECT
+                mv.id,
+                mv.response_id,
+                mv.human_score,
+                mv.human_justification,
+                mv.verified_at,
+                mv.kappa_judge1,
+                mv.kappa_judge2,
+                {source_sql}
+            FROM manual_verification mv
+            LEFT JOIN responses r ON r.id = mv.response_id;
+            """,
+            params,
+        )
+
+        self._conn.execute("DROP TABLE manual_verification;")
+        self._conn.execute(
+            "ALTER TABLE manual_verification__rebuilt RENAME TO manual_verification;"
+        )
+
+    def _backfill_manual_verification_sources(self) -> None:
+        """Backfill legacy manual_verification rows with explicit sources."""
+        self._conn.execute(
+            """
+            UPDATE manual_verification
+            SET source = ?
+            WHERE response_id IN (
+                SELECT id
+                FROM responses
+                WHERE agreement_status = 'manual_adjudicated'
+            );
+            """,
+            (ADJUDICATION_SOURCE,),
+        )
+        self._conn.execute(
+            """
+            UPDATE manual_verification
+            SET source = ?
+            WHERE source IS NULL OR TRIM(source) = '';
+            """,
+            (HUMAN_VALIDATION_SOURCE,),
+        )
+
+    def _clear_adjudication_manual_kappas(self) -> None:
+        """Keep human-vs-machine kappas exclusive to blind human validation rows."""
+        self._conn.execute(
+            """
+            UPDATE manual_verification
+            SET kappa_judge1 = NULL,
+                kappa_judge2 = NULL
+            WHERE source = ?;
+            """,
+            (ADJUDICATION_SOURCE,),
+        )
+
+    def _deduplicate_manual_verification_rows(self) -> None:
+        """Keep the latest row per response/source before adding uniqueness."""
+        self._conn.execute("""
+            DELETE FROM manual_verification
+            WHERE id NOT IN (
+                SELECT MAX(id)
+                FROM manual_verification
+                GROUP BY response_id, source
+            );
+            """)
+
+    def _normalize_manual_verification_source(self, source: str) -> str:
+        normalized = source.strip().lower()
+        if normalized not in MANUAL_VERIFICATION_SOURCES:
+            raise ValueError(f"Unsupported manual verification source: {source}")
+        return normalized
 
     def insert_response(self, record: ResponseRecord) -> bool:
         """Insert one response row.
@@ -776,10 +963,23 @@ class SoulBenchDB:
         self._conn.execute(
             """
             INSERT INTO manual_verification (
-                response_id, human_score, human_justification, verified_at
-            ) VALUES (?, ?, ?, ?);
+                response_id, human_score, human_justification, verified_at, source
+            ) VALUES (?, ?, ?, ?, ?)
+            ON CONFLICT(response_id, source)
+            DO UPDATE SET
+                human_score = excluded.human_score,
+                human_justification = excluded.human_justification,
+                verified_at = excluded.verified_at,
+                kappa_judge1 = NULL,
+                kappa_judge2 = NULL;
             """,
-            (response_id, final_score, reason, _utc_now_iso()),
+            (
+                response_id,
+                final_score,
+                reason,
+                _utc_now_iso(),
+                ADJUDICATION_SOURCE,
+            ),
         )
         self._conn.commit()
 
@@ -795,13 +995,20 @@ class SoulBenchDB:
         if n <= 0:
             return []
 
-        rows = self._conn.execute("""
+        rows = self._conn.execute(
+            """
             SELECT id, model, item_id, system_prompt, temperature, raw_response, score_final
             FROM responses
             WHERE score_final IS NOT NULL
-              AND id NOT IN (SELECT response_id FROM manual_verification)
+              AND id NOT IN (
+                  SELECT response_id
+                  FROM manual_verification
+                  WHERE source = ?
+              )
             ORDER BY id;
-            """).fetchall()
+            """,
+            (HUMAN_VALIDATION_SOURCE,),
+        ).fetchall()
         records = [dict(row) for row in rows]
         if not records:
             return []
@@ -900,6 +1107,7 @@ class SoulBenchDB:
     def import_manual_verification_csv(self, file_path: str | Path) -> int:
         """Import manual coding rows from CSV."""
         imported = 0
+        source = HUMAN_VALIDATION_SOURCE
         with Path(file_path).open("r", newline="", encoding="utf-8") as file_handle:
             reader = csv.DictReader(file_handle)
             for row in reader:
@@ -910,14 +1118,22 @@ class SoulBenchDB:
                 self._conn.execute(
                     """
                     INSERT INTO manual_verification (
-                        response_id, human_score, human_justification, verified_at
-                    ) VALUES (?, ?, ?, ?);
+                        response_id, human_score, human_justification, verified_at, source
+                    ) VALUES (?, ?, ?, ?, ?)
+                    ON CONFLICT(response_id, source)
+                    DO UPDATE SET
+                        human_score = excluded.human_score,
+                        human_justification = excluded.human_justification,
+                        verified_at = excluded.verified_at,
+                        kappa_judge1 = NULL,
+                        kappa_judge2 = NULL;
                     """,
                     (
                         int(response_id_raw),
                         human_score,
                         row.get("human_justification") or None,
                         _utc_now_iso(),
+                        source,
                     ),
                 )
                 imported += 1
@@ -934,9 +1150,14 @@ class SoulBenchDB:
             """).fetchall()
         return [(row["score_judge1"], row["score_judge2"]) for row in rows]
 
-    def get_human_machine_pairs(self) -> list[dict[str, Any]]:
-        """Return merged judge/human pairs for manual verification rows."""
-        rows = self._conn.execute("""
+    def get_human_machine_pairs(
+        self,
+        source: str = HUMAN_VALIDATION_SOURCE,
+    ) -> list[dict[str, Any]]:
+        """Return merged judge/human pairs for one manual verification source."""
+        normalized_source = self._normalize_manual_verification_source(source)
+        rows = self._conn.execute(
+            """
             SELECT
                 mv.id,
                 mv.response_id,
@@ -946,8 +1167,11 @@ class SoulBenchDB:
                 r.score_final
             FROM manual_verification mv
             JOIN responses r ON r.id = mv.response_id
-            WHERE mv.human_score IS NOT NULL;
-            """).fetchall()
+            WHERE mv.human_score IS NOT NULL
+              AND mv.source = ?;
+            """,
+            (normalized_source,),
+        ).fetchall()
         return [dict(row) for row in rows]
 
     def get_response_diagnostics_dataframe(self) -> pd.DataFrame:
@@ -1018,12 +1242,20 @@ class SoulBenchDB:
         return {int(row["id"]): dict(row) for row in rows}
 
     def update_manual_kappas(
-        self, kappa_judge1: float | None, kappa_judge2: float | None
+        self,
+        kappa_judge1: float | None,
+        kappa_judge2: float | None,
+        source: str = HUMAN_VALIDATION_SOURCE,
     ) -> None:
         """Persist the latest human-machine kappas on all manual rows."""
+        normalized_source = self._normalize_manual_verification_source(source)
         self._conn.execute(
-            "UPDATE manual_verification SET kappa_judge1 = ?, kappa_judge2 = ?;",
-            (kappa_judge1, kappa_judge2),
+            """
+            UPDATE manual_verification
+            SET kappa_judge1 = ?, kappa_judge2 = ?
+            WHERE source = ?;
+            """,
+            (kappa_judge1, kappa_judge2, normalized_source),
         )
         self._conn.commit()
 

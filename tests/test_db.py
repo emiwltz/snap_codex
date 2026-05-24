@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import csv
+import sqlite3
 from pathlib import Path
 
 from src.db import ConditionKey, ResponseRecord, SoulBenchDB
@@ -45,6 +47,21 @@ def test_schema_and_indexes_created(tmp_path: Path) -> None:
         }
         assert "idx_model" in indexes
         assert "idx_condition_unique" in indexes
+        assert "idx_manual_verification_response_source" in indexes
+
+        source_column = next(
+            (
+                row
+                for row in db._conn.execute(
+                    "PRAGMA table_info(manual_verification);"
+                ).fetchall()
+                if row["name"] == "source"
+            ),
+            None,
+        )
+        assert source_column is not None
+        assert int(source_column["notnull"]) == 1
+        assert "human_validation" in str(source_column["dflt_value"])
 
 
 def test_insert_duplicate_is_ignored(tmp_path: Path) -> None:
@@ -164,7 +181,7 @@ def test_manual_adjudication_flow(tmp_path: Path) -> None:
 
         mv = db._conn.execute(
             """
-            SELECT response_id, human_score, human_justification
+            SELECT response_id, human_score, human_justification, source
             FROM manual_verification
             WHERE response_id = ?;
             """,
@@ -174,3 +191,148 @@ def test_manual_adjudication_flow(tmp_path: Path) -> None:
         assert int(mv["response_id"]) == response_id
         assert mv["human_score"] == "0"
         assert mv["human_justification"] == "tie resolved manually"
+        assert mv["source"] == "adjudication"
+
+
+def test_import_manual_verification_csv_is_idempotent_and_tagged(
+    tmp_path: Path,
+) -> None:
+    db_path = tmp_path / "test.db"
+    csv_path = tmp_path / "manual_sample.csv"
+
+    with csv_path.open("w", newline="", encoding="utf-8") as file_handle:
+        writer = csv.DictWriter(
+            file_handle,
+            fieldnames=[
+                "response_id",
+                "human_score",
+                "human_justification",
+            ],
+        )
+        writer.writeheader()
+        writer.writerow(
+            {
+                "response_id": "1",
+                "human_score": "+1",
+                "human_justification": "first import",
+            }
+        )
+
+    with SoulBenchDB(db_path) as db:
+        db.insert_response(
+            _sample_record(
+                score_judge1="+1",
+                score_judge2="+1",
+                score_final="+1",
+            )
+        )
+
+        first_import = db.import_manual_verification_csv(csv_path)
+        second_import = db.import_manual_verification_csv(csv_path)
+
+        assert first_import == 1
+        assert second_import == 1
+
+        rows = db._conn.execute("""
+            SELECT response_id, human_score, human_justification, source
+            FROM manual_verification
+            ORDER BY id;
+            """).fetchall()
+
+    assert len(rows) == 1
+    assert int(rows[0]["response_id"]) == 1
+    assert rows[0]["human_score"] == "+1"
+    assert rows[0]["human_justification"] == "first import"
+    assert rows[0]["source"] == "human_validation"
+
+
+def test_legacy_manual_verification_rows_migrate_to_adjudication(
+    tmp_path: Path,
+) -> None:
+    db_path = tmp_path / "legacy_manual_verification.db"
+
+    with SoulBenchDB(db_path) as db:
+        db.insert_response(
+            _sample_record(
+                run=5,
+                score_judge1="+1",
+                score_judge2="-1",
+                manual_review_needed=True,
+            )
+        )
+        pending = db.get_pending_manual_review_rows(limit=1)
+        response_id = int(pending[0]["id"])
+        db.apply_manual_adjudication(
+            response_id=response_id,
+            final_score="0",
+            reason="legacy adjudication seed",
+        )
+
+    with sqlite3.connect(db_path) as conn:
+        conn.executescript("""
+            DROP INDEX IF EXISTS idx_manual_verification_response_source;
+
+            UPDATE manual_verification
+            SET kappa_judge1 = 0.5,
+                kappa_judge2 = 0.5;
+
+            CREATE TABLE manual_verification_legacy (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                response_id INTEGER REFERENCES responses(id),
+                human_score TEXT,
+                human_justification TEXT,
+                verified_at TEXT,
+                kappa_judge1 REAL,
+                kappa_judge2 REAL
+            );
+
+            INSERT INTO manual_verification_legacy (
+                id,
+                response_id,
+                human_score,
+                human_justification,
+                verified_at,
+                kappa_judge1,
+                kappa_judge2
+            )
+            SELECT
+                id,
+                response_id,
+                human_score,
+                human_justification,
+                verified_at,
+                kappa_judge1,
+                kappa_judge2
+            FROM manual_verification;
+
+            DROP TABLE manual_verification;
+            ALTER TABLE manual_verification_legacy RENAME TO manual_verification;
+            """)
+        conn.commit()
+
+    with SoulBenchDB(db_path) as db:
+        migrated = db._conn.execute(
+            """
+            SELECT source, kappa_judge1, kappa_judge2
+            FROM manual_verification
+            WHERE response_id = ?;
+            """,
+            (response_id,),
+        ).fetchone()
+        assert migrated is not None
+        assert migrated["source"] == "adjudication"
+        assert migrated["kappa_judge1"] is None
+        assert migrated["kappa_judge2"] is None
+
+        source_column = next(
+            (
+                row
+                for row in db._conn.execute(
+                    "PRAGMA table_info(manual_verification);"
+                ).fetchall()
+                if row["name"] == "source"
+            ),
+            None,
+        )
+        assert source_column is not None
+        assert int(source_column["notnull"]) == 1

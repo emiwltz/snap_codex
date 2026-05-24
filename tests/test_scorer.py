@@ -202,6 +202,95 @@ def test_compute_kappa_includes_human_vs_final_score(tmp_path: Path) -> None:
     assert result["kappa_human_score_final"] == 1.0
 
 
+def test_compute_kappa_ignores_adjudication_rows_for_human_metrics(
+    tmp_path: Path,
+) -> None:
+    db_path = tmp_path / "test.db"
+    with SoulBenchDB(db_path) as db:
+        db.insert_response(
+            ResponseRecord(
+                model="test-model",
+                item_id="O1",
+                item_type="personality",
+                scenario="base",
+                formulation="F1",
+                system_prompt="SP_ABS",
+                temperature=0.1,
+                run=1,
+                user_prompt_text="Scenario\n\nQuestion",
+                raw_response="Response",
+                score_judge1="+1",
+                score_judge2="+1",
+                score_final="+1",
+            )
+        )
+        db.insert_response(
+            ResponseRecord(
+                model="test-model",
+                item_id="O2",
+                item_type="personality",
+                scenario="base",
+                formulation="F1",
+                system_prompt="SP_ABS",
+                temperature=0.1,
+                run=2,
+                user_prompt_text="Scenario\n\nQuestion",
+                raw_response="Response",
+                score_judge1="-1",
+                score_judge2="-1",
+                score_final="-1",
+            )
+        )
+
+        db._conn.execute(
+            """
+            INSERT INTO manual_verification (
+                response_id, human_score, human_justification, verified_at, source
+            ) VALUES (?, ?, ?, ?, ?);
+            """,
+            (
+                1,
+                "-1",
+                "adjudication-like row",
+                "2026-01-01T00:00:00+00:00",
+                "adjudication",
+            ),
+        )
+        db._conn.execute(
+            """
+            INSERT INTO manual_verification (
+                response_id, human_score, human_justification, verified_at, source
+            ) VALUES (?, ?, ?, ?, ?);
+            """,
+            (
+                2,
+                "-1",
+                "independent validation",
+                "2026-01-01T00:00:00+00:00",
+                "human_validation",
+            ),
+        )
+        db._conn.commit()
+
+        result = compute_kappa(db)
+
+        rows = db._conn.execute("""
+            SELECT response_id, source, kappa_judge1, kappa_judge2
+            FROM manual_verification
+            ORDER BY response_id;
+            """).fetchall()
+
+    assert result["kappa_human_judge1"] == 1.0
+    assert result["kappa_human_judge2"] == 1.0
+    assert result["kappa_human_score_final"] == 1.0
+
+    by_source = {(int(row["response_id"]), row["source"]): row for row in rows}
+    assert by_source[(1, "adjudication")]["kappa_judge1"] is None
+    assert by_source[(1, "adjudication")]["kappa_judge2"] is None
+    assert by_source[(2, "human_validation")]["kappa_judge1"] == 1.0
+    assert by_source[(2, "human_validation")]["kappa_judge2"] == 1.0
+
+
 def test_manual_adjudication_prints_item_context(
     monkeypatch, capsys, tmp_path: Path
 ) -> None:

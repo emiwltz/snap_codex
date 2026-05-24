@@ -12,7 +12,7 @@ Resume final du POC v3.1: `POC_v3_1_summary.md`.
 
 Le depot utilise maintenant le protocole v3.1: un POC gerable proche du design v1.1, mais avec les briques techniques utiles de la v2.1.
 
-Etat experimental local au 22 mai 2026:
+Etat experimental local au 23 mai 2026:
 
 - Campagne v3.1 complete: `2700/2700` reponses collectees, `0` erreur finale.
 - Scoring final complet: `2700/2700` lignes avec `score_final`.
@@ -23,8 +23,11 @@ Etat experimental local au 22 mai 2026:
 - Figures generees dans `outputs/figures/`.
 - Diagnostic cross-SP genere dans `outputs/reports/cross_sp_diagnostic.json`.
 - Base finale a conserver comme snapshot: `data/snap_poc_v3_1.db`.
-- Copie de travail pour validation humaine/imports: `data/snap_poc_v3_1_human_validation_working.db`.
-- Echantillon humain exporte mais non code: `data/manual_sample_coded.csv` contient `200` lignes et `0` `human_score`.
+- Base recommandee pour la validation humaine: `data/snap_poc_v3_1_human_validation_clean.db`.
+- Ancien artefact mixte conserve a titre historique: `data/snap_poc_v3_1_human_validation_working.db`.
+- Echantillon humain code et importe: `data/manual_sample_coded.csv` contient `200` lignes et `200` `human_score`.
+- Validation humaine cloturee le `2026-05-23`: `30` lignes `adjudication`, `200` lignes `human_validation`, `0` doublon `(response_id, source)`.
+- Kappas humains calcules sur `manual_verification.source='human_validation'` uniquement: `judge1=0.6234`, `judge2=0.6304`, `score_final=0.5789`.
 
 - CLI operationnelle via `python -m src.runner` avec 13 sous-commandes: `init-db`, `preflight`, `collect`, `score`, `resolve-disagreements`, `export-sample`, `manual-score-sample`, `import-manual`, `compute-kappa`, `adjudicate`, `analyze`, `visualize`, `decision`.
 - Configuration presente dans `config/`:
@@ -87,10 +90,14 @@ python -m src.runner resolve-disagreements
 
 # Verification manuelle
 python -m src.runner export-sample --n 200 --output data/manual_sample.csv
+
+# Codage interactif optionnel pour un nouveau sample ou un recodage
 python -m src.runner manual-score-sample --file data/manual_sample_coded.csv
-python -m src.runner import-manual --file data/manual_sample_coded.csv
+
+# Import / kappa sur la base propre recommandee
+python -m src.runner --db-path data/snap_poc_v3_1_human_validation_clean.db import-manual --file data/manual_sample_coded.csv
 python -m src.runner adjudicate --limit 0
-python -m src.runner compute-kappa
+python -m src.runner --db-path data/snap_poc_v3_1_human_validation_clean.db compute-kappa
 
 # Analyse
 python -m src.runner analyze --stability
@@ -126,8 +133,10 @@ export OPENROUTER_API_KEY="votre_cle"
 5. Lancer une collecte smoke sur 1 modele avec `--max-rows 10`.
 6. Lancer le scoring sur les 2 juges.
 7. Resoudre les desaccords.
-8. Exporter l echantillon humain, le coder avec `manual-score-sample`, importer
-   le CSV code si necessaire, puis `compute-kappa`.
+8. Pour le snapshot actuel, importer `data/manual_sample_coded.csv` dans
+   `data/snap_poc_v3_1_human_validation_clean.db`, puis lancer
+   `compute-kappa`. `manual-score-sample` reste utile pour un nouveau sample
+   ou un recodage, pas comme etape obligatoire de cloture v3.1.
 9. Produire les rapports (`analyze`) puis les figures (`visualize`).
 10. Generer la decision POC avec `decision`.
 
@@ -142,6 +151,8 @@ sqlite3 data/snap_poc_v3_1.db "select count(*) from responses;"
 sqlite3 data/snap_poc_v3_1.db "select count(*) from responses where is_error=0;"
 sqlite3 data/snap_poc_v3_1.db "select count(*) from responses where score_final is not null;"
 sqlite3 data/snap_poc_v3_1.db "select dataset_id, protocol_version, total_planned from collection_metadata;"
+sqlite3 data/snap_poc_v3_1_human_validation_clean.db "select source, count(*) from manual_verification group by source order by source;"
+sqlite3 data/snap_poc_v3_1_human_validation_clean.db "select source, count(*) from manual_verification where kappa_judge1 is not null group by source order by source;"
 
 # Tests
 python -m pytest -q
@@ -156,11 +167,13 @@ python -m pytest -q
 - Le champ `thinking_enabled` est derive de `thinking_mode` en config. Il trace le mode provider/default attendu, pas une mesure introspective de la reponse.
 - Le cout OpenRouter produit par `preflight` est une estimation fondee sur le catalogue courant et des hypotheses de tokens, pas une facture finale.
 - La decision `PASS/BORDERLINE/FAIL` depend de rapports d analyse deja generes; avant scoring complet, `decision` peut retourner `NOT_READY`.
-- La base finale `data/snap_poc_v3_1.db` sert maintenant de snapshot v3.1. Pour importer du codage humain ou recalculer des kappas avec annotations, utiliser une copie de travail.
+- La base finale `data/snap_poc_v3_1.db` sert maintenant de snapshot v3.1. Pour importer du codage humain ou recalculer des kappas avec annotations, utiliser `data/snap_poc_v3_1_human_validation_clean.db`.
+- `compute-kappa` continue de calculer `kappa_interjudge` depuis `responses`, mais les metriques humain-vs-machine lisent uniquement `manual_verification.source='human_validation'`.
+- `data/snap_poc_v3_1_human_validation_working.db` est conserve comme artefact historique mixte; il n est plus la base recommandee pour cloturer la validation humaine.
 
 ## TODO ouverts
 
-- Coder `data/manual_sample_coded.csv` avec `manual-score-sample`, puis importer dans `data/snap_poc_v3_1_human_validation_working.db`.
+- Interpretrer les kappas humains finaux (`0.6234`, `0.6304`, `0.5789`) dans la note methodologique v3.2.
 - Lire qualitativement les cellules critiques du diagnostic cross-SP, surtout `mistral-large-3 / E2`.
 - Decider si `SP_PER` doit etre retire, reecrit ou traite comme stress-test separe en v3.2.
 - Auditer les items style-sensibles (`E1`, `E2`) avant toute extension.
