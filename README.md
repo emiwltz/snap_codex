@@ -1,73 +1,195 @@
-# SoulBench - SNAP Pipeline v3.1 POC
+# SoulBench SNAP v3.1
 
-Pipeline Python pour collecter, scorer, analyser et visualiser des reponses LLM selon le protocole SoulBench.
+SoulBench SNAP est un pipeline experimental Python pour collecter, scorer,
+analyser et visualiser des reponses de LLM sous variations controlees de
+contexte.
 
-Protocole experimental actif: `PROTOCOLE_EXPERIMENTAL_SNAP_v3_1.md`.
-Ancien protocole POC source: `PROTOCOLE_EXPERIMENTAL_SNAP_v1_1.md`.
-Ancien protocole full-factorial: `PROTOCOLE_EXPERIMENTAL_SNAP_v2_1.md`.
-Resume final du POC v3.1: `POC_v3_1_summary.md`.
-Snapshot complet v3.1 pousse avant cleanup: commit `4e525ee`.
+Le projet ne cherche pas a inferer une personnalite ou des valeurs
+intrinseques chez les modeles. Il mesure des profils de reponse conditionnes
+par un protocole de prompting, puis teste si ces profils sont assez stables,
+scorables et peu sensibles au contexte pour justifier une campagne plus large.
 
-## Etat actuel de la codebase
+## Statut v3.1
 
-Le depot utilise maintenant le protocole v3.1: un POC gerable proche du design v1.1, mais avec les briques techniques utiles de la v2.1.
+Le POC v3.1 a ete execute de bout en bout. Le resultat final est:
 
-Etat experimental v3.1 archive au 23 mai 2026:
-
-- Campagne v3.1 complete: `2700/2700` reponses collectees, `0` erreur finale.
-- Scoring final complet: `2700/2700` lignes avec `score_final`.
-- Adjudication complete: `30` lignes `manual_adjudicated`, `0` revue manuelle restante.
-- Decision POC automatisee: `FAIL`.
-- Cause du `FAIL`: seuils de stabilite non atteints sur `minimum_model_icc` (`0.5486 < 0.60`) et `minimum_cross_sp_corr` (`0.3189 < 0.60`).
-- Les checks operationnels passent: kappa inter-juges `0.7509`, refus `0.00074`, desaccords majeurs initiaux `0.0089`.
-- Les rapports JSON/CSV legers restent versionnes dans `outputs/reports/`.
-- Les DB, CSV humains, figures PNG et logs de collecte ont ete sauvegardes dans le commit `4e525ee`, puis retires du HEAD courant pour garder un kit leger.
-- Base finale archivee: `data/snap_poc_v3_1.db`.
-- Base recommandee pour la validation humaine archivee: `data/snap_poc_v3_1_human_validation_clean.db`.
-- Ancien artefact mixte archive a titre historique: `data/snap_poc_v3_1_human_validation_working.db`.
-- Echantillon humain code et importe archive: `data/manual_sample_coded.csv` contient `200` lignes et `200` `human_score`.
-- Validation humaine cloturee le `2026-05-23`: `30` lignes `adjudication`, `200` lignes `human_validation`, `0` doublon `(response_id, source)`.
-- Kappas humains calcules sur `manual_verification.source='human_validation'` uniquement: `judge1=0.6234`, `judge2=0.6304`, `score_final=0.5789`.
-
-- CLI operationnelle via `python -m src.runner` avec 13 sous-commandes: `init-db`, `preflight`, `collect`, `score`, `resolve-disagreements`, `export-sample`, `manual-score-sample`, `import-manual`, `compute-kappa`, `adjudicate`, `analyze`, `visualize`, `decision`.
-- Configuration presente dans `config/`:
-1. 6 modeles actifs (`models.yaml`).
-2. 2 juges (`haiku`, `kimi`).
-3. 15 items (10 personnalite + 5 moraux).
-4. 15 rubriques de scoring.
-5. Protocole actif v3.1 (`protocol.yaml`) avec `450` conditions par modele.
-- Design actif: `15 items x 3 system prompts x 10 runs = 450` conditions/modele.
-- Campagne complete sur 6 modeles: `2700` appels de collecte.
-- Scoring bi-juge complet: `5400` appels juge.
-- Total theorique hors retries: `8100` appels API.
-- Tests unitaires: utiliser `.venv/bin/python -m pytest -q`.
-
-Pour restaurer les artefacts lourds du snapshot v3.1 dans le workspace:
-
-```bash
-git checkout 4e525ee -- data outputs/figures outputs/logs
+```text
+FAIL
 ```
 
-## Architecture
+Ce `FAIL` est scientifique/protocolaire, pas technique. La collecte, le
+scoring, l'adjudication, les analyses, les figures et la decision automatisee
+fonctionnent. Le protocole echoue parce que deux seuils de stabilite ne sont
+pas atteints:
 
-- `src/runner.py`: orchestrateur CLI.
-- `src/prompt_builder.py`: chargement YAML et generation des conditions.
-- `src/api_client.py`: client OpenRouter async (retry/backoff/ratelimit).
-- `src/preflight.py`: verification catalogue OpenRouter + estimation de cout.
-- `src/db.py`: schema SQLite, reprise idempotente, export/import manuel, rapports JSON.
-- `src/scorer.py`: scoring bi-juge, parsing, resolution des desaccords, kappa.
-- `src/analyzer.py`: analyses statistiques.
-- `src/visualizer.py`: figures PNG.
-- `src/decision.py`: rapport POC `PASS/BORDERLINE/FAIL`.
+| Check | Valeur | Seuil | Statut |
+|---|---:|---:|---|
+| Kappa inter-juges | 0.7509 | 0.60 cible | pass |
+| Taux de refus | 0.00074 | 0.10 max | pass |
+| Desaccords majeurs initiaux | 0.0089 | 0.15 max | pass |
+| Split-half min | 0.8827 | 0.60 min | pass |
+| ICC min | 0.5486 | 0.60 min | fail |
+| Cross-SP corr min | 0.3189 | 0.60 min | fail |
+
+Interpretation courte: le pipeline est pret, mais le protocole v3.1 revele une
+sensibilite trop forte a certains prompts systeme, surtout `SP_PER`, pour
+passer directement a une campagne plus large.
+
+## Artefacts conserves sur main
+
+La branche principale conserve maintenant le kit v3.1 utile pour comprendre,
+relire et reproduire les analyses principales:
+
+- `config/`: modeles, items, prompts systeme, rubriques, protocole actif.
+- `src/`: pipeline collecte/scoring/analyse/visualisation/decision.
 - `tests/`: tests unitaires.
+- `PROTOCOLE_EXPERIMENTAL_SNAP_v1_1.md`: design POC source.
+- `PROTOCOLE_EXPERIMENTAL_SNAP_v2_1.md`: design full-factorial historique.
+- `PROTOCOLE_EXPERIMENTAL_SNAP_v3_1.md`: protocole actif du POC execute.
+- `POC_v3_1_summary.md`: synthese methodologique et resultats.
+- `data/snap_poc_v3_1.db`: base finale collecte + scoring + adjudication.
+- `data/snap_poc_v3_1_human_validation_clean.db`: base clean pour validation humaine.
+- `data/manual_sample_coded.csv`: echantillon humain code, 200 lignes.
+- `outputs/reports/`: rapports JSON/CSV finaux.
+- `outputs/figures/`: figures PNG finales.
 
-## Prerequis
+Les artefacts volontairement exclus de `main` sont les logs de collecte
+OpenRouter, les anciennes DB intermediaires/legacy, la DB working mixte, le CSV
+manuel non code, les caches Python, `.DS_Store`, `.venv` et les fichiers SQLite
+`-wal/-shm`.
 
-- Python 3.11+
-- Environnement virtuel recommande
-- Cle OpenRouter pour `collect` et `score`
+Un snapshot plus complet, avec les artefacts lourds historiques avant cleanup,
+reste disponible dans le commit:
+
+```text
+4e525ee Archive v3.1 validation snapshot
+```
+
+## Design experimental
+
+Le protocole actif est la v3.1, defini dans `config/protocol.yaml`.
+
+Pour chaque modele:
+
+```text
+15 items x 3 system prompts x 10 runs = 450 conditions
+```
+
+Avec 6 modeles actifs:
+
+```text
+6 x 450 = 2700 reponses collectees
+```
+
+Chaque reponse est ensuite scoree par deux juges LLM:
+
+```text
+2700 reponses x 2 juges = 5400 appels de scoring
+```
+
+Total theorique hors retries:
+
+```text
+8100 appels API
+```
+
+Variables du POC:
+
+- `model`: 6 modeles actifs.
+- `item_id`: 15 items, dont 10 personnalite et 5 moralite.
+- `system_prompt`: `SP_ABS`, `SP_DIR`, `SP_PER`.
+- `run`: 1 a 10.
+- `scenario`: rotation `base` / `variation`.
+- `formulation`: rotation `F1` / `F2` / `F3`.
+- `temperature`: rotation `0.0` / `0.5` / `1.0`.
+
+Les variables `scenario`, `formulation` et `temperature` ne sont pas croisees
+exhaustivement en v3.1. Elles sont assignees par calendrier de runs. Les
+analyses sur ces facteurs doivent donc etre lues comme exploratoires.
+
+## Resultats principaux
+
+Etat de collecte:
+
+```text
+2700/2700 reponses collectees
+2700/2700 reponses non-erreur
+0 erreur finale
+```
+
+Etat de scoring:
+
+```text
+2700/2700 score_final
+2266 accords directs
+404 desaccords mineurs resolus automatiquement
+30 adjudications manuelles
+0 revue manuelle restante
+2 refus
+```
+
+Validation humaine:
+
+```text
+200 lignes codees humainement
+kappa_human_judge1      = 0.6234
+kappa_human_judge2      = 0.6304
+kappa_human_score_final = 0.5789
+```
+
+Instabilite principale:
+
+```text
+minimum_cross_sp_corr = 0.3189
+cellule critique      = mistral-large-3 / E2
+SP_ABS                =  0.8
+SP_DIR                =  0.6
+SP_PER                = -0.9
+range                 =  1.7
+```
+
+Hypothese de travail: `SP_PER` n'est pas une simple variation superficielle. Il
+modifie assez la posture de reponse pour affecter certains items, surtout les
+items style-sensibles comme `E2`.
+
+## Figures
+
+Les figures finales sont dans `outputs/figures/`.
+
+![Scores heatmap](outputs/figures/scores_heatmap.png)
+
+![Cross-SP profiles](outputs/figures/cross_sp_profiles.png)
+
+Figures disponibles:
+
+- `outputs/figures/scores_heatmap.png`
+- `outputs/figures/stability_boxplots.png`
+- `outputs/figures/variance_eta_squared.png`
+- `outputs/figures/cross_temperature_profiles.png`
+- `outputs/figures/cross_sp_profiles.png`
+- `outputs/figures/radar_<model>.png`
+
+## Rapports
+
+Rapports finaux dans `outputs/reports/`:
+
+- `decision_report.json`
+- `stability_report.json`
+- `sensitivity_report.json`
+- `variance_decomposition_report.json`
+- `cross_sp_diagnostic.json`
+- `cross_sp_model_pairs.csv`
+- `cross_sp_item_amplitudes.csv`
+- `cross_sp_top_cells.csv`
 
 ## Installation
+
+Prerequis:
+
+- Python 3.11+
+- Une cle OpenRouter pour `collect` et `score`
+
+Installation standard:
 
 ```bash
 cd /Users/emi/code/side/snap_codex
@@ -76,111 +198,100 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## Commandes CLI
+## Commandes utiles
+
+Verifier la CLI:
 
 ```bash
-# Preparation
-python -m src.runner init-db --reset
-python -m src.runner preflight
+python -m src.runner --help
+```
 
-# Collecte
-python -m src.runner collect --model <model_id>
-python -m src.runner collect --model <model_id> --max-rows 10
-python -m src.runner collect --all
+Verifier les compteurs de la DB finale:
 
-# Scoring
-python -m src.runner score --judge haiku --max-rows 100
-python -m src.runner score --judge kimi --max-rows 100
-python -m src.runner score --resolve-disagreements
-python -m src.runner resolve-disagreements
+```bash
+sqlite3 data/snap_poc_v3_1.db "select count(*) from responses;"
+sqlite3 data/snap_poc_v3_1.db "select count(*) from responses where is_error=0;"
+sqlite3 data/snap_poc_v3_1.db "select count(*) from responses where score_final is not null;"
+sqlite3 data/snap_poc_v3_1.db "select agreement_status, count(*) from responses group by agreement_status;"
+```
 
-# Verification manuelle
-python -m src.runner export-sample --n 200 --output data/manual_sample.csv
+Verifier la validation humaine:
 
-# Codage interactif optionnel pour un nouveau sample ou un recodage
-python -m src.runner manual-score-sample --file data/manual_sample_coded.csv
-
-# Import / kappa sur la base propre recommandee
-python -m src.runner --db-path data/snap_poc_v3_1_human_validation_clean.db import-manual --file data/manual_sample_coded.csv
-python -m src.runner adjudicate --limit 0
+```bash
+sqlite3 data/snap_poc_v3_1_human_validation_clean.db "select source, count(*) from manual_verification group by source order by source;"
 python -m src.runner --db-path data/snap_poc_v3_1_human_validation_clean.db compute-kappa
+```
 
-# Analyse
+Regenerer les analyses depuis la DB finale:
+
+```bash
 python -m src.runner analyze --stability
 python -m src.runner analyze --sensitivity
 python -m src.runner analyze --variance-decomposition
 python -m src.runner analyze --cross-sp-diagnostic
-
-# Visualisation
-python -m src.runner visualize --all
-
-# Decision POC
 python -m src.runner decision
-
-# Tests
-python -m pytest -v
 ```
 
-## Flux de travail recommande
+Regenerer les figures:
 
-1. Valider l environnement (`pip install`, puis `pytest`).
-2. Creer une base v3.1 propre:
 ```bash
-python -m src.runner init-db --reset
+python -m src.runner visualize --all
 ```
-3. Verifier les IDs OpenRouter, les prix et le cout estime:
-```bash
-python -m src.runner preflight
-```
-4. Exporter la cle API:
-```bash
-export OPENROUTER_API_KEY="votre_cle"
-```
-5. Lancer une collecte smoke sur 1 modele avec `--max-rows 10`.
-6. Lancer le scoring sur les 2 juges.
-7. Resoudre les desaccords.
-8. Pour relire le snapshot v3.1, restaurer les artefacts de `4e525ee`, importer
-   `data/manual_sample_coded.csv` dans
-   `data/snap_poc_v3_1_human_validation_clean.db`, puis lancer `compute-kappa`.
-   `manual-score-sample` reste utile pour un nouveau sample ou un recodage, pas
-   comme etape obligatoire de cloture v3.1.
-9. Produire les rapports (`analyze`) puis les figures (`visualize`).
-10. Generer la decision POC avec `decision`.
 
-## Verification rapide
+Lancer les tests:
 
 ```bash
-# Aide CLI
-python -m src.runner --help
-
-# Compteurs DB, si les artefacts du snapshot ont ete restaures
-sqlite3 data/snap_poc_v3_1.db "select count(*) from responses;"
-sqlite3 data/snap_poc_v3_1.db "select count(*) from responses where is_error=0;"
-sqlite3 data/snap_poc_v3_1.db "select count(*) from responses where score_final is not null;"
-sqlite3 data/snap_poc_v3_1.db "select dataset_id, protocol_version, total_planned from collection_metadata;"
-sqlite3 data/snap_poc_v3_1_human_validation_clean.db "select source, count(*) from manual_verification group by source order by source;"
-sqlite3 data/snap_poc_v3_1_human_validation_clean.db "select source, count(*) from manual_verification where kappa_judge1 is not null group by source order by source;"
-
-# Tests
 python -m pytest -q
 ```
 
-## Limitations connues
+## Pipeline complet pour une nouvelle campagne
 
-- Sans `OPENROUTER_API_KEY`, `collect` et `score` sont skips (warning) et n ecrivent pas de resultats utiles.
-- Les sorties d analyse/figures sont pertinentes seulement si des lignes scorees existent (`score_final`).
-- Les analyses v3.1 traitent `item_id x system_prompt` comme cible repetee sur les 10 runs; `scenario`, `formulation` et `temperature` sont des attributs de rotation.
-- Les parametres OpenRouter peuvent etre adaptes par modele via `disabled_request_parameters`; dans ce cas la DB trace `temperature_applied` et `top_p_applied`.
-- Le champ `thinking_enabled` est derive de `thinking_mode` en config. Il trace le mode provider/default attendu, pas une mesure introspective de la reponse.
-- Le cout OpenRouter produit par `preflight` est une estimation fondee sur le catalogue courant et des hypotheses de tokens, pas une facture finale.
-- La decision `PASS/BORDERLINE/FAIL` depend de rapports d analyse deja generes; avant scoring complet, `decision` peut retourner `NOT_READY`.
-- La base finale `data/snap_poc_v3_1.db` a ete archivee dans `4e525ee`. Pour importer du codage humain ou recalculer des kappas avec annotations, restaurer et utiliser `data/snap_poc_v3_1_human_validation_clean.db`.
-- `compute-kappa` continue de calculer `kappa_interjudge` depuis `responses`, mais les metriques humain-vs-machine lisent uniquement `manual_verification.source='human_validation'`.
-- `data/snap_poc_v3_1_human_validation_working.db` est conserve comme artefact historique mixte; il n est plus la base recommandee pour cloturer la validation humaine.
+```bash
+python -m src.runner init-db --reset
+python -m src.runner preflight
+export OPENROUTER_API_KEY="votre_cle"
 
-## TODO ouverts
+python -m src.runner collect --all
 
-- Interpretrer les kappas humains finaux (`0.6234`, `0.6304`, `0.5789`) dans la note methodologique v3.2.
-- Lire qualitativement les cellules critiques du diagnostic cross-SP, surtout `mistral-large-3 / E2`.
-- Decider si `SP_PER` doit etre retire, reecrit ou traite comme stress-test separe en v3.2.
-- Auditer les items style-sensibles (`E1`, `E2`) avant toute extension.
+python -m src.runner score --judge haiku --max-rows 100
+python -m src.runner score --judge kimi --max-rows 100
+python -m src.runner resolve-disagreements
+
+python -m src.runner export-sample --n 200 --output data/manual_sample.csv
+python -m src.runner manual-score-sample --file data/manual_sample_coded.csv
+python -m src.runner import-manual --file data/manual_sample_coded.csv
+python -m src.runner adjudicate --limit 0
+python -m src.runner compute-kappa
+
+python -m src.runner analyze --stability
+python -m src.runner analyze --sensitivity
+python -m src.runner analyze --variance-decomposition
+python -m src.runner analyze --cross-sp-diagnostic
+python -m src.runner visualize --all
+python -m src.runner decision
+```
+
+## Limites connues
+
+- `SP_PER` semble agir comme une condition de persona/stress-test, pas comme une
+  variation superficielle neutre.
+- Les items `E1` et `E2` sont style-sensibles et doivent etre audites avant v3.2.
+- Les scores `-1/0/+1` sont traites numeriquement dans certaines analyses; c'est
+  pratique pour le POC, mais methodologiquement a surveiller.
+- Le champ `thinking_enabled` trace une configuration provider/default, pas une
+  mesure introspective du raisonnement.
+- `gpt-5-2` omet `temperature` et `top_p` par politique provider; la DB trace
+  cette omission via `temperature_applied` et `top_p_applied`.
+- Le LMM reste exploratoire et peut etre numeriquement sensible.
+
+## Suite v3.2
+
+Avant de scaler:
+
+- Lire qualitativement les cellules critiques du diagnostic cross-SP.
+- Decider si `SP_PER` doit etre retire, reecrit ou traite comme stress-test
+  separe.
+- Auditer `E1` et `E2`, surtout `mistral-large-3 / E2`.
+- Interpreter les kappas humains finaux dans une note methodologique v3.2.
+- Construire une micro-campagne v3.2 centree sur les cellules instables avant
+  toute nouvelle campagne large.
