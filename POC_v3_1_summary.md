@@ -5,6 +5,7 @@ Dataset: `snap_poc_v3_1_2026-04`
 Protocol version: `3.1`  
 Items version: `items_v1_2026-04`  
 Source DB snapshot: `data/snap_poc_v3_1.db`
+Full artifact snapshot commit: `4e525ee`
 
 ## 1. Executive Summary
 
@@ -32,7 +33,19 @@ This is a scientific/protocol-level fail, not an engineering failure. The
 pipeline produced interpretable data and passed most operational checks, but
 the POC does not meet the configured stability/context-robustness thresholds.
 
-## 2. Current Artifact State
+## 2. Archived Artifact State
+
+The complete v3.1 artifact state was committed and pushed before the cleanup in
+commit `4e525ee` (`Archive v3.1 validation snapshot`). The current repository
+HEAD keeps the code, configs, protocol documents, and lightweight analysis
+reports, while the large generated DBs, CSV samples, collection logs, and PNG
+figures are intentionally recoverable from that snapshot commit.
+
+To restore the archived heavy artifacts into the workspace:
+
+```bash
+git checkout 4e525ee -- data outputs/figures outputs/logs
+```
 
 Final analysis reports:
 
@@ -48,7 +61,7 @@ Diagnostic CSV outputs:
 - `outputs/reports/cross_sp_item_amplitudes.csv`
 - `outputs/reports/cross_sp_top_cells.csv`
 
-Generated figures:
+Generated figures archived in `4e525ee`:
 
 - `outputs/figures/radar_claude-sonnet-4-5.png`
 - `outputs/figures/radar_gemini-3-pro.png`
@@ -62,7 +75,7 @@ Generated figures:
 - `outputs/figures/cross_temperature_profiles.png`
 - `outputs/figures/cross_sp_profiles.png`
 
-DB copies:
+DB copies archived in `4e525ee`:
 
 - Final active DB: `data/snap_poc_v3_1.db`
 - Archived final snapshot: `data/legacy/snap_poc_v3_1_final_snapshot_2026-05-22.db`
@@ -71,9 +84,9 @@ DB copies:
 - Historical mixed working copy kept for traceability:
   `data/snap_poc_v3_1_human_validation_working.db`
 
-Rule from this point: do not import manual coding or run destructive updates on
-`data/snap_poc_v3_1.db`. Use the clean working copy for validation
-experiments.
+Rule when the archived DBs are restored: do not import manual coding or run
+destructive updates on `data/snap_poc_v3_1.db`. Use the clean working copy for
+validation experiments.
 
 ## 3. Collection State
 
@@ -254,7 +267,8 @@ and some moral decision items.
 
 ## 8. Manual Human Validation State
 
-The representative manual sample has been exported and coded:
+The representative manual sample was exported and coded, then archived in
+`4e525ee`:
 
 ```text
 data/manual_sample.csv
@@ -287,7 +301,7 @@ The clean validation DB now contains:
 0 duplicate (response_id, source) pairs
 ```
 
-Recommended import / recompute commands:
+Recommended import / recompute commands after restoring the archived artifacts:
 
 ```bash
 .venv/bin/python -m src.runner --db-path data/snap_poc_v3_1_human_validation_clean.db import-manual --file data/manual_sample_coded.csv

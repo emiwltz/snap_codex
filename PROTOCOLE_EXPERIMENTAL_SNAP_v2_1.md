@@ -24,7 +24,9 @@ En cas de divergence entre documents, la priorite retenue pour ce protocole est:
 1. Code executable dans `src/`
 2. Configuration dans `config/`
 3. Notes methodologiques locales (`config/methodology_retest.md`, `config/methodology_h4.md`, `config/manual_adjudication_workflow.md`)
-4. Documentation generale (`README.md`, `GUIDE_NON_TECHNIQUE.md`, `ETAT_DES_LIEUX.md`)
+4. Documentation generale (`README.md`; les anciens `GUIDE_NON_TECHNIQUE.md`
+   et `ETAT_DES_LIEUX.md` ont ete retires du HEAD apres archivage du snapshot
+   v3.1)
 5. Ancien protocole experimental
 
 Autrement dit: le code et les configs font foi. L'ancien protocole n'est conserve qu'a titre de contraste historique.

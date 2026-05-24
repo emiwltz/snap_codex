@@ -2,17 +2,17 @@
 
 Pipeline Python pour collecter, scorer, analyser et visualiser des reponses LLM selon le protocole SoulBench.
 
-Guide non-technique: `GUIDE_NON_TECHNIQUE.md`.
 Protocole experimental actif: `PROTOCOLE_EXPERIMENTAL_SNAP_v3_1.md`.
 Ancien protocole POC source: `PROTOCOLE_EXPERIMENTAL_SNAP_v1_1.md`.
 Ancien protocole full-factorial: `PROTOCOLE_EXPERIMENTAL_SNAP_v2_1.md`.
 Resume final du POC v3.1: `POC_v3_1_summary.md`.
+Snapshot complet v3.1 pousse avant cleanup: commit `4e525ee`.
 
 ## Etat actuel de la codebase
 
 Le depot utilise maintenant le protocole v3.1: un POC gerable proche du design v1.1, mais avec les briques techniques utiles de la v2.1.
 
-Etat experimental local au 23 mai 2026:
+Etat experimental v3.1 archive au 23 mai 2026:
 
 - Campagne v3.1 complete: `2700/2700` reponses collectees, `0` erreur finale.
 - Scoring final complet: `2700/2700` lignes avec `score_final`.
@@ -20,12 +20,12 @@ Etat experimental local au 23 mai 2026:
 - Decision POC automatisee: `FAIL`.
 - Cause du `FAIL`: seuils de stabilite non atteints sur `minimum_model_icc` (`0.5486 < 0.60`) et `minimum_cross_sp_corr` (`0.3189 < 0.60`).
 - Les checks operationnels passent: kappa inter-juges `0.7509`, refus `0.00074`, desaccords majeurs initiaux `0.0089`.
-- Figures generees dans `outputs/figures/`.
-- Diagnostic cross-SP genere dans `outputs/reports/cross_sp_diagnostic.json`.
-- Base finale a conserver comme snapshot: `data/snap_poc_v3_1.db`.
-- Base recommandee pour la validation humaine: `data/snap_poc_v3_1_human_validation_clean.db`.
-- Ancien artefact mixte conserve a titre historique: `data/snap_poc_v3_1_human_validation_working.db`.
-- Echantillon humain code et importe: `data/manual_sample_coded.csv` contient `200` lignes et `200` `human_score`.
+- Les rapports JSON/CSV legers restent versionnes dans `outputs/reports/`.
+- Les DB, CSV humains, figures PNG et logs de collecte ont ete sauvegardes dans le commit `4e525ee`, puis retires du HEAD courant pour garder un kit leger.
+- Base finale archivee: `data/snap_poc_v3_1.db`.
+- Base recommandee pour la validation humaine archivee: `data/snap_poc_v3_1_human_validation_clean.db`.
+- Ancien artefact mixte archive a titre historique: `data/snap_poc_v3_1_human_validation_working.db`.
+- Echantillon humain code et importe archive: `data/manual_sample_coded.csv` contient `200` lignes et `200` `human_score`.
 - Validation humaine cloturee le `2026-05-23`: `30` lignes `adjudication`, `200` lignes `human_validation`, `0` doublon `(response_id, source)`.
 - Kappas humains calcules sur `manual_verification.source='human_validation'` uniquement: `judge1=0.6234`, `judge2=0.6304`, `score_final=0.5789`.
 
@@ -41,6 +41,12 @@ Etat experimental local au 23 mai 2026:
 - Scoring bi-juge complet: `5400` appels juge.
 - Total theorique hors retries: `8100` appels API.
 - Tests unitaires: utiliser `.venv/bin/python -m pytest -q`.
+
+Pour restaurer les artefacts lourds du snapshot v3.1 dans le workspace:
+
+```bash
+git checkout 4e525ee -- data outputs/figures outputs/logs
+```
 
 ## Architecture
 
@@ -133,20 +139,21 @@ export OPENROUTER_API_KEY="votre_cle"
 5. Lancer une collecte smoke sur 1 modele avec `--max-rows 10`.
 6. Lancer le scoring sur les 2 juges.
 7. Resoudre les desaccords.
-8. Pour le snapshot actuel, importer `data/manual_sample_coded.csv` dans
-   `data/snap_poc_v3_1_human_validation_clean.db`, puis lancer
-   `compute-kappa`. `manual-score-sample` reste utile pour un nouveau sample
-   ou un recodage, pas comme etape obligatoire de cloture v3.1.
+8. Pour relire le snapshot v3.1, restaurer les artefacts de `4e525ee`, importer
+   `data/manual_sample_coded.csv` dans
+   `data/snap_poc_v3_1_human_validation_clean.db`, puis lancer `compute-kappa`.
+   `manual-score-sample` reste utile pour un nouveau sample ou un recodage, pas
+   comme etape obligatoire de cloture v3.1.
 9. Produire les rapports (`analyze`) puis les figures (`visualize`).
 10. Generer la decision POC avec `decision`.
 
-## Verification rapide de l etat local
+## Verification rapide
 
 ```bash
 # Aide CLI
 python -m src.runner --help
 
-# Compteurs DB
+# Compteurs DB, si les artefacts du snapshot ont ete restaures
 sqlite3 data/snap_poc_v3_1.db "select count(*) from responses;"
 sqlite3 data/snap_poc_v3_1.db "select count(*) from responses where is_error=0;"
 sqlite3 data/snap_poc_v3_1.db "select count(*) from responses where score_final is not null;"
@@ -167,7 +174,7 @@ python -m pytest -q
 - Le champ `thinking_enabled` est derive de `thinking_mode` en config. Il trace le mode provider/default attendu, pas une mesure introspective de la reponse.
 - Le cout OpenRouter produit par `preflight` est une estimation fondee sur le catalogue courant et des hypotheses de tokens, pas une facture finale.
 - La decision `PASS/BORDERLINE/FAIL` depend de rapports d analyse deja generes; avant scoring complet, `decision` peut retourner `NOT_READY`.
-- La base finale `data/snap_poc_v3_1.db` sert maintenant de snapshot v3.1. Pour importer du codage humain ou recalculer des kappas avec annotations, utiliser `data/snap_poc_v3_1_human_validation_clean.db`.
+- La base finale `data/snap_poc_v3_1.db` a ete archivee dans `4e525ee`. Pour importer du codage humain ou recalculer des kappas avec annotations, restaurer et utiliser `data/snap_poc_v3_1_human_validation_clean.db`.
 - `compute-kappa` continue de calculer `kappa_interjudge` depuis `responses`, mais les metriques humain-vs-machine lisent uniquement `manual_verification.source='human_validation'`.
 - `data/snap_poc_v3_1_human_validation_working.db` est conserve comme artefact historique mixte; il n est plus la base recommandee pour cloturer la validation humaine.
 
