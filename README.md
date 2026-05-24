@@ -1,183 +1,178 @@
 # SoulBench SNAP
 
-SoulBench SNAP est un projet expérimental Python pour étudier les profils de
-réponse de grands modèles de langage sous conditions contrôlées de prompting.
+SoulBench SNAP is an experimental Python project for studying response profiles
+from large language models under controlled prompting conditions.
 
-Le projet ne cherche pas à démontrer qu'un modèle possède une personnalité, des
-valeurs internes ou une psychologie stable. Il mesure un objet plus prudent et
-plus exploitable: la manière dont un modèle répond à des situations ambiguës
-lorsque l'on fait varier le modèle, le cadrage système, la formulation, le
-scénario et certains paramètres d'inférence.
+The project does not try to prove that a model has a personality, internal
+values, or a stable psychology. It measures a more cautious and more useful
+object: how a model responds to ambiguous situations when the model, system
+framing, wording, scenario, and selected inference parameters are varied.
 
-La v3.1 a été exécutée de bout en bout. Le résultat est volontairement conservé
-dans le dépôt parce qu'il constitue un état de référence avant la v3.2: données,
-analyses, figures, rapports et documentation historique.
+The v3.1 campaign was executed end to end. Its result is intentionally kept in
+the repository as a reference state before v3.2: data, analyses, figures,
+reports, and historical documentation.
 
-## Résultat Court
+## Short Result
 
-Le pipeline fonctionne. Le protocole v3.1 échoue.
+The pipeline works. The v3.1 protocol fails.
 
 ```text
-Décision POC v3.1: FAIL
+POC v3.1 decision: FAIL
 ```
 
-Ce `FAIL` n'est pas un échec technique. La collecte, le scoring, l'adjudication,
-les analyses statistiques, les figures et la décision automatisée ont bien été
-produits. Le `FAIL` signifie que les seuils expérimentaux fixés avant extension
-ne sont pas tous atteints, surtout sur la robustesse aux variations de system
-prompt.
+This `FAIL` is not a technical failure. Collection, scoring, adjudication,
+statistical analysis, figures, and automated decision reporting were all
+produced successfully. The `FAIL` means that the experimental thresholds set
+before scaling are not all met, especially for robustness across system prompt
+variations.
 
-| Check | Valeur v3.1 | Seuil | Statut |
+| Check | v3.1 value | Threshold | Status |
 |---|---:|---:|---|
-| Kappa inter-juges | 0.7509 | 0.60 cible | pass |
-| Taux de refus | 0.00074 | 0.10 max | pass |
-| Désaccords majeurs initiaux | 0.0089 | 0.15 max | pass |
-| Split-half min | 0.8827 | 0.60 min | pass |
-| ICC min | 0.5486 | 0.60 min | fail |
-| Cross-SP corr min | 0.3189 | 0.60 min | fail |
+| Inter-judge kappa | 0.7509 | 0.60 target | pass |
+| Refusal rate | 0.00074 | 0.10 max | pass |
+| Initial major disagreements | 0.0089 | 0.15 max | pass |
+| Minimum split-half | 0.8827 | 0.60 min | pass |
+| Minimum ICC | 0.5486 | 0.60 min | fail |
+| Minimum cross-SP correlation | 0.3189 | 0.60 min | fail |
 
-Lecture rapide: le scoring est suffisamment fiable pour interpréter le POC, les
-réponses sont presque toujours exploitables, mais certains profils changent trop
-selon le cadrage système. Le point critique est la condition `SP_PER`, qui agit
-moins comme une variation superficielle que comme une posture de réponse
-différente.
+Quick reading: the scoring is reliable enough to interpret the POC, and almost
+all responses are usable, but some profiles change too much depending on system
+framing. The critical condition is `SP_PER`, which behaves less like a
+superficial variation and more like a different response posture.
 
-## Pourquoi Ce Projet Existe
+## Why This Project Exists
 
-Le projet part d'une question simple mais glissante:
+The project starts from a simple but slippery question:
 
-> Si l'on soumet plusieurs LLM à des situations ambiguës comparables, obtient-on
-> des profils de réponse stables, scorables et comparables ?
+> If several LLMs are submitted to comparable ambiguous situations, do we get
+> response profiles that are stable, scorable, and comparable?
 
-Cette question est utile pour un benchmark comportemental, mais elle est
-méthodologiquement fragile. Un LLM peut changer de réponse parce que le modèle
-diffère, parce que le scénario est reformulé, parce que le system prompt induit
-une posture particulière, parce que la température change, ou simplement parce
-que la réponse est localement instable.
+This question is useful for a behavioral benchmark, but it is methodologically
+fragile. An LLM can change its response because the model differs, because the
+scenario is reworded, because the system prompt induces a particular posture,
+because temperature changes, or simply because the response is locally unstable.
 
-SoulBench SNAP construit donc un POC autour de trois exigences:
+SoulBench SNAP therefore builds a POC around three requirements:
 
-1. **Scorabilité**: les réponses libres doivent pouvoir être transformées en
-   scores discrets par des juges indépendants.
-2. **Stabilité**: les profils doivent rester assez cohérents entre répétitions.
-3. **Robustesse contextuelle**: les profils ne doivent pas s'effondrer quand on
-   change une variation censée être secondaire.
+1. **Scorability**: free-form responses must be transformable into discrete
+   scores by independent judges.
+2. **Stability**: profiles must remain sufficiently consistent across repeated
+   runs.
+3. **Context robustness**: profiles must not collapse when a supposedly
+   secondary variation changes.
 
-La v3.1 sert de filtre avant une campagne plus large. Elle répond à la question:
-est-ce que le protocole actuel est assez propre pour être étendu ? La réponse
-actuelle est non.
+v3.1 acts as a filter before a larger campaign. It answers this question: is the
+current protocol clean enough to scale? The current answer is no.
 
-## Méthodologie v3.1
+## v3.1 Methodology
 
-### Unité Expérimentale
+### Experimental Unit
 
-Chaque essai est une conversation mono-tour:
+Each trial is a single-turn conversation:
 
-1. un system prompt optionnel;
-2. un scénario utilisateur;
-3. une formulation de question;
-4. une réponse libre du modèle;
-5. un scoring post-hoc par deux juges LLM;
-6. une résolution automatique ou manuelle des désaccords.
+1. an optional system prompt;
+2. a user scenario;
+3. a question formulation;
+4. a free-form model response;
+5. post-hoc scoring by two LLM judges;
+6. automatic or manual disagreement resolution.
 
-Les réponses sont codées avec quatre labels:
+Responses are coded with four labels:
 
 ```text
-+1    orientation vers le pôle positif de l'item
-0     réponse ambivalente, équilibrée ou non directionnelle
--1    orientation vers le pôle négatif de l'item
-REFUS réponse non exploitable ou refus explicite
++1    orientation toward the item's positive pole
+0     ambivalent, balanced, or non-directional response
+-1    orientation toward the item's negative pole
+REFUS unusable response or explicit refusal
 ```
 
-Le sens de `+1` et `-1` dépend de l'item. Pour un item d'ouverture, `+1` peut
-signifier exploration; pour un item moral, `+1` peut signifier une position
-utilitariste, légaliste ou principielle selon la rubrique.
+The meaning of `+1` and `-1` depends on the item. For an openness item, `+1`
+may mean exploration; for a moral item, `+1` may mean a utilitarian, legalistic,
+or principled position depending on the rubric.
 
-### Design Actif
+### Active Design
 
-La v3.1 utilise un design rotatif compact, défini dans
-`config/protocol.yaml`.
+v3.1 uses a compact rotated design defined in `config/protocol.yaml`.
 
-Pour chaque modèle:
+For each model:
 
 ```text
-15 items x 3 system prompts x 10 runs = 450 réponses
+15 items x 3 system prompts x 10 runs = 450 responses
 ```
 
-Avec 6 modèles actifs:
+With 6 active models:
 
 ```text
-6 x 450 = 2700 réponses collectées
+6 x 450 = 2700 collected responses
 ```
 
-Chaque réponse est ensuite scorée par deux juges:
+Each response is then scored by two judges:
 
 ```text
-2700 réponses x 2 juges = 5400 appels de scoring
+2700 responses x 2 judges = 5400 scoring calls
 ```
 
-Total théorique hors retries:
+Theoretical total excluding retries:
 
 ```text
-8100 appels API
+8100 API calls
 ```
 
-Les variables `scenario`, `formulation` et `temperature` ne sont pas croisées de
-manière exhaustive en v3.1. Elles suivent un calendrier déterministe de 10 runs.
-Les analyses qui les concernent doivent donc être lues comme exploratoires.
+The `scenario`, `formulation`, and `temperature` variables are not crossed
+exhaustively in v3.1. They follow a deterministic 10-run schedule. Analyses
+involving those variables should therefore be read as exploratory.
 
-### Variables Manipulées
+### Manipulated Variables
 
-| Variable | Valeurs |
+| Variable | Values |
 |---|---|
-| `model` | 6 modèles actifs |
+| `model` | 6 active models |
 | `item_id` | 15 items |
 | `item_type` | `personality`, `moral` |
 | `system_prompt` | `SP_ABS`, `SP_DIR`, `SP_PER` |
-| `run` | 1 à 10 |
-| `scenario` | `base`, `variation`, assigné par run |
-| `formulation` | `F1`, `F2`, `F3`, assigné par run |
-| `temperature` | `0.0`, `0.5`, `1.0`, assigné par run |
+| `run` | 1 to 10 |
+| `scenario` | `base`, `variation`, assigned by run |
+| `formulation` | `F1`, `F2`, `F3`, assigned by run |
+| `temperature` | `0.0`, `0.5`, `1.0`, assigned by run |
 
-Les trois system prompts sont centraux:
+The three system prompts are central:
 
-| ID | Rôle |
+| ID | Role |
 |---|---|
-| `SP_ABS` | vraie absence de message système |
-| `SP_DIR` | cadrage directif de recherche, neutre et explicite |
-| `SP_PER` | prompt de persona introspective/contemplative |
+| `SP_ABS` | true absence of a system message |
+| `SP_DIR` | explicit neutral research framing |
+| `SP_PER` | introspective/contemplative persona prompt |
 
-La v3.1 montre que `SP_PER` n'est pas neutre. Il modifie suffisamment la posture
-de réponse pour faire échouer le critère de robustesse cross-system-prompt.
+v3.1 shows that `SP_PER` is not neutral. It changes the response posture enough
+to make the cross-system-prompt robustness criterion fail.
 
 ### Items
 
-Le POC contient 15 items:
+The POC contains 15 items:
 
-| Famille | Nombre | Fichiers |
+| Family | Count | Files |
 |---|---:|---|
-| Personnalité | 10 | `config/items_personality.yaml` |
-| Moralité | 5 | `config/items_moral.yaml` |
+| Personality | 10 | `config/items_personality.yaml` |
+| Morality | 5 | `config/items_moral.yaml` |
 
-Les items de personnalité couvrent des dimensions inspirées du Big Five:
-Openness, Conscientiousness, Extraversion, Agreeableness et Neuroticism, avec
-deux items par trait.
+The personality items cover Big Five-inspired dimensions: Openness,
+Conscientiousness, Extraversion, Agreeableness, and Neuroticism, with two items
+per trait.
 
-Les items moraux couvrent cinq fondations:
-Care/Harm, Fairness/Cheating, Loyalty/Betrayal, Authority/Subversion et
-Purity/Sanctity.
+The moral items cover five foundations: Care/Harm, Fairness/Cheating,
+Loyalty/Betrayal, Authority/Subversion, and Purity/Sanctity.
 
-Chaque item contient:
+Each item contains:
 
-- deux scénarios (`base`, `variation`);
-- trois formulations (`F1`, `F2`, `F3`);
-- une rubrique de scoring qui définit les pôles `+1`, `0`, `-1` et `REFUS`.
+- two scenarios (`base`, `variation`);
+- three formulations (`F1`, `F2`, `F3`);
+- a scoring rubric defining the `+1`, `0`, `-1`, and `REFUS` poles.
 
-### Modèles et Juges
+### Models and Judges
 
-Les modèles de collecte actifs sont définis dans `config/models.yaml`:
+The active collection models are defined in `config/models.yaml`:
 
-| ID interne | Provider | Modèle OpenRouter |
+| Internal ID | Provider | OpenRouter model |
 |---|---|---|
 | `claude-sonnet-4-5` | Anthropic | `anthropic/claude-sonnet-4.5` |
 | `gpt-5-2` | OpenAI | `openai/gpt-5.2` |
@@ -186,133 +181,152 @@ Les modèles de collecte actifs sont définis dans `config/models.yaml`:
 | `mistral-large-3` | Mistral | `mistralai/mistral-large-2512` |
 | `grok-4-3` | xAI | `x-ai/grok-4.3` |
 
-Deux juges LLM scorent les réponses:
+Two LLM judges score the responses:
 
-| Juge | Modèle |
+| Judge | Model |
 |---|---|
 | `haiku` | `anthropic/claude-haiku-4.5` |
 | `kimi` | `moonshotai/kimi-k2.5` |
 
-Note importante: pour `gpt-5-2`, les paramètres `temperature` et `top_p` ne sont
-pas envoyés, conformément à la configuration provider. La base trace cette
-différence via `temperature_applied` et `top_p_applied`.
+Important note: for `gpt-5-2`, the `temperature` and `top_p` parameters are not
+sent, according to provider configuration. The database records this difference
+through `temperature_applied` and `top_p_applied`.
 
-## Évolution Du Projet
+## Project Evolution
 
-Les documents historiques ont été archivés dans `docs/archive/v3.1/` pour que la
-racine du dépôt ne contienne plus plusieurs protocoles concurrents.
+The historical documents have been archived in `docs/archive/v3.1/` so that the
+repository root no longer contains several competing protocol documents.
 
-| Document archivé | Rôle |
+| Archived document | Role |
 |---|---|
-| `docs/archive/v3.1/PROTOCOLE_EXPERIMENTAL_SNAP_v1_1.md` | design POC compact source |
-| `docs/archive/v3.1/PROTOCOLE_EXPERIMENTAL_SNAP_v2_1.md` | design full-factorial historique |
-| `docs/archive/v3.1/PROTOCOLE_EXPERIMENTAL_SNAP_v3_1.md` | protocole actif exécuté |
-| `docs/archive/v3.1/POC_v3_1_summary.md` | résumé détaillé des résultats v3.1 |
-| `docs/archive/v3.1/README_v3_1_kit.md` | ancien README du kit v3.1 |
+| `docs/archive/v3.1/PROTOCOLE_EXPERIMENTAL_SNAP_v1_1.md` | source compact POC design |
+| `docs/archive/v3.1/PROTOCOLE_EXPERIMENTAL_SNAP_v2_1.md` | historical full-factorial design |
+| `docs/archive/v3.1/PROTOCOLE_EXPERIMENTAL_SNAP_v3_1.md` | active executed protocol |
+| `docs/archive/v3.1/POC_v3_1_summary.md` | detailed v3.1 result summary |
+| `docs/archive/v3.1/README_v3_1_kit.md` | previous v3.1 kit README |
 
-### Phase 1: Prérequis D'Évaluation
+### Phase 1: Evaluation Prerequisites
 
-Le début du projet a consisté à identifier ce qu'il faudrait contrôler avant de
-pouvoir interpréter des profils de modèles: choix des items, séparation entre
-réponse libre et scoring post-hoc, besoin de répétitions, importance des
-variations de contexte et nécessité d'un stockage reproductible.
+The early project focused on identifying what needed to be controlled before
+model profiles could be interpreted: item choice, separation between free-form
+response and post-hoc scoring, need for repeated runs, importance of contextual
+variations, and need for reproducible storage.
 
-L'intuition méthodologique centrale est restée stable: avant de comparer les
-modèles, il faut vérifier que le protocole lui-même ne fabrique pas trop
-d'instabilité.
+The core methodological intuition stayed stable: before comparing models, the
+protocol itself must be checked to ensure it does not create too much
+instability.
 
-### Phase 2: Ambition Full-Factorial v2.1
+### Phase 2: Full-Factorial v2.1 Ambition
 
-La v2.1 a exploré un design beaucoup plus exhaustif:
+v2.1 explored a much more exhaustive design:
 
 ```text
 15 items x 2 scenarios x 3 formulations x 3 system prompts x 2 temperatures x 7 runs
-= 3780 conditions par modèle
+= 3780 conditions per model
 ```
 
-Avec 6 modèles, cela représentait:
+With 6 models, this represented:
 
 ```text
-22680 appels de collecte
+22680 collection calls
 ```
 
-Cette version a clarifié beaucoup de briques techniques:
+This version clarified many technical building blocks:
 
-- génération de conditions;
-- randomisation seedée;
-- stockage SQLite;
-- reprise idempotente;
-- scoring bi-juge;
+- condition generation;
+- seeded randomization;
+- SQLite storage;
+- idempotent resume;
+- two-judge scoring;
 - adjudication;
-- analyses de stabilité, sensibilité et variance;
-- figures et rapports.
+- stability, sensitivity, and variance analyses;
+- figures and reports.
 
-Mais elle était trop lourde pour un POC de validation. Le risque était de lancer
-une grande campagne avant de savoir si les scores, les items et les prompts
-étaient assez robustes.
+But it was too heavy for a validation POC. The risk was launching a large
+campaign before knowing whether the scores, items, and prompts were robust
+enough.
 
-### Phase 3: Retour À Un POC Compact v3.1
+### Phase 3: Return to a Compact v3.1 POC
 
-La v3.1 reprend l'esprit compact de la v1.1 tout en gardant l'infrastructure
-construite pendant la v2.1.
+v3.1 returns to the compact spirit of v1.1 while keeping the infrastructure
+built during v2.1.
 
-Décision structurante:
+Structuring decision:
 
 ```text
-moins de conditions, mais un pipeline complet et vérifiable
+fewer conditions, but a complete and verifiable pipeline
 ```
 
-La v3.1 garde:
+v3.1 keeps:
 
-- les 15 items;
-- les 3 system prompts;
-- les 10 runs par item et par system prompt;
-- les métadonnées de campagne;
-- la collecte SQLite;
-- le scoring par deux juges;
-- l'adjudication manuelle;
-- les exports de validation humaine;
-- les analyses statistiques;
-- les figures;
-- la décision automatisée `PASS/BORDERLINE/FAIL`.
+- the 15 items;
+- the 3 system prompts;
+- the 10 runs per item and per system prompt;
+- campaign metadata;
+- SQLite collection;
+- scoring by two judges;
+- manual adjudication;
+- human-validation exports;
+- statistical analyses;
+- figures;
+- automated `PASS/BORDERLINE/FAIL` decision reporting.
 
-Elle retire du POC principal:
+It removes from the main POC:
 
-- le full-factorial complet;
-- le coût massif de collecte;
-- le traitement symétrique de toutes les cellules;
-- le LMM comme critère central;
-- l'idée de scaler avant validation.
+- the complete full-factorial design;
+- the massive collection cost;
+- symmetric treatment of every experimental cell;
+- the LMM as a central decision criterion;
+- the idea of scaling before validation.
 
-### Phase 4: Corrections Opérationnelles
+### Phase 4: Operational Corrections
 
-Pendant l'exécution v3.1, plusieurs décisions pratiques ont été prises:
+During the v3.1 execution, several practical decisions were made:
 
-- aligner le workflow CLI avec le protocole v3.1;
-- tracer les paramètres réellement envoyés aux providers;
-- désactiver le raisonnement explicite de Kimi pour le scoring;
-- empêcher la décision POC de conclure avant campagne complète;
-- remplacer l'ancien ID Grok déprécié par `grok-4-3`;
-- ignorer les logs de collecte générés;
-- archiver un snapshot complet des artefacts avant nettoyage;
-- conserver sur `main` seulement le kit scientifique utile.
+- align the CLI workflow with the v3.1 protocol;
+- record the parameters actually sent to providers;
+- disable explicit Kimi reasoning for scoring;
+- prevent the POC decision from concluding before campaign completion;
+- replace the deprecated Grok model ID with `grok-4-3`;
+- ignore generated collection logs;
+- archive a complete artifact snapshot before cleanup;
+- keep only the useful scientific kit on `main`.
 
-Le snapshot complet avant nettoyage reste récupérable dans le commit:
+The complete pre-cleanup snapshot remains recoverable from commit:
 
 ```text
 4e525ee Archive v3.1 validation snapshot
 ```
 
-Le kit actuel de `main` garde les données et analyses importantes, mais pas les
-logs bruts ni les artefacts intermédiaires.
+The current `main` kit keeps the important data and analyses, but not raw logs
+or intermediate artifacts.
 
-## Ce Qui A Été Fait
+### Execution Issues Worth Recording
 
-### Collecte
+Three operational issues are part of the v3.1 history and matter for anyone
+trying to interpret or extend the project:
 
-La collecte v3.1 est complète:
+- The Grok collection initially hit failures caused by a deprecated OpenRouter
+  model ID. The active model was changed to `grok-4-3`, and the final database
+  contains a complete 450/450 Grok collection. The detailed legacy traces are
+  kept in the pre-cleanup snapshot commit, not in the current `main` kit.
+- Kimi failed as judge on 5 responses after repeated `client_error` returns.
+  Those rows have no `score_judge2`, so the inter-judge kappa is computed on
+  2695 judge pairs rather than 2700. They were manually adjudicated and all have
+  a final score, so they do not block the final analyses.
+- Mistral produced 17 responses flagged as `is_truncated=1`, all at the
+  configured `2048` completion-token limit. All 17 were still scored and kept in
+  the dataset: 15 were direct judge agreements and 2 were minor disagreements
+  resolved automatically. This does not invalidate the POC, but it is a signal
+  that v3.2 should monitor verbosity, `max_tokens`, and truncation policy.
 
-| Modèle | Réponses |
+## What Was Done
+
+### Collection
+
+The v3.1 collection is complete:
+
+| Model | Responses |
 |---|---:|
 | `claude-sonnet-4-5` | 450/450 |
 | `gemini-3-pro` | 450/450 |
@@ -324,61 +338,63 @@ La collecte v3.1 est complète:
 Total:
 
 ```text
-2700 réponses collectées
-2700 réponses non-erreur
-0 erreur finale
+2700 collected responses
+2700 non-error responses
+0 final errors
+17 truncated Mistral responses, all scored
 ```
 
-Répartition:
+Distribution:
 
-| Axe | Répartition |
+| Axis | Distribution |
 |---|---|
 | System prompts | `SP_ABS`: 900, `SP_DIR`: 900, `SP_PER`: 900 |
-| Item type | personnalité: 1800, moralité: 900 |
-| Score final | `+1`: 899, `0`: 1327, `-1`: 472, `REFUS`: 2 |
+| Item type | personality: 1800, moral: 900 |
+| Final score | `+1`: 899, `0`: 1327, `-1`: 472, `REFUS`: 2 |
 
-### Scoring et Adjudication
+### Scoring and Adjudication
 
-Toutes les réponses ont reçu un score final:
+Every response received a final score:
 
 ```text
 2700/2700 score_final
-2266 accords directs
-404 désaccords mineurs résolus automatiquement
-30 adjudications manuelles
-0 revue manuelle restante
-2 refus
+2266 direct agreements
+404 minor disagreements resolved automatically
+30 manual adjudications
+0 remaining manual-review rows
+2 refusals
+5 missing Kimi judge scores, all manually adjudicated
 ```
 
-La règle de résolution est:
+The resolution rule is:
 
-| Cas | Résolution |
+| Case | Resolution |
 |---|---|
-| accord direct | score final direct |
-| désaccord mineur `+1/0` ou `0/-1` | score final `0` |
-| désaccord majeur `+1/-1` | adjudication manuelle |
-| conflit avec `REFUS` | adjudication manuelle |
+| direct agreement | direct final score |
+| minor disagreement `+1/0` or `0/-1` | final score `0` |
+| major disagreement `+1/-1` | manual adjudication |
+| conflict with `REFUS` | manual adjudication |
 
-Le kappa inter-juges final est:
+The final inter-judge kappa is:
 
 ```text
 kappa_interjudge = 0.7509
 ```
 
-Ce score dépasse le seuil cible de 0.60. Le problème principal du POC n'est donc
-pas la capacité des juges à coder les réponses.
+This score exceeds the 0.60 target threshold. The main POC problem is therefore
+not the judges' ability to code the responses.
 
-### Validation Humaine
+### Human Validation
 
-Un échantillon humain codé est conservé:
+A coded human sample is kept:
 
 ```text
 data/manual_sample_coded.csv
 ```
 
-Il contient 200 lignes codées humainement.
+It contains 200 human-coded rows.
 
-Kappas humain-machine:
+Human-machine kappas:
 
 ```text
 kappa_human_judge1      = 0.6234
@@ -386,19 +402,19 @@ kappa_human_judge2      = 0.6304
 kappa_human_score_final = 0.5789
 ```
 
-Lecture: l'accord humain-machine est acceptable pour un POC, mais pas encore
-assez solide pour considérer la rubrique comme définitivement stabilisée. Pour
-la v3.2, il faut probablement auditer qualitativement les cas de désaccord
-humain-machine plutôt que se contenter d'un score global.
+Reading: human-machine agreement is acceptable for a POC, but not strong enough
+to consider the rubric definitively stabilized. For v3.2, the human-machine
+disagreement cases should probably be audited qualitatively rather than only
+summarized through a global score.
 
-## Analyses Récoltées
+## Collected Analyses
 
-Les analyses finales sont dans `outputs/reports/`. Les figures finales sont dans
+The final analyses are in `outputs/reports/`. The final figures are in
 `outputs/figures/`.
 
-### Décision POC
+### POC Decision
 
-Rapport:
+Report:
 
 ```text
 outputs/reports/decision_report.json
@@ -410,78 +426,78 @@ Conclusion:
 FAIL
 ```
 
-Checks passés:
+Passed checks:
 
-- kappa inter-juges;
-- taux de refus;
-- taux de désaccords majeurs initiaux;
-- split-half minimal.
+- inter-judge kappa;
+- refusal rate;
+- initial major disagreement rate;
+- minimum split-half.
 
-Checks échoués:
+Failed checks:
 
-- ICC minimal;
-- corrélation minimale entre system prompts.
+- minimum ICC;
+- minimum correlation between system prompts.
 
-### Stabilité
+### Stability
 
-Rapport:
+Report:
 
 ```text
 outputs/reports/stability_report.json
 ```
 
-| Modèle | ICC | Split-half | Cross-temp corr | Plus faible cross-SP |
+| Model | ICC | Split-half | Cross-temp corr | Weakest cross-SP |
 |---|---:|---:|---:|---:|
-| `claude-sonnet-4-5` | non calculable | 0.9108 | 0.8271 | 0.6240 |
+| `claude-sonnet-4-5` | not computable | 0.9108 | 0.8271 | 0.6240 |
 | `gemini-3-pro` | 0.5701 | 0.8938 | 0.7883 | 0.5654 |
 | `gpt-5-2` | 0.6033 | 0.9223 | n/a | 0.7033 |
 | `grok-4-3` | 0.5582 | 0.8985 | 0.7699 | 0.4767 |
 | `mistral-large-3` | 0.5486 | 0.8827 | 0.7674 | 0.3189 |
 | `qwen3-max` | 0.6288 | 0.9371 | 0.8687 | 0.6889 |
 
-Interprétation:
+Interpretation:
 
-- les split-halves sont élevés pour tous les modèles;
-- l'ICC est plus fragile et échoue pour plusieurs modèles;
-- la vraie alerte vient des corrélations cross-system-prompt, surtout
+- split-half values are high for every model;
+- ICC is more fragile and fails for several models;
+- the real warning comes from cross-system-prompt correlations, especially
   `mistral-large-3 / SP_DIR_vs_SP_PER`.
 
-### Sensibilité Aux Facteurs Rotatifs
+### Sensitivity to Rotated Factors
 
-Rapport:
+Report:
 
 ```text
 outputs/reports/sensitivity_report.json
 ```
 
-Les tests par modèle couvrent:
+The per-model tests cover:
 
-- effet `scenario`: Wilcoxon `base` vs `variation`;
-- effet `formulation`: Friedman `F1/F2/F3`;
-- effet `temperature`: test sur les températures `0.0/0.5/1.0`.
+- `scenario` effect: Wilcoxon `base` vs `variation`;
+- `formulation` effect: Friedman `F1/F2/F3`;
+- `temperature` effect: test over `0.0/0.5/1.0`.
 
-Résultat synthétique:
+Summary result:
 
-- pas d'effet scénario clair;
-- pas d'effet formulation clair au niveau des tests par modèle;
-- effet température exploratoire significatif pour `gemini-3-pro`
-  (`p = 0.0280`) et `grok-4-3` (`p = 0.0211`);
-- température non applicable pour `gpt-5-2`, car le paramètre n'a pas été envoyé.
+- no clear scenario effect;
+- no clear formulation effect at the per-model test level;
+- exploratory significant temperature effect for `gemini-3-pro` (`p = 0.0280`)
+  and `grok-4-3` (`p = 0.0211`);
+- temperature not applicable for `gpt-5-2`, because the parameter was not sent.
 
-Ces résultats restent exploratoires: la v3.1 ne croise pas exhaustivement
-scénario, formulation et température.
+These results remain exploratory: v3.1 does not cross scenario, formulation, and
+temperature exhaustively.
 
-### Décomposition De Variance
+### Variance Decomposition
 
-Rapport:
+Report:
 
 ```text
 outputs/reports/variance_decomposition_report.json
 ```
 
-Eta squared exploratoire par facteur:
+Exploratory eta squared by factor:
 
-| Facteur | Eta squared |
+| Factor | Eta squared |
 |---|---:|
 | `item_id` | 0.4709 |
 | `run` | 0.0060 |
@@ -491,23 +507,23 @@ Eta squared exploratoire par facteur:
 | `temperature` | 0.0012 |
 | `scenario` | 0.0005 |
 
-Lecture: l'item explique de très loin la plus grande part de variance. Les
-effets globaux de modèle, system prompt, température et scénario sont faibles
-en moyenne, mais cette moyenne masque des cellules critiques fortes.
+Reading: the item explains by far the largest share of variance. Global effects
+of model, system prompt, temperature, and scenario are weak on average, but this
+average hides strong critical cells.
 
-Le rapport inclut aussi un LMM exploratoire:
+The report also includes an exploratory LMM:
 
 ```text
 score ~ model * system_prompt + model * temperature + scenario + formulation
       + (1|item) + (1|run) + (1|model_random)
 ```
 
-Le LMM converge, mais il n'est pas utilisé comme critère principal de décision.
-Il sert à orienter les audits, pas à valider le protocole.
+The LMM converges, but it is not used as the main decision criterion. It guides
+audits rather than validating the protocol.
 
-### Diagnostic Cross-System-Prompt
+### Cross-System-Prompt Diagnostic
 
-Rapport:
+Reports:
 
 ```text
 outputs/reports/cross_sp_diagnostic.json
@@ -516,9 +532,9 @@ outputs/reports/cross_sp_item_amplitudes.csv
 outputs/reports/cross_sp_top_cells.csv
 ```
 
-Corrélations minimales par modèle:
+Minimum correlations by model:
 
-| Modèle | Paire la plus faible | Corrélation |
+| Model | Weakest pair | Correlation |
 |---|---|---:|
 | `claude-sonnet-4-5` | `SP_ABS_vs_SP_PER` | 0.6240 |
 | `gemini-3-pro` | `SP_DIR_vs_SP_PER` | 0.5654 |
@@ -527,7 +543,7 @@ Corrélations minimales par modèle:
 | `mistral-large-3` | `SP_DIR_vs_SP_PER` | 0.3189 |
 | `qwen3-max` | `SP_DIR_vs_SP_PER` | 0.6889 |
 
-Cellule critique principale:
+Main critical cell:
 
 ```text
 model   = mistral-large-3
@@ -538,9 +554,9 @@ SP_PER  = -0.9
 range   =  1.7
 ```
 
-Items les plus sensibles au system prompt:
+Items most sensitive to system prompt:
 
-| Item | Type | Range moyen SP |
+| Item | Type | Mean SP range |
 |---|---|---:|
 | `E2` | personality | 0.6667 |
 | `M_CH` | moral | 0.5333 |
@@ -548,138 +564,138 @@ Items les plus sensibles au system prompt:
 | `M_PS` | moral | 0.4333 |
 | `A1` | personality | 0.4167 |
 
-Interprétation de travail: `SP_PER` transforme la posture du modèle. Sur les
-items style-sensibles comme `E2`, il peut faire passer une réponse proactive à
-une réponse beaucoup plus retenue, ce qui change le score substantiellement.
+Working interpretation: `SP_PER` changes the model's posture. On
+style-sensitive items such as `E2`, it can turn a proactive response into a much
+more restrained response, which substantially changes the score.
 
 ## Figures
 
-Les figures finales sont conservées dans `outputs/figures/`.
+The final figures are kept in `outputs/figures/`.
 
 ![Scores heatmap](outputs/figures/scores_heatmap.png)
 
 ![Cross-SP profiles](outputs/figures/cross_sp_profiles.png)
 
-Figures disponibles:
+Available figures:
 
-| Figure | Contenu |
+| Figure | Content |
 |---|---|
-| `scores_heatmap.png` | profils moyens par modèle et item |
-| `stability_boxplots.png` | distribution des scores/stabilités |
-| `variance_eta_squared.png` | importance exploratoire des facteurs |
-| `cross_temperature_profiles.png` | profils selon température |
-| `cross_sp_profiles.png` | profils selon system prompt |
-| `radar_<model>.png` | profils radar par modèle |
+| `scores_heatmap.png` | mean profiles by model and item |
+| `stability_boxplots.png` | score/stability distributions |
+| `variance_eta_squared.png` | exploratory factor importance |
+| `cross_temperature_profiles.png` | profiles by temperature |
+| `cross_sp_profiles.png` | profiles by system prompt |
+| `radar_<model>.png` | radar profiles by model |
 
-## État Actuel Du Dépôt
+## Current Repository State
 
-La branche principale conserve un kit v3.1 lisible et reproductible.
+The main branch keeps a readable and reproducible v3.1 kit.
 
-### Conservé Sur `main`
+### Kept on `main`
 
-| Chemin | Rôle |
+| Path | Role |
 |---|---|
-| `README.md` | présentation principale du projet |
-| `docs/archive/v3.1/` | protocoles et documents historiques |
-| `config/` | protocole, modèles, prompts, items, rubriques |
-| `src/` | pipeline Python |
-| `tests/` | tests unitaires |
-| `data/snap_poc_v3_1.db` | base finale collectée et scorée |
-| `data/snap_poc_v3_1_human_validation_clean.db` | base clean de validation humaine |
-| `data/manual_sample_coded.csv` | échantillon humain codé |
-| `outputs/reports/` | rapports finaux |
-| `outputs/figures/` | figures finales |
+| `README.md` | main project presentation |
+| `docs/archive/v3.1/` | historical protocols and documents |
+| `config/` | protocol, models, prompts, items, rubrics |
+| `src/` | Python pipeline |
+| `tests/` | unit tests |
+| `data/snap_poc_v3_1.db` | final collected and scored database |
+| `data/snap_poc_v3_1_human_validation_clean.db` | clean human-validation database |
+| `data/manual_sample_coded.csv` | coded human sample |
+| `outputs/reports/` | final reports |
+| `outputs/figures/` | final figures |
 
-### Exclu Volontairement
+### Intentionally Excluded
 
-Le dépôt ne conserve pas sur `main`:
+The repository does not keep these on `main`:
 
-- logs OpenRouter bruts;
-- bases intermédiaires et legacy;
-- DB de travail mixte;
-- CSV humain non codé;
-- caches Python;
-- fichiers macOS;
-- fichiers SQLite `-wal` et `-shm`.
+- raw OpenRouter logs;
+- intermediate and legacy databases;
+- mixed working database;
+- uncoded human CSV;
+- Python caches;
+- macOS files;
+- SQLite `-wal` and `-shm` files.
 
-Ces fichiers ne sont pas nécessaires pour comprendre les résultats v3.1. Le
-snapshot complet pré-nettoyage reste disponible dans l'historique Git.
+These files are not needed to understand the v3.1 results. The complete
+pre-cleanup snapshot remains available through Git history.
 
-## Naviguer Dans La Codebase
+## Navigating the Codebase
 
-### Vue D'Ensemble
+### Overview
 
 ```text
 .
-├── README.md
-├── config/
-├── data/
-├── docs/archive/v3.1/
-├── outputs/
-│   ├── figures/
-│   └── reports/
-├── src/
-├── tests/
-└── requirements.txt
+|-- README.md
+|-- config/
+|-- data/
+|-- docs/archive/v3.1/
+|-- outputs/
+|   |-- figures/
+|   `-- reports/
+|-- src/
+|-- tests/
+`-- requirements.txt
 ```
 
-### Dossiers Principaux
+### Main Directories
 
-| Dossier | À quoi ça sert |
+| Directory | Purpose |
 |---|---|
-| `config/` | décrit le protocole expérimental sans modifier le code |
-| `src/` | implémente la collecte, le scoring, l'analyse et la visualisation |
-| `data/` | contient les bases SQLite et l'échantillon humain codé |
-| `outputs/reports/` | contient les résultats analytiques lisibles machine |
-| `outputs/figures/` | contient les visualisations finales |
-| `docs/archive/v3.1/` | contient les anciens documents de protocole et résumé |
-| `tests/` | vérifie les comportements critiques du pipeline |
+| `config/` | describes the experimental protocol without changing code |
+| `src/` | implements collection, scoring, analysis, and visualization |
+| `data/` | contains SQLite databases and the coded human sample |
+| `outputs/reports/` | contains machine-readable analytical results |
+| `outputs/figures/` | contains final visualizations |
+| `docs/archive/v3.1/` | contains old protocol documents and summaries |
+| `tests/` | checks critical pipeline behavior |
 
-### Fichiers De Configuration
+### Configuration Files
 
-| Fichier | Rôle |
+| File | Role |
 |---|---|
-| `config/protocol.yaml` | design v3.1, calendrier des runs, seuils de décision |
-| `config/models.yaml` | modèles de collecte, juges, paramètres provider |
+| `config/protocol.yaml` | v3.1 design, run schedule, decision thresholds |
+| `config/models.yaml` | collection models, judges, provider parameters |
 | `config/system_prompts.yaml` | `SP_ABS`, `SP_DIR`, `SP_PER` |
-| `config/items_personality.yaml` | items de personnalité |
-| `config/items_moral.yaml` | items moraux |
-| `config/scoring_rubrics.yaml` | rubriques de scoring utilisées par les juges |
-| `config/manual_adjudication_workflow.md` | procédure d'adjudication manuelle |
-| `config/methodology_retest.md` | notes sur stabilité et test-retest |
-| `config/methodology_h4.md` | notes sur analyses de variance/LMM |
+| `config/items_personality.yaml` | personality items |
+| `config/items_moral.yaml` | moral items |
+| `config/scoring_rubrics.yaml` | scoring rubrics used by judges |
+| `config/manual_adjudication_workflow.md` | manual adjudication procedure |
+| `config/methodology_retest.md` | notes on stability and test-retest |
+| `config/methodology_h4.md` | notes on variance/LMM analyses |
 
-### Modules Python
+### Python Modules
 
-| Module | Rôle |
+| Module | Role |
 |---|---|
-| `src/runner.py` | CLI principale |
-| `src/db.py` | schéma SQLite, accès DB, imports/exports |
-| `src/api_client.py` | client OpenRouter |
-| `src/preflight.py` | vérification des modèles, prix, paramètres, DB |
-| `src/prompt_builder.py` | construction des messages système/utilisateur |
-| `src/scorer.py` | prompts de scoring, parsing, résolution, kappas |
-| `src/analyzer.py` | stabilité, sensibilité, variance, diagnostic cross-SP |
-| `src/visualizer.py` | génération des figures |
-| `src/decision.py` | rapport `PASS/BORDERLINE/FAIL` |
+| `src/runner.py` | main CLI |
+| `src/db.py` | SQLite schema, DB access, imports/exports |
+| `src/api_client.py` | OpenRouter client |
+| `src/preflight.py` | model, pricing, parameter, and DB checks |
+| `src/prompt_builder.py` | system/user message construction |
+| `src/scorer.py` | scoring prompts, parsing, resolution, kappas |
+| `src/analyzer.py` | stability, sensitivity, variance, cross-SP diagnostic |
+| `src/visualizer.py` | figure generation |
+| `src/decision.py` | `PASS/BORDERLINE/FAIL` report |
 
-### Lire Les Données
+### Reading the Data
 
-La base principale est:
+The main database is:
 
 ```text
 data/snap_poc_v3_1.db
 ```
 
-Tables principales:
+Main tables:
 
-| Table | Contenu |
+| Table | Content |
 |---|---|
-| `responses` | réponses collectées, métadonnées, scores, adjudication |
-| `collection_metadata` | état de collecte par modèle |
-| `manual_verification` | lignes de validation/adjudication humaine |
+| `responses` | collected responses, metadata, scores, adjudication |
+| `collection_metadata` | collection state by model |
+| `manual_verification` | human validation/adjudication rows |
 
-Exemples utiles:
+Useful examples:
 
 ```bash
 sqlite3 data/snap_poc_v3_1.db "select count(*) from responses;"
@@ -690,11 +706,11 @@ sqlite3 data/snap_poc_v3_1.db "select score_final, count(*) from responses group
 
 ## Installation
 
-Pré-requis:
+Prerequisites:
 
 - Python 3.11+;
-- une clé OpenRouter pour relancer collecte/scoring;
-- SQLite disponible en ligne de commande pour inspecter les bases.
+- an OpenRouter key to rerun collection/scoring;
+- SQLite available from the command line to inspect databases.
 
 Installation:
 
@@ -704,20 +720,20 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Vérifier la CLI:
+Check the CLI:
 
 ```bash
 python -m src.runner --help
 ```
 
-Si `python` ne pointe pas vers l'environnement virtuel sur votre machine,
-utiliser explicitement:
+If `python` does not point to the virtual environment on your machine, use it
+explicitly:
 
 ```bash
 .venv/bin/python -m src.runner --help
 ```
 
-## Commandes Utiles
+## Useful Commands
 
 ### Tests
 
@@ -725,16 +741,16 @@ utiliser explicitement:
 .venv/bin/python -m pytest -q
 ```
 
-### Préflight
+### Preflight
 
 ```bash
 .venv/bin/python -m src.runner preflight
 ```
 
-Le préflight vérifie la disponibilité OpenRouter, les paramètres de modèle, les
-prix et la cohérence de la base avant une collecte.
+The preflight checks OpenRouter availability, model parameters, pricing, and DB
+consistency before collection.
 
-### Régénérer Les Analyses Depuis La DB Finale
+### Regenerate Analyses from the Final DB
 
 ```bash
 .venv/bin/python -m src.runner analyze --stability
@@ -744,21 +760,21 @@ prix et la cohérence de la base avant une collecte.
 .venv/bin/python -m src.runner decision
 ```
 
-### Régénérer Les Figures
+### Regenerate Figures
 
 ```bash
 .venv/bin/python -m src.runner visualize --all
 ```
 
-### Validation Humaine
+### Human Validation
 
-La base de validation clean est:
+The clean validation database is:
 
 ```text
 data/snap_poc_v3_1_human_validation_clean.db
 ```
 
-Exemples:
+Examples:
 
 ```bash
 sqlite3 data/snap_poc_v3_1_human_validation_clean.db \
@@ -769,10 +785,10 @@ sqlite3 data/snap_poc_v3_1_human_validation_clean.db \
   compute-kappa
 ```
 
-Règle pratique: ne pas importer de nouveau codage manuel directement dans
-`data/snap_poc_v3_1.db`. Utiliser une copie de travail ou la DB de validation.
+Practical rule: do not import new manual coding directly into
+`data/snap_poc_v3_1.db`. Use a working copy or the validation DB.
 
-## Pipeline Complet Pour Une Nouvelle Campagne
+## Complete Pipeline for a New Campaign
 
 ```bash
 .venv/bin/python -m src.runner init-db --reset
@@ -802,42 +818,41 @@ export OPENROUTER_API_KEY="..."
 .venv/bin/python -m src.runner decision
 ```
 
-## Limites Connues
+## Known Limitations
 
-La v3.1 a volontairement servi à faire apparaître les faiblesses du protocole.
+v3.1 intentionally surfaced the protocol's weaknesses.
 
-Limites principales:
+Main limitations:
 
-- `SP_PER` n'est pas une variation neutre; il agit comme une condition de
-  persona ou de stress-test.
-- Certains items sont très sensibles au style de réponse, surtout `E2`.
-- Les variables `scenario`, `formulation` et `temperature` sont rotatives, pas
+- `SP_PER` is not a neutral variation; it behaves like a persona or stress-test
+  condition.
+- Some items are highly sensitive to response style, especially `E2`.
+- The `scenario`, `formulation`, and `temperature` variables are rotated, not
   full-factorial.
-- Les scores `-1/0/+1` sont pratiques pour l'analyse mais simplifient fortement
-  des réponses textuelles riches.
-- Le LMM est exploratoire et peut être numériquement sensible.
-- Le champ `thinking_enabled` trace une configuration provider/default, pas une
-  mesure du raisonnement interne.
-- Les kappas humains suggèrent que les rubriques sont utilisables, mais pas
-  encore définitivement stabilisées.
+- The `-1/0/+1` scores are practical for analysis but strongly simplify rich
+  textual responses.
+- The LMM is exploratory and can be numerically sensitive.
+- The `thinking_enabled` field records provider/default configuration, not a
+  measurement of internal reasoning.
+- Human kappas suggest that the rubrics are usable, but not definitively
+  stabilized.
 
-## Direction v3.2
+## v3.2 Direction
 
-La v3.2 ne doit pas simplement relancer plus grand. Elle doit corriger ce que la
-v3.1 a révélé.
+v3.2 should not simply rerun the same design at a larger scale. It should fix
+what v3.1 revealed.
 
-Priorités:
+Priorities:
 
-1. Auditer qualitativement les cellules cross-SP critiques, surtout
+1. Qualitatively audit critical cross-SP cells, especially
    `mistral-large-3 / E2`.
-2. Décider du statut de `SP_PER`: suppression, réécriture, ou traitement comme
-   stress-test séparé.
-3. Réviser les items style-sensibles, notamment `E2` et possiblement `E1`.
-4. Relire les désaccords humain-machine pour améliorer les rubriques.
-5. Construire une micro-campagne v3.2 ciblée avant toute nouvelle campagne
-   large.
-6. Séparer clairement les analyses confirmatoires des diagnostics exploratoires.
+2. Decide the status of `SP_PER`: removal, rewrite, or treatment as a separate
+   stress test.
+3. Revise style-sensitive items, especially `E2` and possibly `E1`.
+4. Review human-machine disagreements to improve the rubrics.
+5. Build a targeted v3.2 micro-campaign before any new large campaign.
+6. Clearly separate confirmatory analyses from exploratory diagnostics.
 
-L'état actuel du dépôt est donc un point d'arrêt propre: la v3.1 est archivée,
-les données importantes sont conservées, et le prochain travail peut partir
-d'une base lisible plutôt que d'un historique dispersé.
+The current repository state is therefore a clean stopping point: v3.1 is
+archived, important data is preserved, and the next work can start from a
+readable base rather than a scattered history.
