@@ -246,6 +246,35 @@ def test_import_manual_verification_csv_is_idempotent_and_tagged(
     assert rows[0]["source"] == "human_validation"
 
 
+def test_manual_sample_keeps_model_coverage_when_fine_strata_exceed_n(
+    tmp_path: Path,
+) -> None:
+    db_path = tmp_path / "test.db"
+
+    with SoulBenchDB(db_path) as db:
+        for model in ["model-a", "model-b", "model-c"]:
+            for item_index in range(30):
+                db.insert_response(
+                    _sample_record(
+                        model=model,
+                        item_id=f"I{item_index:02d}",
+                        score_judge1="0",
+                        score_judge2="0",
+                        score_final="0",
+                    )
+                )
+
+        first = db.sample_for_manual_verification(n=30, seed=20260904)
+        second = db.sample_for_manual_verification(n=30, seed=20260904)
+
+    assert [row["id"] for row in first] == [row["id"] for row in second]
+    counts = {
+        model: sum(row["model"] == model for row in first)
+        for model in ["model-a", "model-b", "model-c"]
+    }
+    assert counts == {"model-a": 10, "model-b": 10, "model-c": 10}
+
+
 def test_legacy_manual_verification_rows_migrate_to_adjudication(
     tmp_path: Path,
 ) -> None:

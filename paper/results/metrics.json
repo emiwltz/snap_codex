@@ -1,0 +1,167 @@
+{
+  "seed": 20260904,
+  "bootstrap_replicates": 5000,
+  "campaign": {
+    "response_count": 2700,
+    "distinct_trial_ids": 2700,
+    "non_error_count": 2700,
+    "final_score_count": 2700,
+    "first_timestamp": "2026-05-12T04:33:25.575787+00:00",
+    "last_timestamp": "2026-05-16T15:25:05.174606+00:00",
+    "per_model": [
+      {
+        "model": "claude-sonnet-4-5",
+        "responses": 450,
+        "errors": 0,
+        "refusals": 2,
+        "truncated": 0,
+        "final_scores": 450
+      },
+      {
+        "model": "gemini-3-pro",
+        "responses": 450,
+        "errors": 0,
+        "refusals": 0,
+        "truncated": 0,
+        "final_scores": 450
+      },
+      {
+        "model": "gpt-5-2",
+        "responses": 450,
+        "errors": 0,
+        "refusals": 0,
+        "truncated": 0,
+        "final_scores": 450
+      },
+      {
+        "model": "grok-4-3",
+        "responses": 450,
+        "errors": 0,
+        "refusals": 0,
+        "truncated": 0,
+        "final_scores": 450
+      },
+      {
+        "model": "mistral-large-3",
+        "responses": 450,
+        "errors": 0,
+        "refusals": 0,
+        "truncated": 17,
+        "final_scores": 450
+      },
+      {
+        "model": "qwen3-max",
+        "responses": 450,
+        "errors": 0,
+        "refusals": 0,
+        "truncated": 0,
+        "final_scores": 450
+      }
+    ]
+  },
+  "score_counts": {
+    "0": 1327,
+    "+1": 899,
+    "-1": 472,
+    "REFUS": 2
+  },
+  "agreement_status_counts": {
+    "agree": 2266,
+    "minor_disagree": 404,
+    "manual_adjudicated": 30
+  },
+  "truncation": {
+    "count": 17,
+    "completion_tokens": {
+      "2048": 17
+    },
+    "agreement_status": {
+      "agree": 15,
+      "minor_disagree": 2
+    }
+  },
+  "judge_agreement": {
+    "n_pairs": 2695,
+    "exact_agreement": 0.8408163265306122,
+    "unweighted_kappa": 0.7509073105151067,
+    "n_ordinal_pairs": 2693,
+    "linear_weighted_kappa_ordinal_only": 0.7877422878374976,
+    "quadratic_weighted_kappa_ordinal_only": 0.8304270216587448,
+    "note": "Weighted kappas exclude pairs containing REFUS because refusal is not an ordinal pole."
+  },
+  "human_validation": {
+    "n_human_coded": 200,
+    "covered_models": 5,
+    "expected_models": 6,
+    "missing_models": [
+      "claude-sonnet-4-5"
+    ],
+    "human_vs_judge1": {
+      "n_pairs": 200,
+      "exact_agreement": 0.755,
+      "unweighted_kappa": 0.6234245312019674,
+      "n_ordinal_pairs": 200,
+      "linear_weighted_kappa_ordinal_only": 0.685382381413359,
+      "quadratic_weighted_kappa_ordinal_only": 0.7538200339558574,
+      "note": "Weighted kappas exclude pairs containing REFUS because refusal is not an ordinal pole."
+    },
+    "human_vs_judge2": {
+      "n_pairs": 200,
+      "exact_agreement": 0.755,
+      "unweighted_kappa": 0.6303839481028891,
+      "n_ordinal_pairs": 200,
+      "linear_weighted_kappa_ordinal_only": 0.6987588866128449,
+      "quadratic_weighted_kappa_ordinal_only": 0.7766323024054983,
+      "note": "Weighted kappas exclude pairs containing REFUS because refusal is not an ordinal pole."
+    },
+    "human_vs_final": {
+      "n_pairs": 200,
+      "exact_agreement": 0.72,
+      "unweighted_kappa": 0.5788998759258562,
+      "n_ordinal_pairs": 200,
+      "linear_weighted_kappa_ordinal_only": 0.6485603304766014,
+      "quadratic_weighted_kappa_ordinal_only": 0.7325475974614688,
+      "note": "Weighted kappas exclude pairs containing REFUS because refusal is not an ordinal pole."
+    },
+    "scope_warning": "The historical v3.1 human sample is not six-model representative; agreement estimates do not cover the missing model."
+  },
+  "critical_cell": {
+    "selection_note": "This cell was selected after inspecting v3.1 and is exploratory; its interval and p-value do not remove selection bias.",
+    "means": {
+      "SP_ABS": 0.8,
+      "SP_DIR": 0.6,
+      "SP_PER": -0.9
+    },
+    "range": 1.7000000000000002,
+    "contrasts": {
+      "SP_PER_minus_SP_DIR": {
+        "n_paired_runs": 10,
+        "mean_difference": -1.5,
+        "paired_bootstrap_95ci": [
+          -1.9,
+          -1.1
+        ],
+        "exact_two_sided_sign_flip_p": 0.00390625
+      },
+      "SP_PER_minus_SP_ABS": {
+        "n_paired_runs": 10,
+        "mean_difference": -1.7,
+        "paired_bootstrap_95ci": [
+          -2.0,
+          -1.4
+        ],
+        "exact_two_sided_sign_flip_p": 0.001953125
+      }
+    }
+  },
+  "minimum_cross_sp": 0.3189097664658742,
+  "variance_eta_squared": {
+    "model": 0.0025257772000419573,
+    "system_prompt": 0.0021097949015916936,
+    "temperature": 0.0011773107259675495,
+    "scenario": 0.0005257876221802187,
+    "formulation": 0.0035189250538419314,
+    "item_id": 0.47088821515818713,
+    "run": 0.005979913558217565
+  }
+}

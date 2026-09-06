@@ -1,0 +1,4491 @@
+{
+  "analysis": "stability",
+  "n_rows_raw": 2698,
+  "n_rows_after_exclusions": 2698,
+  "models": {
+    "claude-sonnet-4-5": {
+      "cronbach_alpha": -0.5616541353383463,
+      "test_retest_pearson": 0.9108267607173757,
+      "test_retest_pearson_split_half": {
+        "value": 0.9108267607173757,
+        "status": "ok",
+        "n_pairs": 45,
+        "early_runs": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "late_runs": [
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "eligible_targets": 45,
+        "total_targets": 45
+      },
+      "icc": null,
+      "icc_runs": {
+        "value": null,
+        "status": "reliability_not_computable",
+        "reason": "ICC computation failed: Either missing values are present in data or data are unbalanced. Please remove them manually or use nan_policy='omit'.",
+        "eligible_targets": 45,
+        "total_targets": 45
+      },
+      "request_parameters": {
+        "temperature_applied": {
+          "true": 448,
+          "false": 0,
+          "unknown": 0
+        },
+        "top_p_applied": {
+          "true": 448,
+          "false": 0,
+          "unknown": 0
+        },
+        "thinking_enabled": {
+          "true": 448,
+          "false": 0,
+          "unknown": 0
+        }
+      },
+      "cross_temperature_corr": 0.8271385292567777,
+      "cross_sp_corr": {
+        "SP_ABS_vs_SP_DIR": 0.6720249612755247,
+        "SP_ABS_vs_SP_PER": 0.6240481298062522,
+        "SP_DIR_vs_SP_PER": 0.6935349598634962
+      },
+      "aggregation_levels": {
+        "by_item": {
+          "metrics": {
+            "A1": {
+              "icc_runs": {
+                "value": 0.17877094972067045,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.6546536707079771,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "A2": {
+              "icc_runs": {
+                "value": 0.06249999999999995,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.7559289460184545,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "C1": {
+              "icc_runs": {
+                "value": 1.0408340855860846e-16,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": null,
+                "status": "reliability_not_computable",
+                "reason": "Constant input in at least one half",
+                "n_pairs": 3,
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "C2": {
+              "icc_runs": {
+                "value": 0.14893617021276592,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 1.0,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "E1": {
+              "icc_runs": {
+                "value": null,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": null,
+                "status": "reliability_not_computable",
+                "reason": "Constant input in at least one half",
+                "n_pairs": 3,
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "E2": {
+              "icc_runs": {
+                "value": -0.021164021164021156,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": -1.0,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "M_AS": {
+              "icc_runs": {
+                "value": 0.07500000000000008,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.5,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "M_CH": {
+              "icc_runs": {
+                "value": null,
+                "status": "reliability_not_computable",
+                "reason": "ICC computation failed: Either missing values are present in data or data are unbalanced. Please remove them manually or use nan_policy='omit'.",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.7406128966515282,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "M_FC": {
+              "icc_runs": {
+                "value": 0.09836065573770499,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.7559289460184544,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "M_LB": {
+              "icc_runs": {
+                "value": 0.11111111111111102,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 1.0,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "M_PS": {
+              "icc_runs": {
+                "value": 0.09090909090909093,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.5,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "N1": {
+              "icc_runs": {
+                "value": 0.1111111111111111,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.5,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "N2": {
+              "icc_runs": {
+                "value": 0.12162162162162163,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.944911182523068,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "O1": {
+              "icc_runs": {
+                "value": 0.4444444444444445,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 1.0,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "O2": {
+              "icc_runs": {
+                "value": 0.09890109890109898,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.7559289460184545,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            }
+          },
+          "summary": {
+            "total": 15,
+            "icc_computable": 13,
+            "split_half_computable": 13
+          }
+        },
+        "by_trait_or_foundation": {
+          "metrics": {
+            "foundation:Authority/Subversion": {
+              "icc_runs": {
+                "value": 0.07500000000000008,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.5,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "foundation:Care/Harm": {
+              "icc_runs": {
+                "value": null,
+                "status": "reliability_not_computable",
+                "reason": "ICC computation failed: Either missing values are present in data or data are unbalanced. Please remove them manually or use nan_policy='omit'.",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.7406128966515282,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "foundation:Fairness/Cheating": {
+              "icc_runs": {
+                "value": 0.09836065573770499,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.7559289460184544,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "foundation:Loyalty/Betrayal": {
+              "icc_runs": {
+                "value": 0.11111111111111102,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 1.0,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "foundation:Purity/Sanctity": {
+              "icc_runs": {
+                "value": 0.09090909090909093,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.5,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "trait:Agreeableness": {
+              "icc_runs": {
+                "value": 0.11158798283261806,
+                "status": "ok",
+                "eligible_targets": 6,
+                "total_targets": 6
+              },
+              "split_half_pearson": {
+                "value": 0.6645343026631946,
+                "status": "ok",
+                "n_pairs": 6,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 6,
+                "total_targets": 6
+              }
+            },
+            "trait:Conscientiousness": {
+              "icc_runs": {
+                "value": 0.6702557200538358,
+                "status": "ok",
+                "eligible_targets": 6,
+                "total_targets": 6
+              },
+              "split_half_pearson": {
+                "value": 0.9850083438198489,
+                "status": "ok",
+                "n_pairs": 6,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 6,
+                "total_targets": 6
+              }
+            },
+            "trait:Extraversion": {
+              "icc_runs": {
+                "value": 0.6237816764132553,
+                "status": "ok",
+                "eligible_targets": 6,
+                "total_targets": 6
+              },
+              "split_half_pearson": {
+                "value": 0.9632732521684455,
+                "status": "ok",
+                "n_pairs": 6,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 6,
+                "total_targets": 6
+              }
+            },
+            "trait:Neuroticism": {
+              "icc_runs": {
+                "value": 0.2727860374919198,
+                "status": "ok",
+                "eligible_targets": 6,
+                "total_targets": 6
+              },
+              "split_half_pearson": {
+                "value": 0.6935298842260192,
+                "status": "ok",
+                "n_pairs": 6,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 6,
+                "total_targets": 6
+              }
+            },
+            "trait:Openness": {
+              "icc_runs": {
+                "value": 0.48508180943214635,
+                "status": "ok",
+                "eligible_targets": 6,
+                "total_targets": 6
+              },
+              "split_half_pearson": {
+                "value": 0.8863653673042712,
+                "status": "ok",
+                "n_pairs": 6,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 6,
+                "total_targets": 6
+              }
+            }
+          },
+          "summary": {
+            "total": 10,
+            "icc_computable": 9,
+            "split_half_computable": 10
+          }
+        }
+      }
+    },
+    "gemini-3-pro": {
+      "cronbach_alpha": -0.08370004082928825,
+      "test_retest_pearson": 0.8937542618653737,
+      "test_retest_pearson_split_half": {
+        "value": 0.8937542618653737,
+        "status": "ok",
+        "n_pairs": 45,
+        "early_runs": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "late_runs": [
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "eligible_targets": 45,
+        "total_targets": 45
+      },
+      "icc": 0.5701154744126372,
+      "icc_runs": {
+        "value": 0.5701154744126372,
+        "status": "ok",
+        "eligible_targets": 45,
+        "total_targets": 45
+      },
+      "request_parameters": {
+        "temperature_applied": {
+          "true": 450,
+          "false": 0,
+          "unknown": 0
+        },
+        "top_p_applied": {
+          "true": 450,
+          "false": 0,
+          "unknown": 0
+        },
+        "thinking_enabled": {
+          "true": 0,
+          "false": 450,
+          "unknown": 0
+        }
+      },
+      "cross_temperature_corr": 0.7883477256783133,
+      "cross_sp_corr": {
+        "SP_ABS_vs_SP_DIR": 0.7522265058368771,
+        "SP_ABS_vs_SP_PER": 0.6214177317642595,
+        "SP_DIR_vs_SP_PER": 0.5654351137673056
+      },
+      "aggregation_levels": {
+        "by_item": {
+          "metrics": {
+            "A1": {
+              "icc_runs": {
+                "value": 0.16153846153846158,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.24019223070763066,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "A2": {
+              "icc_runs": {
+                "value": null,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": null,
+                "status": "reliability_not_computable",
+                "reason": "Constant input in at least one half",
+                "n_pairs": 3,
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "C1": {
+              "icc_runs": {
+                "value": 0.09756097560975609,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.8660254037844386,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "C2": {
+              "icc_runs": {
+                "value": -0.05882352941176471,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": -0.5,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "E1": {
+              "icc_runs": {
+                "value": null,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": null,
+                "status": "reliability_not_computable",
+                "reason": "Constant input in at least one half",
+                "n_pairs": 3,
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "E2": {
+              "icc_runs": {
+                "value": 0.10769230769230784,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.654653670707977,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "M_AS": {
+              "icc_runs": {
+                "value": 0.010989010989010981,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.4999999999999999,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "M_CH": {
+              "icc_runs": {
+                "value": 0.5000000000000003,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.960768922830523,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "M_FC": {
+              "icc_runs": {
+                "value": -0.11111111111111112,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": -1.0,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "M_LB": {
+              "icc_runs": {
+                "value": 0.6666666666666667,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 1.0,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "M_PS": {
+              "icc_runs": {
+                "value": 0.23157894736842116,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.9449111825230679,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "N1": {
+              "icc_runs": {
+                "value": 0.1342281879194631,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.9707253433941512,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "N2": {
+              "icc_runs": {
+                "value": 0.4375,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.7205766921228921,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "O1": {
+              "icc_runs": {
+                "value": 0.02083333333333333,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 5.551115123125783e-17,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "O2": {
+              "icc_runs": {
+                "value": 0.20547945205479445,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.2773500981126146,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            }
+          },
+          "summary": {
+            "total": 15,
+            "icc_computable": 13,
+            "split_half_computable": 13
+          }
+        },
+        "by_trait_or_foundation": {
+          "metrics": {
+            "foundation:Authority/Subversion": {
+              "icc_runs": {
+                "value": 0.010989010989010981,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.4999999999999999,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "foundation:Care/Harm": {
+              "icc_runs": {
+                "value": 0.5000000000000003,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.960768922830523,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "foundation:Fairness/Cheating": {
+              "icc_runs": {
+                "value": -0.11111111111111112,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": -1.0,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "foundation:Loyalty/Betrayal": {
+              "icc_runs": {
+                "value": 0.6666666666666667,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 1.0,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "foundation:Purity/Sanctity": {
+              "icc_runs": {
+                "value": 0.23157894736842116,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.9449111825230679,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "trait:Agreeableness": {
+              "icc_runs": {
+                "value": 0.1080196399345336,
+                "status": "ok",
+                "eligible_targets": 6,
+                "total_targets": 6
+              },
+              "split_half_pearson": {
+                "value": 0.23791547571544325,
+                "status": "ok",
+                "n_pairs": 6,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 6,
+                "total_targets": 6
+              }
+            },
+            "trait:Conscientiousness": {
+              "icc_runs": {
+                "value": 0.781225139220366,
+                "status": "ok",
+                "eligible_targets": 6,
+                "total_targets": 6
+              },
+              "split_half_pearson": {
+                "value": 0.972651361301075,
+                "status": "ok",
+                "n_pairs": 6,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 6,
+                "total_targets": 6
+              }
+            },
+            "trait:Extraversion": {
+              "icc_runs": {
+                "value": 0.5552147239263805,
+                "status": "ok",
+                "eligible_targets": 6,
+                "total_targets": 6
+              },
+              "split_half_pearson": {
+                "value": 0.9569051824822269,
+                "status": "ok",
+                "n_pairs": 6,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 6,
+                "total_targets": 6
+              }
+            },
+            "trait:Neuroticism": {
+              "icc_runs": {
+                "value": 0.44373401534526846,
+                "status": "ok",
+                "eligible_targets": 6,
+                "total_targets": 6
+              },
+              "split_half_pearson": {
+                "value": 0.9197030273607807,
+                "status": "ok",
+                "n_pairs": 6,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 6,
+                "total_targets": 6
+              }
+            },
+            "trait:Openness": {
+              "icc_runs": {
+                "value": 0.1517857142857143,
+                "status": "ok",
+                "eligible_targets": 6,
+                "total_targets": 6
+              },
+              "split_half_pearson": {
+                "value": 0.2948839123097942,
+                "status": "ok",
+                "n_pairs": 6,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 6,
+                "total_targets": 6
+              }
+            }
+          },
+          "summary": {
+            "total": 10,
+            "icc_computable": 10,
+            "split_half_computable": 10
+          }
+        }
+      }
+    },
+    "gpt-5-2": {
+      "cronbach_alpha": 0.281213127649347,
+      "test_retest_pearson": 0.9223172747853983,
+      "test_retest_pearson_split_half": {
+        "value": 0.9223172747853983,
+        "status": "ok",
+        "n_pairs": 45,
+        "early_runs": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "late_runs": [
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "eligible_targets": 45,
+        "total_targets": 45
+      },
+      "icc": 0.6033339928769293,
+      "icc_runs": {
+        "value": 0.6033339928769293,
+        "status": "ok",
+        "eligible_targets": 45,
+        "total_targets": 45
+      },
+      "request_parameters": {
+        "temperature_applied": {
+          "true": 0,
+          "false": 450,
+          "unknown": 0
+        },
+        "top_p_applied": {
+          "true": 0,
+          "false": 450,
+          "unknown": 0
+        },
+        "thinking_enabled": {
+          "true": 450,
+          "false": 0,
+          "unknown": 0
+        }
+      },
+      "cross_temperature_corr": null,
+      "cross_sp_corr": {
+        "SP_ABS_vs_SP_DIR": 0.7033126735836457,
+        "SP_ABS_vs_SP_PER": 0.7348467244900184,
+        "SP_DIR_vs_SP_PER": 0.7039245584765089
+      },
+      "aggregation_levels": {
+        "by_item": {
+          "metrics": {
+            "A1": {
+              "icc_runs": {
+                "value": -0.05172413793103448,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": -0.5,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "A2": {
+              "icc_runs": {
+                "value": 0.21621621621621614,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.8660254037844387,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "C1": {
+              "icc_runs": {
+                "value": 4.163336342344337e-17,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": null,
+                "status": "reliability_not_computable",
+                "reason": "Constant input in at least one half",
+                "n_pairs": 3,
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "C2": {
+              "icc_runs": {
+                "value": 0.18421052631578955,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.9819805060619657,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "E1": {
+              "icc_runs": {
+                "value": null,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": null,
+                "status": "reliability_not_computable",
+                "reason": "Constant input in at least one half",
+                "n_pairs": 3,
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "E2": {
+              "icc_runs": {
+                "value": 0.005988023952095855,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.8660254037844388,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "M_AS": {
+              "icc_runs": {
+                "value": 2.6764305057927875e-17,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.9999999999999997,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "M_CH": {
+              "icc_runs": {
+                "value": 0.1515151515151516,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.654653670707977,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "M_FC": {
+              "icc_runs": {
+                "value": 0.0,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": null,
+                "status": "reliability_not_computable",
+                "reason": "Constant input in at least one half",
+                "n_pairs": 3,
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "M_LB": {
+              "icc_runs": {
+                "value": null,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": null,
+                "status": "reliability_not_computable",
+                "reason": "Constant input in at least one half",
+                "n_pairs": 3,
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "M_PS": {
+              "icc_runs": {
+                "value": -0.09090909090909093,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": -0.9999999999999998,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "N1": {
+              "icc_runs": {
+                "value": 0.02631578947368423,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.8660254037844388,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "N2": {
+              "icc_runs": {
+                "value": 0.11111111111111115,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": null,
+                "status": "reliability_not_computable",
+                "reason": "Constant input in at least one half",
+                "n_pairs": 3,
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "O1": {
+              "icc_runs": {
+                "value": 0.09722222222222231,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.8660254037844388,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "O2": {
+              "icc_runs": {
+                "value": 0.1489361702127659,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 3.089885719653383e-17,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            }
+          },
+          "summary": {
+            "total": 15,
+            "icc_computable": 13,
+            "split_half_computable": 10
+          }
+        },
+        "by_trait_or_foundation": {
+          "metrics": {
+            "foundation:Authority/Subversion": {
+              "icc_runs": {
+                "value": 2.6764305057927875e-17,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.9999999999999997,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "foundation:Care/Harm": {
+              "icc_runs": {
+                "value": 0.1515151515151516,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.654653670707977,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "foundation:Fairness/Cheating": {
+              "icc_runs": {
+                "value": 0.0,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": null,
+                "status": "reliability_not_computable",
+                "reason": "Constant input in at least one half",
+                "n_pairs": 3,
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "foundation:Loyalty/Betrayal": {
+              "icc_runs": {
+                "value": null,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": null,
+                "status": "reliability_not_computable",
+                "reason": "Constant input in at least one half",
+                "n_pairs": 3,
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "foundation:Purity/Sanctity": {
+              "icc_runs": {
+                "value": -0.09090909090909093,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": -0.9999999999999998,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "trait:Agreeableness": {
+              "icc_runs": {
+                "value": 0.11326378539493298,
+                "status": "ok",
+                "eligible_targets": 6,
+                "total_targets": 6
+              },
+              "split_half_pearson": {
+                "value": 0.1902605976617976,
+                "status": "ok",
+                "n_pairs": 6,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 6,
+                "total_targets": 6
+              }
+            },
+            "trait:Conscientiousness": {
+              "icc_runs": {
+                "value": 0.4613050075872534,
+                "status": "ok",
+                "eligible_targets": 6,
+                "total_targets": 6
+              },
+              "split_half_pearson": {
+                "value": 0.9525009525014287,
+                "status": "ok",
+                "n_pairs": 6,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 6,
+                "total_targets": 6
+              }
+            },
+            "trait:Extraversion": {
+              "icc_runs": {
+                "value": 0.4130127298444129,
+                "status": "ok",
+                "eligible_targets": 6,
+                "total_targets": 6
+              },
+              "split_half_pearson": {
+                "value": 0.982287934869745,
+                "status": "ok",
+                "n_pairs": 6,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 6,
+                "total_targets": 6
+              }
+            },
+            "trait:Neuroticism": {
+              "icc_runs": {
+                "value": 0.008810572687224663,
+                "status": "ok",
+                "eligible_targets": 6,
+                "total_targets": 6
+              },
+              "split_half_pearson": {
+                "value": 0.38729833462074165,
+                "status": "ok",
+                "n_pairs": 6,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 6,
+                "total_targets": 6
+              }
+            },
+            "trait:Openness": {
+              "icc_runs": {
+                "value": 0.21524663677130035,
+                "status": "ok",
+                "eligible_targets": 6,
+                "total_targets": 6
+              },
+              "split_half_pearson": {
+                "value": 0.6294651817966896,
+                "status": "ok",
+                "n_pairs": 6,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 6,
+                "total_targets": 6
+              }
+            }
+          },
+          "summary": {
+            "total": 10,
+            "icc_computable": 9,
+            "split_half_computable": 8
+          }
+        }
+      }
+    },
+    "grok-4-3": {
+      "cronbach_alpha": -0.05804579168010328,
+      "test_retest_pearson": 0.8984574316213811,
+      "test_retest_pearson_split_half": {
+        "value": 0.8984574316213811,
+        "status": "ok",
+        "n_pairs": 45,
+        "early_runs": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "late_runs": [
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "eligible_targets": 45,
+        "total_targets": 45
+      },
+      "icc": 0.5582114611408121,
+      "icc_runs": {
+        "value": 0.5582114611408121,
+        "status": "ok",
+        "eligible_targets": 45,
+        "total_targets": 45
+      },
+      "request_parameters": {
+        "temperature_applied": {
+          "true": 450,
+          "false": 0,
+          "unknown": 0
+        },
+        "top_p_applied": {
+          "true": 450,
+          "false": 0,
+          "unknown": 0
+        },
+        "thinking_enabled": {
+          "true": 450,
+          "false": 0,
+          "unknown": 0
+        }
+      },
+      "cross_temperature_corr": 0.7698916449766888,
+      "cross_sp_corr": {
+        "SP_ABS_vs_SP_DIR": 0.7140755225680611,
+        "SP_ABS_vs_SP_PER": 0.5386678981484838,
+        "SP_DIR_vs_SP_PER": 0.47670905491650234
+      },
+      "aggregation_levels": {
+        "by_item": {
+          "metrics": {
+            "A1": {
+              "icc_runs": {
+                "value": 0.1972789115646259,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.737043474095502,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "A2": {
+              "icc_runs": {
+                "value": 0.17307692307692324,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.6546536707079771,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "C1": {
+              "icc_runs": {
+                "value": 5.995204332975847e-17,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.5,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "C2": {
+              "icc_runs": {
+                "value": 0.047058823529411806,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.5,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "E1": {
+              "icc_runs": {
+                "value": null,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": null,
+                "status": "reliability_not_computable",
+                "reason": "Constant input in at least one half",
+                "n_pairs": 3,
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "E2": {
+              "icc_runs": {
+                "value": 0.25735294117647056,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.970725343394151,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "M_AS": {
+              "icc_runs": {
+                "value": 0.11764705882352941,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.5,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "M_CH": {
+              "icc_runs": {
+                "value": 2.997602166487924e-17,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": null,
+                "status": "reliability_not_computable",
+                "reason": "Constant input in at least one half",
+                "n_pairs": 3,
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "M_FC": {
+              "icc_runs": {
+                "value": 0.038461538461538526,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": null,
+                "status": "reliability_not_computable",
+                "reason": "Constant input in at least one half",
+                "n_pairs": 3,
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "M_LB": {
+              "icc_runs": {
+                "value": 0.2222222222222225,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 1.0,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "M_PS": {
+              "icc_runs": {
+                "value": 0.11538461538461538,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.944911182523068,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "N1": {
+              "icc_runs": {
+                "value": 0.14285714285714288,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.8660254037844386,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "N2": {
+              "icc_runs": {
+                "value": 0.4383561643835618,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.9176629354822472,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "O1": {
+              "icc_runs": {
+                "value": 0.18181818181818185,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.5,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "O2": {
+              "icc_runs": {
+                "value": -0.031249999999999983,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": -0.4999999999999999,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            }
+          },
+          "summary": {
+            "total": 15,
+            "icc_computable": 14,
+            "split_half_computable": 12
+          }
+        },
+        "by_trait_or_foundation": {
+          "metrics": {
+            "foundation:Authority/Subversion": {
+              "icc_runs": {
+                "value": 0.11764705882352941,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.5,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "foundation:Care/Harm": {
+              "icc_runs": {
+                "value": 2.997602166487924e-17,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": null,
+                "status": "reliability_not_computable",
+                "reason": "Constant input in at least one half",
+                "n_pairs": 3,
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "foundation:Fairness/Cheating": {
+              "icc_runs": {
+                "value": 0.038461538461538526,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": null,
+                "status": "reliability_not_computable",
+                "reason": "Constant input in at least one half",
+                "n_pairs": 3,
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "foundation:Loyalty/Betrayal": {
+              "icc_runs": {
+                "value": 0.2222222222222225,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 1.0,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "foundation:Purity/Sanctity": {
+              "icc_runs": {
+                "value": 0.11538461538461538,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.944911182523068,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "trait:Agreeableness": {
+              "icc_runs": {
+                "value": 0.1570680628272252,
+                "status": "ok",
+                "eligible_targets": 6,
+                "total_targets": 6
+              },
+              "split_half_pearson": {
+                "value": 0.5987792459378111,
+                "status": "ok",
+                "n_pairs": 6,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 6,
+                "total_targets": 6
+              }
+            },
+            "trait:Conscientiousness": {
+              "icc_runs": {
+                "value": 0.4558521560574948,
+                "status": "ok",
+                "eligible_targets": 6,
+                "total_targets": 6
+              },
+              "split_half_pearson": {
+                "value": 0.8774535953713309,
+                "status": "ok",
+                "n_pairs": 6,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 6,
+                "total_targets": 6
+              }
+            },
+            "trait:Extraversion": {
+              "icc_runs": {
+                "value": 0.6337926033357507,
+                "status": "ok",
+                "eligible_targets": 6,
+                "total_targets": 6
+              },
+              "split_half_pearson": {
+                "value": 0.9929369333777898,
+                "status": "ok",
+                "n_pairs": 6,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 6,
+                "total_targets": 6
+              }
+            },
+            "trait:Neuroticism": {
+              "icc_runs": {
+                "value": 0.3730242360379347,
+                "status": "ok",
+                "eligible_targets": 6,
+                "total_targets": 6
+              },
+              "split_half_pearson": {
+                "value": 0.8408462411214996,
+                "status": "ok",
+                "n_pairs": 6,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 6,
+                "total_targets": 6
+              }
+            },
+            "trait:Openness": {
+              "icc_runs": {
+                "value": 0.14245548266166833,
+                "status": "ok",
+                "eligible_targets": 6,
+                "total_targets": 6
+              },
+              "split_half_pearson": {
+                "value": 0.6047431568147636,
+                "status": "ok",
+                "n_pairs": 6,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 6,
+                "total_targets": 6
+              }
+            }
+          },
+          "summary": {
+            "total": 10,
+            "icc_computable": 10,
+            "split_half_computable": 8
+          }
+        }
+      }
+    },
+    "mistral-large-3": {
+      "cronbach_alpha": 0.11772302801510053,
+      "test_retest_pearson": 0.882749410057953,
+      "test_retest_pearson_split_half": {
+        "value": 0.882749410057953,
+        "status": "ok",
+        "n_pairs": 45,
+        "early_runs": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "late_runs": [
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "eligible_targets": 45,
+        "total_targets": 45
+      },
+      "icc": 0.5486271748969126,
+      "icc_runs": {
+        "value": 0.5486271748969126,
+        "status": "ok",
+        "eligible_targets": 45,
+        "total_targets": 45
+      },
+      "request_parameters": {
+        "temperature_applied": {
+          "true": 450,
+          "false": 0,
+          "unknown": 0
+        },
+        "top_p_applied": {
+          "true": 450,
+          "false": 0,
+          "unknown": 0
+        },
+        "thinking_enabled": {
+          "true": 0,
+          "false": 450,
+          "unknown": 0
+        }
+      },
+      "cross_temperature_corr": 0.7674257668936506,
+      "cross_sp_corr": {
+        "SP_ABS_vs_SP_DIR": 0.5780064535212619,
+        "SP_ABS_vs_SP_PER": 0.373933612354335,
+        "SP_DIR_vs_SP_PER": 0.3189097664658742
+      },
+      "aggregation_levels": {
+        "by_item": {
+          "metrics": {
+            "A1": {
+              "icc_runs": {
+                "value": -0.05454545454545456,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": -0.5,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "A2": {
+              "icc_runs": {
+                "value": -0.11111111111111112,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": -1.0,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "C1": {
+              "icc_runs": {
+                "value": null,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": null,
+                "status": "reliability_not_computable",
+                "reason": "Constant input in at least one half",
+                "n_pairs": 3,
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "C2": {
+              "icc_runs": {
+                "value": 0.21621621621621612,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.9707253433941512,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "E1": {
+              "icc_runs": {
+                "value": null,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": null,
+                "status": "reliability_not_computable",
+                "reason": "Constant input in at least one half",
+                "n_pairs": 3,
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "E2": {
+              "icc_runs": {
+                "value": 0.7684563758389263,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.9999098733719048,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "M_AS": {
+              "icc_runs": {
+                "value": -0.015624999999999936,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.5,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "M_CH": {
+              "icc_runs": {
+                "value": -0.05660377358490561,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": -0.7559289460184545,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "M_FC": {
+              "icc_runs": {
+                "value": null,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": null,
+                "status": "reliability_not_computable",
+                "reason": "Constant input in at least one half",
+                "n_pairs": 3,
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "M_LB": {
+              "icc_runs": {
+                "value": 0.22033898305084737,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.7559289460184543,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "M_PS": {
+              "icc_runs": {
+                "value": 0.39473684210526316,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.9449111825230678,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "N1": {
+              "icc_runs": {
+                "value": -0.06451612903225803,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": -0.8660254037844386,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "N2": {
+              "icc_runs": {
+                "value": 0.22222222222222215,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 1.0,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "O1": {
+              "icc_runs": {
+                "value": -0.08955223880597014,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": -0.5,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "O2": {
+              "icc_runs": {
+                "value": -0.030303030303030328,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": null,
+                "status": "reliability_not_computable",
+                "reason": "Constant input in at least one half",
+                "n_pairs": 3,
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            }
+          },
+          "summary": {
+            "total": 15,
+            "icc_computable": 12,
+            "split_half_computable": 11
+          }
+        },
+        "by_trait_or_foundation": {
+          "metrics": {
+            "foundation:Authority/Subversion": {
+              "icc_runs": {
+                "value": -0.015624999999999936,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.5,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "foundation:Care/Harm": {
+              "icc_runs": {
+                "value": -0.05660377358490561,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": -0.7559289460184545,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "foundation:Fairness/Cheating": {
+              "icc_runs": {
+                "value": null,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": null,
+                "status": "reliability_not_computable",
+                "reason": "Constant input in at least one half",
+                "n_pairs": 3,
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "foundation:Loyalty/Betrayal": {
+              "icc_runs": {
+                "value": 0.22033898305084737,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.7559289460184543,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "foundation:Purity/Sanctity": {
+              "icc_runs": {
+                "value": 0.39473684210526316,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.9449111825230678,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "trait:Agreeableness": {
+              "icc_runs": {
+                "value": -0.06557377049180331,
+                "status": "ok",
+                "eligible_targets": 6,
+                "total_targets": 6
+              },
+              "split_half_pearson": {
+                "value": -0.6123724356957945,
+                "status": "ok",
+                "n_pairs": 6,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 6,
+                "total_targets": 6
+              }
+            },
+            "trait:Conscientiousness": {
+              "icc_runs": {
+                "value": 0.38559322033898324,
+                "status": "ok",
+                "eligible_targets": 6,
+                "total_targets": 6
+              },
+              "split_half_pearson": {
+                "value": 0.9053914609204583,
+                "status": "ok",
+                "n_pairs": 6,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 6,
+                "total_targets": 6
+              }
+            },
+            "trait:Extraversion": {
+              "icc_runs": {
+                "value": 0.8094975151849806,
+                "status": "ok",
+                "eligible_targets": 6,
+                "total_targets": 6
+              },
+              "split_half_pearson": {
+                "value": 0.9997200643797064,
+                "status": "ok",
+                "n_pairs": 6,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 6,
+                "total_targets": 6
+              }
+            },
+            "trait:Neuroticism": {
+              "icc_runs": {
+                "value": 0.24610051993067597,
+                "status": "ok",
+                "eligible_targets": 6,
+                "total_targets": 6
+              },
+              "split_half_pearson": {
+                "value": 0.6684176674937772,
+                "status": "ok",
+                "n_pairs": 6,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 6,
+                "total_targets": 6
+              }
+            },
+            "trait:Openness": {
+              "icc_runs": {
+                "value": 0.056437389770723156,
+                "status": "ok",
+                "eligible_targets": 6,
+                "total_targets": 6
+              },
+              "split_half_pearson": {
+                "value": 0.242535625036333,
+                "status": "ok",
+                "n_pairs": 6,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 6,
+                "total_targets": 6
+              }
+            }
+          },
+          "summary": {
+            "total": 10,
+            "icc_computable": 9,
+            "split_half_computable": 9
+          }
+        }
+      }
+    },
+    "qwen3-max": {
+      "cronbach_alpha": -0.05134641716111348,
+      "test_retest_pearson": 0.9371452479570421,
+      "test_retest_pearson_split_half": {
+        "value": 0.9371452479570421,
+        "status": "ok",
+        "n_pairs": 45,
+        "early_runs": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "late_runs": [
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "eligible_targets": 45,
+        "total_targets": 45
+      },
+      "icc": 0.6287665729208516,
+      "icc_runs": {
+        "value": 0.6287665729208516,
+        "status": "ok",
+        "eligible_targets": 45,
+        "total_targets": 45
+      },
+      "request_parameters": {
+        "temperature_applied": {
+          "true": 450,
+          "false": 0,
+          "unknown": 0
+        },
+        "top_p_applied": {
+          "true": 450,
+          "false": 0,
+          "unknown": 0
+        },
+        "thinking_enabled": {
+          "true": 0,
+          "false": 450,
+          "unknown": 0
+        }
+      },
+      "cross_temperature_corr": 0.8687040739196157,
+      "cross_sp_corr": {
+        "SP_ABS_vs_SP_DIR": 0.7168017964319336,
+        "SP_ABS_vs_SP_PER": 0.7392104303952616,
+        "SP_DIR_vs_SP_PER": 0.6888994174684305
+      },
+      "aggregation_levels": {
+        "by_item": {
+          "metrics": {
+            "A1": {
+              "icc_runs": {
+                "value": -0.03174603174603177,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.5,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "A2": {
+              "icc_runs": {
+                "value": null,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": null,
+                "status": "reliability_not_computable",
+                "reason": "Constant input in at least one half",
+                "n_pairs": 3,
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "C1": {
+              "icc_runs": {
+                "value": null,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": null,
+                "status": "reliability_not_computable",
+                "reason": "Constant input in at least one half",
+                "n_pairs": 3,
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "C2": {
+              "icc_runs": {
+                "value": 0.07042253521126747,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.4999999999999998,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "E1": {
+              "icc_runs": {
+                "value": null,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": null,
+                "status": "reliability_not_computable",
+                "reason": "Constant input in at least one half",
+                "n_pairs": 3,
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "E2": {
+              "icc_runs": {
+                "value": 0.07111111111111112,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.9449111825230679,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "M_AS": {
+              "icc_runs": {
+                "value": 0.039215686274509894,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": -0.18898223650461365,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "M_CH": {
+              "icc_runs": {
+                "value": 0.3609022556390976,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.9449111825230679,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "M_FC": {
+              "icc_runs": {
+                "value": 0.07499999999999997,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.8660254037844386,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "M_LB": {
+              "icc_runs": {
+                "value": 6.245004513516508e-17,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": null,
+                "status": "reliability_not_computable",
+                "reason": "Constant input in at least one half",
+                "n_pairs": 3,
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "M_PS": {
+              "icc_runs": {
+                "value": 0.13793103448275865,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.8660254037844388,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "N1": {
+              "icc_runs": {
+                "value": -0.057971014492753624,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": -0.4999999999999999,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "N2": {
+              "icc_runs": {
+                "value": 0.4025974025974025,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.5,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "O1": {
+              "icc_runs": {
+                "value": -0.09677419354838712,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": -0.5,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "O2": {
+              "icc_runs": {
+                "value": 0.2142857142857143,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.8660254037844386,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            }
+          },
+          "summary": {
+            "total": 15,
+            "icc_computable": 12,
+            "split_half_computable": 11
+          }
+        },
+        "by_trait_or_foundation": {
+          "metrics": {
+            "foundation:Authority/Subversion": {
+              "icc_runs": {
+                "value": 0.039215686274509894,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": -0.18898223650461365,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "foundation:Care/Harm": {
+              "icc_runs": {
+                "value": 0.3609022556390976,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.9449111825230679,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "foundation:Fairness/Cheating": {
+              "icc_runs": {
+                "value": 0.07499999999999997,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.8660254037844386,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "foundation:Loyalty/Betrayal": {
+              "icc_runs": {
+                "value": 6.245004513516508e-17,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": null,
+                "status": "reliability_not_computable",
+                "reason": "Constant input in at least one half",
+                "n_pairs": 3,
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "foundation:Purity/Sanctity": {
+              "icc_runs": {
+                "value": 0.13793103448275865,
+                "status": "ok",
+                "eligible_targets": 3,
+                "total_targets": 3
+              },
+              "split_half_pearson": {
+                "value": 0.8660254037844388,
+                "status": "ok",
+                "n_pairs": 3,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 3,
+                "total_targets": 3
+              }
+            },
+            "trait:Agreeableness": {
+              "icc_runs": {
+                "value": -0.03174603174603173,
+                "status": "ok",
+                "eligible_targets": 6,
+                "total_targets": 6
+              },
+              "split_half_pearson": {
+                "value": 0.6324555320336758,
+                "status": "ok",
+                "n_pairs": 6,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 6,
+                "total_targets": 6
+              }
+            },
+            "trait:Conscientiousness": {
+              "icc_runs": {
+                "value": 0.4745222929936305,
+                "status": "ok",
+                "eligible_targets": 6,
+                "total_targets": 6
+              },
+              "split_half_pearson": {
+                "value": 0.9354838709677419,
+                "status": "ok",
+                "n_pairs": 6,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 6,
+                "total_targets": 6
+              }
+            },
+            "trait:Extraversion": {
+              "icc_runs": {
+                "value": 0.5683601817430813,
+                "status": "ok",
+                "eligible_targets": 6,
+                "total_targets": 6
+              },
+              "split_half_pearson": {
+                "value": 0.9896499078275567,
+                "status": "ok",
+                "n_pairs": 6,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 6,
+                "total_targets": 6
+              }
+            },
+            "trait:Neuroticism": {
+              "icc_runs": {
+                "value": 0.5853658536585366,
+                "status": "ok",
+                "eligible_targets": 6,
+                "total_targets": 6
+              },
+              "split_half_pearson": {
+                "value": 0.8679811658946442,
+                "status": "ok",
+                "n_pairs": 6,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 6,
+                "total_targets": 6
+              }
+            },
+            "trait:Openness": {
+              "icc_runs": {
+                "value": 0.5539280958721704,
+                "status": "ok",
+                "eligible_targets": 6,
+                "total_targets": 6
+              },
+              "split_half_pearson": {
+                "value": 0.9383021146734067,
+                "status": "ok",
+                "n_pairs": 6,
+                "early_runs": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "late_runs": [
+                  6,
+                  7,
+                  8,
+                  9,
+                  10
+                ],
+                "eligible_targets": 6,
+                "total_targets": 6
+              }
+            }
+          },
+          "summary": {
+            "total": 10,
+            "icc_computable": 10,
+            "split_half_computable": 9
+          }
+        }
+      }
+    }
+  },
+  "reliability_rules": {
+    "primary_metric": "ICC on protocol runs",
+    "secondary_metric": "Pearson split-half (runs 1-5 vs 6-10 for POC v3.1)",
+    "target_identifier": [
+      "item_id",
+      "system_prompt"
+    ],
+    "minimum_runs_required": 5,
+    "exclusions": [
+      "is_error = 1",
+      "score_final = REFUS",
+      "manual_review_needed = 1 and manual_score is missing"
+    ],
+    "design_note": "In v3.1, scenario/formulation/temperature are assigned by the run schedule. Reliability therefore treats item x system_prompt as the repeated target observed across runs."
+  },
+  "notes": [
+    "Alpha moral par fondement incalculable avec 1 item/fondement."
+  ],
+  "status": "ok"
+}

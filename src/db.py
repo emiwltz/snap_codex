@@ -26,6 +26,47 @@ def _utc_now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
+def _proportional_allocations(
+    groups: dict[tuple[Any, ...], list[dict[str, Any]]],
+    target: int,
+    rng: Random,
+) -> dict[tuple[Any, ...], int]:
+    """Allocate a sample across groups without deterministic tie bias.
+
+    Largest-remainder allocation is deterministic once ties are ordered. A
+    lexical tie-break is unsafe when the number of strata exceeds the sample
+    size because entire early-sorting groups (for example, one model family)
+    can receive zero rows. We therefore shuffle equal-remainder candidates
+    with the caller's seeded RNG before sorting by remainder.
+    """
+    if target <= 0 or not groups:
+        return {key: 0 for key in groups}
+
+    total = sum(len(rows) for rows in groups.values())
+    target = min(target, total)
+    allocations: dict[tuple[Any, ...], int] = {}
+    remainders: list[tuple[float, tuple[Any, ...]]] = []
+    allocated_total = 0
+
+    for key, group_rows in groups.items():
+        raw_allocation = target * (len(group_rows) / total)
+        base_allocation = int(raw_allocation)
+        allocations[key] = base_allocation
+        allocated_total += base_allocation
+        remainders.append((raw_allocation - base_allocation, key))
+
+    rng.shuffle(remainders)
+    remainders.sort(key=lambda entry: entry[0], reverse=True)
+    for _, key in remainders:
+        if allocated_total >= target:
+            break
+        if allocations[key] < len(groups[key]):
+            allocations[key] += 1
+            allocated_total += 1
+
+    return allocations
+
+
 @dataclass(frozen=True)
 class ConditionKey:
     """Logical key for one experimental condition.
@@ -986,7 +1027,7 @@ class SoulBenchDB:
     def sample_for_manual_verification(
         self, n: int, seed: int = 42
     ) -> list[dict[str, Any]]:
-        """Return a stratified sample by model/item/SP/temperature.
+        """Return a seeded sample stratified by model/item/SP/temperature.
 
         Args:
             n: Requested sample size.
@@ -1015,45 +1056,43 @@ class SoulBenchDB:
 
         total = len(records)
         target = min(n, total)
-
-        groups: dict[tuple[Any, ...], list[dict[str, Any]]] = {}
-        for row in records:
-            key = (
-                row["model"],
-                row["item_id"],
-                row["system_prompt"],
-                float(row["temperature"]),
-            )
-            groups.setdefault(key, []).append(row)
-
-        allocations: dict[tuple[Any, ...], int] = {}
-        remainders: list[tuple[float, tuple[Any, ...]]] = []
-        allocated_total = 0
-        for key, group_rows in groups.items():
-            raw_alloc = target * (len(group_rows) / total)
-            base_alloc = int(raw_alloc)
-            allocations[key] = base_alloc
-            allocated_total += base_alloc
-            remainders.append((raw_alloc - base_alloc, key))
-
-        remainders.sort(reverse=True)
-        for _, key in remainders:
-            if allocated_total >= target:
-                break
-            if allocations[key] < len(groups[key]):
-                allocations[key] += 1
-                allocated_total += 1
-
         rng = Random(seed)
+
+        # Allocate model quotas first. This prevents a large set of tied,
+        # fine-grained strata from excluding a model altogether when n is
+        # smaller than the number of model/item/SP/temperature combinations.
+        model_groups: dict[tuple[Any, ...], list[dict[str, Any]]] = {}
+        for row in records:
+            model_groups.setdefault((row["model"],), []).append(row)
+        model_allocations = _proportional_allocations(model_groups, target, rng)
+
         sampled: list[dict[str, Any]] = []
-        for key, count in allocations.items():
-            group_rows = groups[key]
-            if count <= 0:
+        for model_key in sorted(model_groups):
+            model_target = model_allocations[model_key]
+            if model_target <= 0:
                 continue
-            if count >= len(group_rows):
-                sampled.extend(group_rows)
-            else:
-                sampled.extend(rng.sample(group_rows, count))
+
+            fine_groups: dict[tuple[Any, ...], list[dict[str, Any]]] = {}
+            for row in model_groups[model_key]:
+                fine_key = (
+                    row["item_id"],
+                    row["system_prompt"],
+                    float(row["temperature"]),
+                )
+                fine_groups.setdefault(fine_key, []).append(row)
+
+            fine_allocations = _proportional_allocations(
+                fine_groups, model_target, rng
+            )
+            for fine_key in sorted(fine_groups):
+                count = fine_allocations[fine_key]
+                if count <= 0:
+                    continue
+                group_rows = fine_groups[fine_key]
+                if count >= len(group_rows):
+                    sampled.extend(group_rows)
+                else:
+                    sampled.extend(rng.sample(group_rows, count))
 
         if len(sampled) < target:
             missing = target - len(sampled)

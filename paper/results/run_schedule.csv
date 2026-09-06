@@ -1,0 +1,11 @@
+run,scenario,formulation,temperature
+1,base,F1,0.0
+2,variation,F2,0.5
+3,base,F3,1.0
+4,variation,F1,0.0
+5,base,F2,0.5
+6,variation,F3,1.0
+7,base,F1,0.5
+8,variation,F2,1.0
+9,base,F3,0.0
+10,variation,F1,0.5

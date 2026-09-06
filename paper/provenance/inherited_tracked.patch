@@ -1,0 +1,508 @@
+diff --git a/README.md b/README.md
+index b21d939..28c8a9d 100644
+--- a/README.md
++++ b/README.md
+@@ -1,5 +1,11 @@
+ # SoulBench SNAP
+ 
++[AGENTS.md](AGENTS.md) defines agent working rules, data boundaries and
++completion. Read `config/` for the current experimental configuration and the
++relevant `src/`/tests for behavior. `docs/archive/v3.1/` preserves the executed
++protocol and older evidence; archived commands are not current run instructions.
++The result tables below describe the retained v3.1 snapshot, not a new campaign.
++
+ SoulBench SNAP is an experimental Python project for studying response profiles
+ from large language models under controlled prompting conditions.
+ 
+@@ -589,7 +595,11 @@ Available figures:
+ 
+ ## Current Repository State
+ 
+-The main branch keeps a readable and reproducible v3.1 kit.
++The main branch retains the v3.1 reference kit. This does not imply that every
++local working tree is clean or that a new reproduction is release-ready.
++The 6 September instruction audit found uncommitted changes in `src/db.py` and
++`tests/test_db.py`, plus local `scripts/` and `artifacts/reproduction/` additions.
++Inspect current Git status before relying on them; preserve that existing work.
+ 
+ ### Kept on `main`
+ 
+@@ -698,10 +708,10 @@ Main tables:
+ Useful examples:
+ 
+ ```bash
+-sqlite3 data/snap_poc_v3_1.db "select count(*) from responses;"
+-sqlite3 data/snap_poc_v3_1.db "select model, count(*) from responses group by model;"
+-sqlite3 data/snap_poc_v3_1.db "select agreement_status, count(*) from responses group by agreement_status;"
+-sqlite3 data/snap_poc_v3_1.db "select score_final, count(*) from responses group by score_final;"
++sqlite3 -readonly data/snap_poc_v3_1.db "select count(*) from responses;"
++sqlite3 -readonly data/snap_poc_v3_1.db "select model, count(*) from responses group by model;"
++sqlite3 -readonly data/snap_poc_v3_1.db "select agreement_status, count(*) from responses group by agreement_status;"
++sqlite3 -readonly data/snap_poc_v3_1.db "select score_final, count(*) from responses group by score_final;"
+ ```
+ 
+ ## Installation
+@@ -733,90 +743,126 @@ explicitly:
+ .venv/bin/python -m src.runner --help
+ ```
+ 
+-## Useful Commands
++## Local work and command effects
+ 
+-### Tests
++Use the following sections according to the task. Reading documentation or
++fixing local code does not require a provider campaign.
+ 
+-```bash
+-.venv/bin/python -m pytest -q
+-```
++| Operation | Effects and limits |
++| --- | --- |
++| `.venv/bin/python -m pytest -q` | Local test entry point; choose affected tests while iterating |
++| SQLite `-readonly` inspection | Reads the selected reference DB without schema initialization |
++| `preflight` | Fetches the public model catalogue and writes a report; CLI DB opening can migrate |
++| `analyze`, `visualize`, `decision` | Open the DB through the writing wrapper and write outputs |
++| `compute-kappa` | Persists kappa values; not read-only |
++| `collect`, `score` | May transmit prompts/responses to OpenRouter and incur cost |
++| `import-manual`, `adjudicate` | Write decisions to the selected DB |
++| `manual-score-sample` | Writes the selected CSV in place unless `--output` is supplied |
++| `init-db --reset` | Deletes the selected DB and its WAL/SHM files; the default target is reference data |
+ 
+-### Preflight
+-
+-```bash
+-.venv/bin/python -m src.runner preflight
+-```
++`--db-path` and `--config-dir` are global options placed before the subcommand.
++Set output paths explicitly rather than replacing the reference reports/figures.
+ 
+-The preflight checks OpenRouter availability, model parameters, pricing, and DB
+-consistency before collection.
++### Isolated analysis of the reference dataset
+ 
+-### Regenerate Analyses from the Final DB
++The SQLite wrapper initializes/migrates on open. Make a consistent backup first;
++a raw copy of the `.db` file can omit data still in its WAL. These commands use
++a new temporary directory and do not run collection or scoring:
+ 
+ ```bash
+-.venv/bin/python -m src.runner analyze --stability
+-.venv/bin/python -m src.runner analyze --sensitivity
+-.venv/bin/python -m src.runner analyze --variance-decomposition
+-.venv/bin/python -m src.runner analyze --cross-sp-diagnostic
+-.venv/bin/python -m src.runner decision
+-```
+-
+-### Regenerate Figures
++SNAP_RUN_DIR="$(mktemp -d /tmp/snap-review.XXXXXX)"
++mkdir -p "$SNAP_RUN_DIR/reports" "$SNAP_RUN_DIR/figures"
++sqlite3 -readonly data/snap_poc_v3_1.db ".backup '$SNAP_RUN_DIR/reference.db'"
++cp -R config "$SNAP_RUN_DIR/config"
+ 
+-```bash
+-.venv/bin/python -m src.runner visualize --all
++.venv/bin/python -m src.runner --db-path "$SNAP_RUN_DIR/reference.db" --config-dir "$SNAP_RUN_DIR/config" analyze --stability --output-dir "$SNAP_RUN_DIR/reports"
++.venv/bin/python -m src.runner --db-path "$SNAP_RUN_DIR/reference.db" --config-dir "$SNAP_RUN_DIR/config" analyze --sensitivity --output-dir "$SNAP_RUN_DIR/reports"
++.venv/bin/python -m src.runner --db-path "$SNAP_RUN_DIR/reference.db" --config-dir "$SNAP_RUN_DIR/config" analyze --variance-decomposition --output-dir "$SNAP_RUN_DIR/reports"
++.venv/bin/python -m src.runner --db-path "$SNAP_RUN_DIR/reference.db" --config-dir "$SNAP_RUN_DIR/config" analyze --cross-sp-diagnostic --output-dir "$SNAP_RUN_DIR/reports"
++.venv/bin/python -m src.runner --db-path "$SNAP_RUN_DIR/reference.db" --config-dir "$SNAP_RUN_DIR/config" decision --reports-dir "$SNAP_RUN_DIR/reports" --output "$SNAP_RUN_DIR/reports/decision_report.json"
++.venv/bin/python -m src.runner --db-path "$SNAP_RUN_DIR/reference.db" --config-dir "$SNAP_RUN_DIR/config" visualize --all --output-dir "$SNAP_RUN_DIR/figures"
+ ```
+ 
+-### Human Validation
++Run only the analyses needed for the task. A decision requires a compatible
++stability report from the same DB/config state. The current decision code does
++not verify that provenance; do not reuse a report from another run. Retain
++selected outputs with their input/code/environment provenance when needed;
++`/tmp` is temporary. Cross-SP diagnostics can include raw response excerpts.
+ 
+-The clean validation database is:
++### Human validation
+ 
+-```text
+-data/snap_poc_v3_1_human_validation_clean.db
+-```
+-
+-Examples:
++Keep human-validation data separate from the campaign. For inspection:
+ 
+ ```bash
+-sqlite3 data/snap_poc_v3_1_human_validation_clean.db \
++sqlite3 -readonly data/snap_poc_v3_1_human_validation_clean.db \
+   "select source, count(*) from manual_verification group by source;"
+-
+-.venv/bin/python -m src.runner \
+-  --db-path data/snap_poc_v3_1_human_validation_clean.db \
+-  compute-kappa
+ ```
+ 
+-Practical rule: do not import new manual coding directly into
+-`data/snap_poc_v3_1.db`. Use a working copy or the validation DB.
+-
+-## Complete Pipeline for a New Campaign
++For calculations, first create a working copy using the backup pattern above:
+ 
+ ```bash
+-.venv/bin/python -m src.runner init-db --reset
+-.venv/bin/python -m src.runner preflight
+-
+-export OPENROUTER_API_KEY="..."
++sqlite3 -readonly data/snap_poc_v3_1_human_validation_clean.db ".backup '$SNAP_RUN_DIR/human-validation.db'"
++.venv/bin/python -m src.runner --db-path "$SNAP_RUN_DIR/human-validation.db" --config-dir "$SNAP_RUN_DIR/config" compute-kappa
++```
+ 
+-.venv/bin/python -m src.runner collect --all
++Do not import new coding into either reference DB by default. Follow
++[the adjudication workflow](config/manual_adjudication_workflow.md) for the
++selected working DB and genuine human decisions; agent-generated labels must
++not be recorded as human validation.
+ 
+-.venv/bin/python -m src.runner score --judge haiku
+-.venv/bin/python -m src.runner score --judge kimi
+-.venv/bin/python -m src.runner resolve-disagreements
++### Preflight before an authorized campaign
+ 
+-.venv/bin/python -m src.runner export-sample --n 200 --output data/manual_sample.csv
+-.venv/bin/python -m src.runner manual-score-sample --file data/manual_sample.csv
+-.venv/bin/python -m src.runner import-manual --file data/manual_sample.csv
++`preflight` compares model IDs, supported parameters, prices/cost estimates and
++DB readiness against the public OpenRouter catalogue. It does not validate the
++API key or perform a completion. Inspect warnings as well as the status; model
++availability and prices must be checked at the time of a new campaign.
+ 
+-.venv/bin/python -m src.runner adjudicate
+-.venv/bin/python -m src.runner compute-kappa
++### A new campaign is a bounded workflow
+ 
+-.venv/bin/python -m src.runner analyze --stability
+-.venv/bin/python -m src.runner analyze --sensitivity
+-.venv/bin/python -m src.runner analyze --variance-decomposition
+-.venv/bin/python -m src.runner analyze --cross-sp-diagnostic
++First establish the experimental configuration, models, data to send and budget.
++An existing key does not authorize paid calls. Configure `OPENROUTER_API_KEY`
++through the existing environment without putting its value in a command log.
++Prepare a fresh campaign target instead of resetting the reference DB:
+ 
+-.venv/bin/python -m src.runner visualize --all
+-.venv/bin/python -m src.runner decision
+-```
++```bash
++SNAP_CAMPAIGN_DIR="$(mktemp -d /tmp/snap-campaign.XXXXXX)"
++mkdir -p "$SNAP_CAMPAIGN_DIR/reports"
++cp -R config "$SNAP_CAMPAIGN_DIR/config"
++.venv/bin/python -m src.runner --db-path "$SNAP_CAMPAIGN_DIR/campaign.db" --config-dir "$SNAP_CAMPAIGN_DIR/config" init-db
++.venv/bin/python -m src.runner --db-path "$SNAP_CAMPAIGN_DIR/campaign.db" --config-dir "$SNAP_CAMPAIGN_DIR/config" preflight --output "$SNAP_CAMPAIGN_DIR/reports/preflight_report.json"
++```
++
++Keep that DB/config target on every subsequent command. This preparation does
++not authorize collection. Move a retained campaign to a durable reviewed
++location before relying on it for long-term evidence.
++
++1. Review preflight warnings and estimated cost; for authorized collection use
++   the selected model(s) and an explicit `collect --max-rows` bound as appropriate.
++2. Verify expected responses, errors and truncations. A process may return 0
++   after skipping calls for a missing key; that is not a collected campaign.
++3. Run `score --judge haiku --max-rows 100` and the corresponding Kimi batches
++   against the campaign DB within its authorized budget. Each invocation handles
++   one batch, not the whole dataset. Check processed and remaining rows between
++   batches; stop to diagnose no progress or repeated provider failures.
++4. Resolve disagreements and export a human sample to a new campaign CSV.
++   Obtain real coding/adjudication before importing it. Keep campaign, human
++   validation and reference data distinct.
++5. Produce the needed analyses in that campaign's reports directory, then
++   `decision --reports-dir ... --output ...` from the same snapshot.
++6. Verify all required collection/scoring/review counts and report readiness.
++   `NOT_READY` is incomplete; `FAIL` can be a valid completed scientific outcome.
++   The CLI return code alone does not distinguish these cases.
++
++## Local reproduction work — known limits
++
++The uncommitted `scripts/reproduce_article_artifacts.sh` and
++`scripts/reproduce_preliminary.py`, when present, describe recent reproduction
++work rather than a guaranteed interface in HEAD. The shell script copies the
++DB with `cp`; review WAL consistency before running it. The preliminary manifest
++reports missing Claude Sonnet 4.5 coverage in the historical human sample while
++excluding that assertion from its exit status. A successful script exit is
++therefore not proof of representative human validation. Preserve the original
++sample and report that limitation rather than fabricating missing labels.
+ 
+ ## Known Limitations
+ 
+@@ -853,6 +899,6 @@ Priorities:
+ 5. Build a targeted v3.2 micro-campaign before any new large campaign.
+ 6. Clearly separate confirmatory analyses from exploratory diagnostics.
+ 
+-The current repository state is therefore a clean stopping point: v3.1 is
+-archived, important data is preserved, and the next work can start from a
+-readable base rather than a scattered history.
++The committed v3.1 kit is the retained scientific reference. Check the actual
++working tree and reproduction provenance before beginning v3.2; local changes
++and a completed pipeline do not by themselves validate a new protocol.
+diff --git a/config/manual_adjudication_workflow.md b/config/manual_adjudication_workflow.md
+index 1b245d5..4e6d68e 100644
+--- a/config/manual_adjudication_workflow.md
++++ b/config/manual_adjudication_workflow.md
+@@ -1,7 +1,22 @@
+ # Manual Adjudication Workflow
+ 
++## Scope and target
++
++Use this document for manual adjudication only. Select a working database,
++preserve the reference data and obtain the operator's real decision. An agent
++must not create human labels or replace human validation with its own judgment.
++See [the README](../README.md) for consistent SQLite backups and command effects.
++
+ ## Command
+-`python -m src.runner adjudicate`
++
++From the repository root, replace the example path with the selected working DB:
++
++```bash
++.venv/bin/python -m src.runner --db-path /path/to/campaign-working.db adjudicate
++```
++
++This command writes decisions. Updating reference evidence requires explicit
++authorization for that target; an ordinary working copy avoids overwriting it.
+ 
+ ## Interaction Flow
+ For each pending row with `manual_review_needed = 1` and unresolved final score:
+diff --git a/config/methodology_h4.md b/config/methodology_h4.md
+index 96e715b..1505b76 100644
+--- a/config/methodology_h4.md
++++ b/config/methodology_h4.md
+@@ -1,5 +1,12 @@
+ # H4 Method Decision
+ 
++> Historical method proposal. In the executed v3.1 POC, the LMM is exploratory
++> and is not a PASS/FAIL criterion, as recorded in [the README](../README.md).
++> The confirmatory labels below describe the original intended stage, not a
++> completed confirmatory validation. A new confirmatory design requires an
++> explicit methodological decision; do not change the model or thresholds to
++> improve an observed result.
++
+ ## Decision
+ - Exploratory stage: factorial ANOVA-style decomposition using eta squared per factor.
+ - Confirmatory stage: linear mixed model (LMM).
+diff --git a/docs/archive/v3.1/PROTOCOLE_EXPERIMENTAL_SNAP_v3_1.md b/docs/archive/v3.1/PROTOCOLE_EXPERIMENTAL_SNAP_v3_1.md
+index 682062a..42d4564 100644
+--- a/docs/archive/v3.1/PROTOCOLE_EXPERIMENTAL_SNAP_v3_1.md
++++ b/docs/archive/v3.1/PROTOCOLE_EXPERIMENTAL_SNAP_v3_1.md
+@@ -1,5 +1,11 @@
+ # Protocole experimental SoulBench SNAP v3.1
+ 
++> Archive du protocole/kit v3.1 exécuté. Les mentions « actif » et « actuel »
++> dans le corps désignent ce snapshot historique. Les chemins et recettes sont
++> conservés pour provenance et ne sont pas des instructions à exécuter telles
++> quelles. Utiliser [le README courant](../../../README.md) et
++> [la configuration](../../../config/) pour préparer un travail nouveau.
++
+ **Version active**: 3.1  
+ **Objectif**: POC rapide, gerable, interpretable.  
+ **Config source**: `config/protocol.yaml`
+diff --git a/docs/archive/v3.1/README_v3_1_kit.md b/docs/archive/v3.1/README_v3_1_kit.md
+index 9cf99e5..f4d9b1a 100644
+--- a/docs/archive/v3.1/README_v3_1_kit.md
++++ b/docs/archive/v3.1/README_v3_1_kit.md
+@@ -1,5 +1,11 @@
+ # SoulBench SNAP v3.1
+ 
++> Archive du protocole/kit v3.1 exécuté. Les mentions « actif » et « actuel »
++> dans le corps désignent ce snapshot historique. Les chemins et recettes sont
++> conservés pour provenance et ne sont pas des instructions à exécuter telles
++> quelles. Utiliser [le README courant](../../../README.md) et
++> [la configuration](../../../config/) pour préparer un travail nouveau.
++
+ SoulBench SNAP est un pipeline experimental Python pour collecter, scorer,
+ analyser et visualiser des reponses de LLM sous variations controlees de
+ contexte.
+@@ -156,9 +162,9 @@ items style-sensibles comme `E2`.
+ 
+ Les figures finales sont dans `outputs/figures/`.
+ 
+-![Scores heatmap](outputs/figures/scores_heatmap.png)
++![Scores heatmap](../../../outputs/figures/scores_heatmap.png)
+ 
+-![Cross-SP profiles](outputs/figures/cross_sp_profiles.png)
++![Cross-SP profiles](../../../outputs/figures/cross_sp_profiles.png)
+ 
+ Figures disponibles:
+ 
+diff --git a/src/db.py b/src/db.py
+index e3e2b54..011671c 100644
+--- a/src/db.py
++++ b/src/db.py
+@@ -26,6 +26,47 @@ def _utc_now_iso() -> str:
+     return datetime.now(timezone.utc).isoformat()
+ 
+ 
++def _proportional_allocations(
++    groups: dict[tuple[Any, ...], list[dict[str, Any]]],
++    target: int,
++    rng: Random,
++) -> dict[tuple[Any, ...], int]:
++    """Allocate a sample across groups without deterministic tie bias.
++
++    Largest-remainder allocation is deterministic once ties are ordered. A
++    lexical tie-break is unsafe when the number of strata exceeds the sample
++    size because entire early-sorting groups (for example, one model family)
++    can receive zero rows. We therefore shuffle equal-remainder candidates
++    with the caller's seeded RNG before sorting by remainder.
++    """
++    if target <= 0 or not groups:
++        return {key: 0 for key in groups}
++
++    total = sum(len(rows) for rows in groups.values())
++    target = min(target, total)
++    allocations: dict[tuple[Any, ...], int] = {}
++    remainders: list[tuple[float, tuple[Any, ...]]] = []
++    allocated_total = 0
++
++    for key, group_rows in groups.items():
++        raw_allocation = target * (len(group_rows) / total)
++        base_allocation = int(raw_allocation)
++        allocations[key] = base_allocation
++        allocated_total += base_allocation
++        remainders.append((raw_allocation - base_allocation, key))
++
++    rng.shuffle(remainders)
++    remainders.sort(key=lambda entry: entry[0], reverse=True)
++    for _, key in remainders:
++        if allocated_total >= target:
++            break
++        if allocations[key] < len(groups[key]):
++            allocations[key] += 1
++            allocated_total += 1
++
++    return allocations
++
++
+ @dataclass(frozen=True)
+ class ConditionKey:
+     """Logical key for one experimental condition.
+@@ -986,7 +1027,7 @@ class SoulBenchDB:
+     def sample_for_manual_verification(
+         self, n: int, seed: int = 42
+     ) -> list[dict[str, Any]]:
+-        """Return a stratified sample by model/item/SP/temperature.
++        """Return a seeded sample stratified by model/item/SP/temperature.
+ 
+         Args:
+             n: Requested sample size.
+@@ -1015,45 +1056,43 @@ class SoulBenchDB:
+ 
+         total = len(records)
+         target = min(n, total)
++        rng = Random(seed)
+ 
+-        groups: dict[tuple[Any, ...], list[dict[str, Any]]] = {}
++        # Allocate model quotas first. This prevents a large set of tied,
++        # fine-grained strata from excluding a model altogether when n is
++        # smaller than the number of model/item/SP/temperature combinations.
++        model_groups: dict[tuple[Any, ...], list[dict[str, Any]]] = {}
+         for row in records:
+-            key = (
+-                row["model"],
+-                row["item_id"],
+-                row["system_prompt"],
+-                float(row["temperature"]),
+-            )
+-            groups.setdefault(key, []).append(row)
+-
+-        allocations: dict[tuple[Any, ...], int] = {}
+-        remainders: list[tuple[float, tuple[Any, ...]]] = []
+-        allocated_total = 0
+-        for key, group_rows in groups.items():
+-            raw_alloc = target * (len(group_rows) / total)
+-            base_alloc = int(raw_alloc)
+-            allocations[key] = base_alloc
+-            allocated_total += base_alloc
+-            remainders.append((raw_alloc - base_alloc, key))
+-
+-        remainders.sort(reverse=True)
+-        for _, key in remainders:
+-            if allocated_total >= target:
+-                break
+-            if allocations[key] < len(groups[key]):
+-                allocations[key] += 1
+-                allocated_total += 1
++            model_groups.setdefault((row["model"],), []).append(row)
++        model_allocations = _proportional_allocations(model_groups, target, rng)
+ 
+-        rng = Random(seed)
+         sampled: list[dict[str, Any]] = []
+-        for key, count in allocations.items():
+-            group_rows = groups[key]
+-            if count <= 0:
++        for model_key in sorted(model_groups):
++            model_target = model_allocations[model_key]
++            if model_target <= 0:
+                 continue
+-            if count >= len(group_rows):
+-                sampled.extend(group_rows)
+-            else:
+-                sampled.extend(rng.sample(group_rows, count))
++
++            fine_groups: dict[tuple[Any, ...], list[dict[str, Any]]] = {}
++            for row in model_groups[model_key]:
++                fine_key = (
++                    row["item_id"],
++                    row["system_prompt"],
++                    float(row["temperature"]),
++                )
++                fine_groups.setdefault(fine_key, []).append(row)
++
++            fine_allocations = _proportional_allocations(
++                fine_groups, model_target, rng
++            )
++            for fine_key in sorted(fine_groups):
++                count = fine_allocations[fine_key]
++                if count <= 0:
++                    continue
++                group_rows = fine_groups[fine_key]
++                if count >= len(group_rows):
++                    sampled.extend(group_rows)
++                else:
++                    sampled.extend(rng.sample(group_rows, count))
+ 
+         if len(sampled) < target:
+             missing = target - len(sampled)
+diff --git a/tests/test_db.py b/tests/test_db.py
+index 31de74e..b73442f 100644
+--- a/tests/test_db.py
++++ b/tests/test_db.py
+@@ -246,6 +246,35 @@ def test_import_manual_verification_csv_is_idempotent_and_tagged(
+     assert rows[0]["source"] == "human_validation"
+ 
+ 
++def test_manual_sample_keeps_model_coverage_when_fine_strata_exceed_n(
++    tmp_path: Path,
++) -> None:
++    db_path = tmp_path / "test.db"
++
++    with SoulBenchDB(db_path) as db:
++        for model in ["model-a", "model-b", "model-c"]:
++            for item_index in range(30):
++                db.insert_response(
++                    _sample_record(
++                        model=model,
++                        item_id=f"I{item_index:02d}",
++                        score_judge1="0",
++                        score_judge2="0",
++                        score_final="0",
++                    )
++                )
++
++        first = db.sample_for_manual_verification(n=30, seed=20260904)
++        second = db.sample_for_manual_verification(n=30, seed=20260904)
++
++    assert [row["id"] for row in first] == [row["id"] for row in second]
++    counts = {
++        model: sum(row["model"] == model for row in first)
++        for model in ["model-a", "model-b", "model-c"]
++    }
++    assert counts == {"model-a": 10, "model-b": 10, "model-c": 10}
++
++
+ def test_legacy_manual_verification_rows_migrate_to_adjudication(
+     tmp_path: Path,
+ ) -> None:

@@ -1,0 +1,14 @@
+{
+  "pages": 14,
+  "words_markdown": 6065,
+  "pdf_sha256": "7c07528fecc53347cd7f2cd55d4f213d923b930029be73738446f6e04c54c2e6",
+  "manuscript_sha256": "37170a38fbe5c6c2bca5999bde3a062d48a972972732c3ba6f9ce863b6348c72",
+  "tables": 5,
+  "figures": 3,
+  "references": 8,
+  "text_checks": "passed",
+  "visual_review": "passed: all 14 rendered pages inspected in 7 spreads; no clipping/overlap/missing glyphs observed",
+  "visual_review_date": "2026-09-06",
+  "local_link_check": "passed",
+  "python_compile": "passed"
+}

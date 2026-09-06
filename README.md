@@ -1,5 +1,11 @@
 # SoulBench SNAP
 
+[AGENTS.md](AGENTS.md) defines agent working rules, data boundaries and
+completion. Read `config/` for the current experimental configuration and the
+relevant `src/`/tests for behavior. `docs/archive/v3.1/` preserves the executed
+protocol and older evidence; archived commands are not current run instructions.
+The result tables below describe the retained v3.1 snapshot, not a new campaign.
+
 SoulBench SNAP is an experimental Python project for studying response profiles
 from large language models under controlled prompting conditions.
 
@@ -589,7 +595,11 @@ Available figures:
 
 ## Current Repository State
 
-The main branch keeps a readable and reproducible v3.1 kit.
+The main branch retains the v3.1 reference kit. This does not imply that every
+local working tree is clean or that a new reproduction is release-ready.
+The 6 September instruction audit found uncommitted changes in `src/db.py` and
+`tests/test_db.py`, plus local `scripts/` and `artifacts/reproduction/` additions.
+Inspect current Git status before relying on them; preserve that existing work.
 
 ### Kept on `main`
 
@@ -698,10 +708,10 @@ Main tables:
 Useful examples:
 
 ```bash
-sqlite3 data/snap_poc_v3_1.db "select count(*) from responses;"
-sqlite3 data/snap_poc_v3_1.db "select model, count(*) from responses group by model;"
-sqlite3 data/snap_poc_v3_1.db "select agreement_status, count(*) from responses group by agreement_status;"
-sqlite3 data/snap_poc_v3_1.db "select score_final, count(*) from responses group by score_final;"
+sqlite3 -readonly data/snap_poc_v3_1.db "select count(*) from responses;"
+sqlite3 -readonly data/snap_poc_v3_1.db "select model, count(*) from responses group by model;"
+sqlite3 -readonly data/snap_poc_v3_1.db "select agreement_status, count(*) from responses group by agreement_status;"
+sqlite3 -readonly data/snap_poc_v3_1.db "select score_final, count(*) from responses group by score_final;"
 ```
 
 ## Installation
@@ -733,90 +743,126 @@ explicitly:
 .venv/bin/python -m src.runner --help
 ```
 
-## Useful Commands
+## Local work and command effects
 
-### Tests
+Use the following sections according to the task. Reading documentation or
+fixing local code does not require a provider campaign.
 
-```bash
-.venv/bin/python -m pytest -q
-```
+| Operation | Effects and limits |
+| --- | --- |
+| `.venv/bin/python -m pytest -q` | Local test entry point; choose affected tests while iterating |
+| SQLite `-readonly` inspection | Reads the selected reference DB without schema initialization |
+| `preflight` | Fetches the public model catalogue and writes a report; CLI DB opening can migrate |
+| `analyze`, `visualize`, `decision` | Open the DB through the writing wrapper and write outputs |
+| `compute-kappa` | Persists kappa values; not read-only |
+| `collect`, `score` | May transmit prompts/responses to OpenRouter and incur cost |
+| `import-manual`, `adjudicate` | Write decisions to the selected DB |
+| `manual-score-sample` | Writes the selected CSV in place unless `--output` is supplied |
+| `init-db --reset` | Deletes the selected DB and its WAL/SHM files; the default target is reference data |
 
-### Preflight
+`--db-path` and `--config-dir` are global options placed before the subcommand.
+Set output paths explicitly rather than replacing the reference reports/figures.
 
-```bash
-.venv/bin/python -m src.runner preflight
-```
+### Isolated analysis of the reference dataset
 
-The preflight checks OpenRouter availability, model parameters, pricing, and DB
-consistency before collection.
-
-### Regenerate Analyses from the Final DB
-
-```bash
-.venv/bin/python -m src.runner analyze --stability
-.venv/bin/python -m src.runner analyze --sensitivity
-.venv/bin/python -m src.runner analyze --variance-decomposition
-.venv/bin/python -m src.runner analyze --cross-sp-diagnostic
-.venv/bin/python -m src.runner decision
-```
-
-### Regenerate Figures
+The SQLite wrapper initializes/migrates on open. Make a consistent backup first;
+a raw copy of the `.db` file can omit data still in its WAL. These commands use
+a new temporary directory and do not run collection or scoring:
 
 ```bash
-.venv/bin/python -m src.runner visualize --all
+SNAP_RUN_DIR="$(mktemp -d /tmp/snap-review.XXXXXX)"
+mkdir -p "$SNAP_RUN_DIR/reports" "$SNAP_RUN_DIR/figures"
+sqlite3 -readonly data/snap_poc_v3_1.db ".backup '$SNAP_RUN_DIR/reference.db'"
+cp -R config "$SNAP_RUN_DIR/config"
+
+.venv/bin/python -m src.runner --db-path "$SNAP_RUN_DIR/reference.db" --config-dir "$SNAP_RUN_DIR/config" analyze --stability --output-dir "$SNAP_RUN_DIR/reports"
+.venv/bin/python -m src.runner --db-path "$SNAP_RUN_DIR/reference.db" --config-dir "$SNAP_RUN_DIR/config" analyze --sensitivity --output-dir "$SNAP_RUN_DIR/reports"
+.venv/bin/python -m src.runner --db-path "$SNAP_RUN_DIR/reference.db" --config-dir "$SNAP_RUN_DIR/config" analyze --variance-decomposition --output-dir "$SNAP_RUN_DIR/reports"
+.venv/bin/python -m src.runner --db-path "$SNAP_RUN_DIR/reference.db" --config-dir "$SNAP_RUN_DIR/config" analyze --cross-sp-diagnostic --output-dir "$SNAP_RUN_DIR/reports"
+.venv/bin/python -m src.runner --db-path "$SNAP_RUN_DIR/reference.db" --config-dir "$SNAP_RUN_DIR/config" decision --reports-dir "$SNAP_RUN_DIR/reports" --output "$SNAP_RUN_DIR/reports/decision_report.json"
+.venv/bin/python -m src.runner --db-path "$SNAP_RUN_DIR/reference.db" --config-dir "$SNAP_RUN_DIR/config" visualize --all --output-dir "$SNAP_RUN_DIR/figures"
 ```
 
-### Human Validation
+Run only the analyses needed for the task. A decision requires a compatible
+stability report from the same DB/config state. The current decision code does
+not verify that provenance; do not reuse a report from another run. Retain
+selected outputs with their input/code/environment provenance when needed;
+`/tmp` is temporary. Cross-SP diagnostics can include raw response excerpts.
 
-The clean validation database is:
+### Human validation
 
-```text
-data/snap_poc_v3_1_human_validation_clean.db
-```
-
-Examples:
+Keep human-validation data separate from the campaign. For inspection:
 
 ```bash
-sqlite3 data/snap_poc_v3_1_human_validation_clean.db \
+sqlite3 -readonly data/snap_poc_v3_1_human_validation_clean.db \
   "select source, count(*) from manual_verification group by source;"
-
-.venv/bin/python -m src.runner \
-  --db-path data/snap_poc_v3_1_human_validation_clean.db \
-  compute-kappa
 ```
 
-Practical rule: do not import new manual coding directly into
-`data/snap_poc_v3_1.db`. Use a working copy or the validation DB.
-
-## Complete Pipeline for a New Campaign
+For calculations, first create a working copy using the backup pattern above:
 
 ```bash
-.venv/bin/python -m src.runner init-db --reset
-.venv/bin/python -m src.runner preflight
-
-export OPENROUTER_API_KEY="..."
-
-.venv/bin/python -m src.runner collect --all
-
-.venv/bin/python -m src.runner score --judge haiku
-.venv/bin/python -m src.runner score --judge kimi
-.venv/bin/python -m src.runner resolve-disagreements
-
-.venv/bin/python -m src.runner export-sample --n 200 --output data/manual_sample.csv
-.venv/bin/python -m src.runner manual-score-sample --file data/manual_sample.csv
-.venv/bin/python -m src.runner import-manual --file data/manual_sample.csv
-
-.venv/bin/python -m src.runner adjudicate
-.venv/bin/python -m src.runner compute-kappa
-
-.venv/bin/python -m src.runner analyze --stability
-.venv/bin/python -m src.runner analyze --sensitivity
-.venv/bin/python -m src.runner analyze --variance-decomposition
-.venv/bin/python -m src.runner analyze --cross-sp-diagnostic
-
-.venv/bin/python -m src.runner visualize --all
-.venv/bin/python -m src.runner decision
+sqlite3 -readonly data/snap_poc_v3_1_human_validation_clean.db ".backup '$SNAP_RUN_DIR/human-validation.db'"
+.venv/bin/python -m src.runner --db-path "$SNAP_RUN_DIR/human-validation.db" --config-dir "$SNAP_RUN_DIR/config" compute-kappa
 ```
+
+Do not import new coding into either reference DB by default. Follow
+[the adjudication workflow](config/manual_adjudication_workflow.md) for the
+selected working DB and genuine human decisions; agent-generated labels must
+not be recorded as human validation.
+
+### Preflight before an authorized campaign
+
+`preflight` compares model IDs, supported parameters, prices/cost estimates and
+DB readiness against the public OpenRouter catalogue. It does not validate the
+API key or perform a completion. Inspect warnings as well as the status; model
+availability and prices must be checked at the time of a new campaign.
+
+### A new campaign is a bounded workflow
+
+First establish the experimental configuration, models, data to send and budget.
+An existing key does not authorize paid calls. Configure `OPENROUTER_API_KEY`
+through the existing environment without putting its value in a command log.
+Prepare a fresh campaign target instead of resetting the reference DB:
+
+```bash
+SNAP_CAMPAIGN_DIR="$(mktemp -d /tmp/snap-campaign.XXXXXX)"
+mkdir -p "$SNAP_CAMPAIGN_DIR/reports"
+cp -R config "$SNAP_CAMPAIGN_DIR/config"
+.venv/bin/python -m src.runner --db-path "$SNAP_CAMPAIGN_DIR/campaign.db" --config-dir "$SNAP_CAMPAIGN_DIR/config" init-db
+.venv/bin/python -m src.runner --db-path "$SNAP_CAMPAIGN_DIR/campaign.db" --config-dir "$SNAP_CAMPAIGN_DIR/config" preflight --output "$SNAP_CAMPAIGN_DIR/reports/preflight_report.json"
+```
+
+Keep that DB/config target on every subsequent command. This preparation does
+not authorize collection. Move a retained campaign to a durable reviewed
+location before relying on it for long-term evidence.
+
+1. Review preflight warnings and estimated cost; for authorized collection use
+   the selected model(s) and an explicit `collect --max-rows` bound as appropriate.
+2. Verify expected responses, errors and truncations. A process may return 0
+   after skipping calls for a missing key; that is not a collected campaign.
+3. Run `score --judge haiku --max-rows 100` and the corresponding Kimi batches
+   against the campaign DB within its authorized budget. Each invocation handles
+   one batch, not the whole dataset. Check processed and remaining rows between
+   batches; stop to diagnose no progress or repeated provider failures.
+4. Resolve disagreements and export a human sample to a new campaign CSV.
+   Obtain real coding/adjudication before importing it. Keep campaign, human
+   validation and reference data distinct.
+5. Produce the needed analyses in that campaign's reports directory, then
+   `decision --reports-dir ... --output ...` from the same snapshot.
+6. Verify all required collection/scoring/review counts and report readiness.
+   `NOT_READY` is incomplete; `FAIL` can be a valid completed scientific outcome.
+   The CLI return code alone does not distinguish these cases.
+
+## Local reproduction work — known limits
+
+The uncommitted `scripts/reproduce_article_artifacts.sh` and
+`scripts/reproduce_preliminary.py`, when present, describe recent reproduction
+work rather than a guaranteed interface in HEAD. The shell script copies the
+DB with `cp`; review WAL consistency before running it. The preliminary manifest
+reports missing Claude Sonnet 4.5 coverage in the historical human sample while
+excluding that assertion from its exit status. A successful script exit is
+therefore not proof of representative human validation. Preserve the original
+sample and report that limitation rather than fabricating missing labels.
 
 ## Known Limitations
 
@@ -853,6 +899,6 @@ Priorities:
 5. Build a targeted v3.2 micro-campaign before any new large campaign.
 6. Clearly separate confirmatory analyses from exploratory diagnostics.
 
-The current repository state is therefore a clean stopping point: v3.1 is
-archived, important data is preserved, and the next work can start from a
-readable base rather than a scattered history.
+The committed v3.1 kit is the retained scientific reference. Check the actual
+working tree and reproduction provenance before beginning v3.2; local changes
+and a completed pipeline do not by themselves validate a new protocol.

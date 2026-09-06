@@ -1,0 +1,90 @@
+[
+  {
+    "id": "huang2024",
+    "authors": "Jen-tse Huang, Wenxiang Jiao, Man Ho Lam, Eric John Li, Wenxuan Wang, and Michael Lyu",
+    "year": "2024",
+    "title": "On the Reliability of Psychological Scales on Large Language Models",
+    "venue": "Proceedings of EMNLP 2024, pp. 6152-6173",
+    "doi": "10.18653/v1/2024.emnlp-main.354",
+    "url": "https://aclanthology.org/2024.emnlp-main.354/",
+    "verified_on": "2026-09-06",
+    "verification": "Publisher landing page, BibTeX metadata and linked full PDF inspected. Supports conditional reliability and prompting dependence, not SNAP validity."
+  },
+  {
+    "id": "serapio2025",
+    "authors": "Gregory Serapio-García, Mustafa Safdari, Clément Crepy, Luning Sun, Stephen Fitz, Peter Romero, Marwa Abdulhai, Aleksandra Faust, and Maja Matarić",
+    "year": "2025",
+    "title": "A psychometric framework for evaluating and shaping personality traits in large language models",
+    "venue": "Nature Machine Intelligence 7, 1954-1968",
+    "doi": "10.1038/s42256-025-01115-6",
+    "url": "https://www.nature.com/articles/s42256-025-01115-6",
+    "verified_on": "2026-09-06",
+    "verification": "Publisher search result and PubMed 41438004 verify journal title, authors, DOI, pages and 18 December 2025 publication. Publisher direct open failed. Author full text at https://arxiv.org/html/2307.00184v4 inspected for conditional reliability/validity and downstream validation; it is the earlier titled version, not a byte-identical journal article."
+  },
+  {
+    "id": "sandhan2025",
+    "authors": "Jivnesh Sandhan, Fei Cheng, Tushar Sandhan, and Yugo Murawaki",
+    "year": "2025",
+    "title": "CAPE: Context-Aware Personality Evaluation Framework for Large Language Models",
+    "venue": "Findings of EMNLP 2025, pp. 10648-10662",
+    "doi": "10.18653/v1/2025.findings-emnlp.563",
+    "url": "https://aclanthology.org/2025.findings-emnlp.563/",
+    "verified_on": "2026-09-06",
+    "verification": "Publisher landing page, BibTeX and linked full PDF inspected. Supports effects of conversational history, a context manipulation distinct from SNAP single-turn system prompts."
+  },
+  {
+    "id": "zierahn2026",
+    "authors": "Kim Zierahn, Cristina Cachero, Anna Korhonen, and Nuria Oliver",
+    "year": "2026",
+    "title": "Personality Without Persons? A Psychometric Critique of Big Five Testing in Large Language Models",
+    "venue": "arXiv:2607.02325v2, revised 2 September 2026; arXiv record reports acceptance at AIES 2026",
+    "doi": "10.48550/arXiv.2607.02325",
+    "url": "https://arxiv.org/abs/2607.02325v2",
+    "verified_on": "2026-09-06",
+    "verification": "Author abstract record and full HTML v2 inspected. Version matters: current v2 reports 264 models and 50 families; search snippets may retain v1 counts. Cite the arXiv version; no unverified proceedings DOI asserted."
+  },
+  {
+    "id": "zheng2023",
+    "authors": "Lianmin Zheng, Wei-Lin Chiang, Ying Sheng, Siyuan Zhuang, Zhanghao Wu, Yonghao Zhuang, Zi Lin, Zhuohan Li, Dacheng Li, Eric P. Xing, Hao Zhang, Joseph E. Gonzalez, and Ion Stoica",
+    "year": "2023",
+    "title": "Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena",
+    "venue": "arXiv:2306.05685",
+    "doi": "10.48550/arXiv.2306.05685",
+    "url": "https://arxiv.org/abs/2306.05685",
+    "verified_on": "2026-09-06",
+    "verification": "Author abstract record and full HTML v4 inspected. Supports feasibility and judge biases; preference evaluation is distinct from item-specific psychometric coding."
+  },
+  {
+    "id": "cohen1960",
+    "authors": "Jacob Cohen",
+    "year": "1960",
+    "title": "A Coefficient of Agreement for Nominal Scales",
+    "venue": "Educational and Psychological Measurement 20(1), 37-46",
+    "doi": "10.1177/001316446002000104",
+    "url": "https://journals.sagepub.com/doi/abs/10.1177/001316446002000104",
+    "verified_on": "2026-09-06",
+    "verification": "Publisher indexed record verified author, title, date, volume and pages. Direct open timed out. Used only as attribution for the explicitly reproduced kappa formula; no unviewed empirical claim used."
+  },
+  {
+    "id": "koo2016",
+    "authors": "Terry K. Koo and Mae Y. Li",
+    "year": "2016",
+    "title": "A Guideline of Selecting and Reporting Intraclass Correlation Coefficients for Reliability Research",
+    "venue": "Journal of Chiropractic Medicine 15(2), 155-163",
+    "doi": "10.1016/j.jcm.2016.02.012",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/27330520/",
+    "verified_on": "2026-09-06",
+    "verification": "PubMed record and indexed author full text PMC4913118 verified metadata and ICC form distinctions; direct PMC access returned a browser challenge. No clinical interpretive threshold imported into SNAP."
+  },
+  {
+    "id": "graham2011",
+    "authors": "Jesse Graham, Brian A. Nosek, Jonathan Haidt, Ravi Iyer, Spassena Koleva, and Peter H. Ditto",
+    "year": "2011",
+    "title": "Mapping the moral domain",
+    "venue": "Journal of Personality and Social Psychology 101(2), 366-385",
+    "doi": "10.1037/a0021847",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/21244182/",
+    "verified_on": "2026-09-06",
+    "verification": "PubMed metadata, author-hosted indexed original paper and author publication list verified. Old NYU PDF links now return 404; do not present them as working download links. Used only for framework lineage, not as validation of SNAP's five bespoke moral scenarios."
+  }
+]

@@ -1,5 +1,12 @@
 # H4 Method Decision
 
+> Historical method proposal. In the executed v3.1 POC, the LMM is exploratory
+> and is not a PASS/FAIL criterion, as recorded in [the README](../README.md).
+> The confirmatory labels below describe the original intended stage, not a
+> completed confirmatory validation. A new confirmatory design requires an
+> explicit methodological decision; do not change the model or thresholds to
+> improve an observed result.
+
 ## Decision
 - Exploratory stage: factorial ANOVA-style decomposition using eta squared per factor.
 - Confirmatory stage: linear mixed model (LMM).
