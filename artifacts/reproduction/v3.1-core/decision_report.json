@@ -1,0 +1,162 @@
+{
+  "report": "poc_decision",
+  "generated_at": "2026-09-04T19:53:03.331614+00:00",
+  "decision": "FAIL",
+  "dataset_id": "snap_poc_v3_1_2026-04",
+  "protocol_version": "3.1",
+  "thresholds": {
+    "kappa_interjudge_min": 0.5,
+    "kappa_interjudge_target": 0.6,
+    "icc_min": 0.6,
+    "split_half_min": 0.6,
+    "cross_context_corr_min": 0.6,
+    "refusal_rate_max": 0.1,
+    "major_disagreement_rate_max": 0.15
+  },
+  "checks": [
+    {
+      "metric": "kappa_interjudge",
+      "value": 0.7509073105151067,
+      "threshold_min": 0.5,
+      "threshold_target": 0.6,
+      "n_pairs": 2695,
+      "status": "pass"
+    },
+    {
+      "metric": "refusal_rate",
+      "value": 0.0007407407407407407,
+      "threshold_max": 0.1,
+      "n_rows": 2700,
+      "status": "pass"
+    },
+    {
+      "metric": "initial_major_disagreement_rate",
+      "value": 0.008905380333951763,
+      "threshold_max": 0.15,
+      "n_pairs": 2695,
+      "initial_major_disagreements": 24,
+      "initial_type_disagreements": 1,
+      "current_pending_disagreements": 0,
+      "current_pending_major_disagreements": 0,
+      "current_pending_type_disagreements": 0,
+      "manual_adjudicated_count": 30,
+      "manual_adjudicated_with_judge_pairs": 25,
+      "note": "Initial disagreement counts include rows later resolved through manual adjudication.",
+      "status": "pass"
+    },
+    {
+      "metric": "minimum_model_icc",
+      "value": 0.5486271748969126,
+      "threshold_min": 0.6,
+      "n_models": 5,
+      "status": "fail"
+    },
+    {
+      "metric": "minimum_model_test_retest_pearson",
+      "value": 0.882749410057953,
+      "threshold_min": 0.6,
+      "n_models": 6,
+      "status": "pass"
+    },
+    {
+      "metric": "minimum_cross_sp_corr",
+      "value": 0.3189097664658742,
+      "threshold_min": 0.6,
+      "threshold_key": "cross_context_corr_min",
+      "n_pairs": 18,
+      "status": "fail"
+    }
+  ],
+  "campaign_completion": {
+    "status": "complete",
+    "expected_models": [
+      "claude-sonnet-4-5",
+      "gpt-5-2",
+      "gemini-3-pro",
+      "qwen3-max",
+      "mistral-large-3",
+      "grok-4-3"
+    ],
+    "expected_conditions_per_model": 450,
+    "expected_total_conditions": 2700,
+    "completed_total": 2700,
+    "scored_total": 2700,
+    "incomplete_models": [],
+    "models": {
+      "claude-sonnet-4-5": {
+        "metadata_present": true,
+        "expected_conditions": 450,
+        "total_planned": 450,
+        "total_completed": 450,
+        "total_errors": 0,
+        "non_error_responses": 450,
+        "scored_responses": 450,
+        "complete": true,
+        "reasons": []
+      },
+      "gpt-5-2": {
+        "metadata_present": true,
+        "expected_conditions": 450,
+        "total_planned": 450,
+        "total_completed": 450,
+        "total_errors": 0,
+        "non_error_responses": 450,
+        "scored_responses": 450,
+        "complete": true,
+        "reasons": []
+      },
+      "gemini-3-pro": {
+        "metadata_present": true,
+        "expected_conditions": 450,
+        "total_planned": 450,
+        "total_completed": 450,
+        "total_errors": 0,
+        "non_error_responses": 450,
+        "scored_responses": 450,
+        "complete": true,
+        "reasons": []
+      },
+      "qwen3-max": {
+        "metadata_present": true,
+        "expected_conditions": 450,
+        "total_planned": 450,
+        "total_completed": 450,
+        "total_errors": 0,
+        "non_error_responses": 450,
+        "scored_responses": 450,
+        "complete": true,
+        "reasons": []
+      },
+      "mistral-large-3": {
+        "metadata_present": true,
+        "expected_conditions": 450,
+        "total_planned": 450,
+        "total_completed": 450,
+        "total_errors": 0,
+        "non_error_responses": 450,
+        "scored_responses": 450,
+        "complete": true,
+        "reasons": []
+      },
+      "grok-4-3": {
+        "metadata_present": true,
+        "expected_conditions": 450,
+        "total_planned": 450,
+        "total_completed": 450,
+        "total_errors": 0,
+        "non_error_responses": 450,
+        "scored_responses": 450,
+        "complete": true,
+        "reasons": []
+      }
+    }
+  },
+  "summary": {
+    "response_count": 2700,
+    "scored_count": 2700,
+    "non_error_count": 2700,
+    "failed_checks": 2,
+    "borderline_checks": 0,
+    "missing_checks": 0
+  }
+}

@@ -1,0 +1,180 @@
+{
+  "analysis": "snap_v3_1_publication_reproduction",
+  "script_version": "1.0",
+  "seed": 20260904,
+  "bootstrap_replicates": 5000,
+  "campaign": {
+    "response_count": 2700,
+    "distinct_trial_ids": 2700,
+    "non_error_count": 2700,
+    "final_score_count": 2700,
+    "first_timestamp": "2026-05-12T04:33:25.575787+00:00",
+    "last_timestamp": "2026-05-16T15:25:05.174606+00:00",
+    "per_model": [
+      {
+        "model": "claude-sonnet-4-5",
+        "responses": 450,
+        "errors": 0,
+        "refusals": 2,
+        "truncated": 0,
+        "final_scores": 450
+      },
+      {
+        "model": "gemini-3-pro",
+        "responses": 450,
+        "errors": 0,
+        "refusals": 0,
+        "truncated": 0,
+        "final_scores": 450
+      },
+      {
+        "model": "gpt-5-2",
+        "responses": 450,
+        "errors": 0,
+        "refusals": 0,
+        "truncated": 0,
+        "final_scores": 450
+      },
+      {
+        "model": "grok-4-3",
+        "responses": 450,
+        "errors": 0,
+        "refusals": 0,
+        "truncated": 0,
+        "final_scores": 450
+      },
+      {
+        "model": "mistral-large-3",
+        "responses": 450,
+        "errors": 0,
+        "refusals": 0,
+        "truncated": 17,
+        "final_scores": 450
+      },
+      {
+        "model": "qwen3-max",
+        "responses": 450,
+        "errors": 0,
+        "refusals": 0,
+        "truncated": 0,
+        "final_scores": 450
+      }
+    ]
+  },
+  "judge_agreement": {
+    "n_pairs": 2695,
+    "exact_agreement": 0.8408163265306122,
+    "unweighted_kappa": 0.7509073105151067,
+    "n_ordinal_pairs": 2693,
+    "linear_weighted_kappa_ordinal_only": 0.7877422878374976,
+    "quadratic_weighted_kappa_ordinal_only": 0.8304270216587448,
+    "note": "Weighted kappas exclude pairs containing REFUS because refusal is not an ordinal pole."
+  },
+  "human_validation": {
+    "n_human_coded": 200,
+    "covered_models": 5,
+    "expected_models": 6,
+    "missing_models": [
+      "claude-sonnet-4-5"
+    ],
+    "human_vs_judge1": {
+      "n_pairs": 200,
+      "exact_agreement": 0.755,
+      "unweighted_kappa": 0.6234245312019674,
+      "n_ordinal_pairs": 200,
+      "linear_weighted_kappa_ordinal_only": 0.685382381413359,
+      "quadratic_weighted_kappa_ordinal_only": 0.7538200339558574,
+      "note": "Weighted kappas exclude pairs containing REFUS because refusal is not an ordinal pole."
+    },
+    "human_vs_judge2": {
+      "n_pairs": 200,
+      "exact_agreement": 0.755,
+      "unweighted_kappa": 0.6303839481028891,
+      "n_ordinal_pairs": 200,
+      "linear_weighted_kappa_ordinal_only": 0.6987588866128449,
+      "quadratic_weighted_kappa_ordinal_only": 0.7766323024054983,
+      "note": "Weighted kappas exclude pairs containing REFUS because refusal is not an ordinal pole."
+    },
+    "human_vs_final": {
+      "n_pairs": 200,
+      "exact_agreement": 0.72,
+      "unweighted_kappa": 0.5788998759258562,
+      "n_ordinal_pairs": 200,
+      "linear_weighted_kappa_ordinal_only": 0.6485603304766014,
+      "quadratic_weighted_kappa_ordinal_only": 0.7325475974614688,
+      "note": "Weighted kappas exclude pairs containing REFUS because refusal is not an ordinal pole."
+    },
+    "scope_warning": "The historical v3.1 human sample is not six-model representative; agreement estimates do not cover the missing model."
+  },
+  "critical_cell_mistral_large_3_E2": {
+    "selection_note": "This cell was selected after inspecting v3.1 and is exploratory; its interval and p-value do not remove selection bias.",
+    "means": {
+      "SP_ABS": 0.8,
+      "SP_DIR": 0.6,
+      "SP_PER": -0.9
+    },
+    "range": 1.7000000000000002,
+    "contrasts": {
+      "SP_PER_minus_SP_DIR": {
+        "n_paired_runs": 10,
+        "mean_difference": -1.5,
+        "paired_bootstrap_95ci": [
+          -1.9,
+          -1.1
+        ],
+        "exact_two_sided_sign_flip_p": 0.00390625
+      },
+      "SP_PER_minus_SP_ABS": {
+        "n_paired_runs": 10,
+        "mean_difference": -1.7,
+        "paired_bootstrap_95ci": [
+          -2.0,
+          -1.4
+        ],
+        "exact_two_sided_sign_flip_p": 0.001953125
+      }
+    }
+  },
+  "assertions": {
+    "response_count_is_2700": true,
+    "trial_ids_are_unique": true,
+    "all_responses_are_non_error": true,
+    "all_responses_have_final_scores": true,
+    "six_models_have_450_rows_each": true,
+    "interjudge_kappa_matches_archived_value": true,
+    "historical_human_sample_covers_all_models": false
+  },
+  "interpretation_guardrails": [
+    "Scores describe prompt-conditioned outputs, not intrinsic personality or values.",
+    "System-prompt contrasts are exploratory because v3.1 was not preregistered for publication.",
+    "Scenario, formulation, and temperature are confounded with the deterministic run schedule.",
+    "Cluster-bootstrap intervals resample the 15 items and do not address model-version drift.",
+    "The historical human-validation sample excludes Claude Sonnet 4.5."
+  ],
+  "input_sha256": {
+    "data/snap_poc_v3_1.db": "bbcd28fb99554dc8a7ef308b181e4ff5374d1617abb389cdfd297b1ba847b59a",
+    "data/snap_poc_v3_1_human_validation_clean.db": "f8d51bd86399a68b460fa77d54b113659ca234fb9fb02d937d1c1d692e84ea34",
+    "data/manual_sample_coded.csv": "5cd1f17e2a54d0b0117ab1c0fce11a689e1d65d798c3cbe0c1ac980796a7bb54",
+    "config/protocol.yaml": "27d36c471e6dc8c95325561f7f838e1f7dea4840c81cbfab426d5d914f3f2ce3",
+    "config/models.yaml": "22e8b87b47f6b5619071b70283f0900fc1a06c3e688ae55b901cf170c073aa60",
+    "config/system_prompts.yaml": "51e671053e53b1110b619056f32915499ddaee688c07338aa55a6dcbfde10d8e",
+    "config/items_personality.yaml": "dd95954415478ca73f926896baea784f5348798d6cf524759fc3b284cddbbbad",
+    "config/items_moral.yaml": "7b506fcf4565a9441831e717accb47a3d503f71121b09e4fd872b6554a1ec146",
+    "config/scoring_rubrics.yaml": "e03f3429459d04c7f31a0ca09faaa295b1db3732f3bb38e33c355b766e595146",
+    "outputs/reports/decision_report.json": "2907e27caf72b8046df81b3a5aa8ece701165d4cbb8679e69447262c928fd2a3",
+    "outputs/reports/stability_report.json": "dab1d76623e302ac6aca6f4a5be931f2b723d7cd4e72246d2338750003a4e531",
+    "outputs/reports/cross_sp_diagnostic.json": "ed3abc14ddacf704035ff4e860c924cd26736f2c423a7864a88896189e61e970"
+  },
+  "environment": {
+    "httpx": "0.28.1",
+    "numpy": "2.4.2",
+    "pandas": "3.0.0",
+    "scipy": "1.17.0",
+    "pingouin": "0.5.5",
+    "statsmodels": "0.14.6",
+    "matplotlib": "3.10.8",
+    "seaborn": "0.13.2",
+    "PyYAML": "6.0.3",
+    "pytest": "9.0.2"
+  }
+}

@@ -1,5 +1,11 @@
 # SoulBench SNAP v3.1
 
+> Archive du protocole/kit v3.1 exécuté. Les mentions « actif » et « actuel »
+> dans le corps désignent ce snapshot historique. Les chemins et recettes sont
+> conservés pour provenance et ne sont pas des instructions à exécuter telles
+> quelles. Utiliser [le README courant](../../../README.md) et
+> [la configuration](../../../config/) pour préparer un travail nouveau.
+
 SoulBench SNAP est un pipeline experimental Python pour collecter, scorer,
 analyser et visualiser des reponses de LLM sous variations controlees de
 contexte.
@@ -156,9 +162,9 @@ items style-sensibles comme `E2`.
 
 Les figures finales sont dans `outputs/figures/`.
 
-![Scores heatmap](outputs/figures/scores_heatmap.png)
+![Scores heatmap](../../../outputs/figures/scores_heatmap.png)
 
-![Cross-SP profiles](outputs/figures/cross_sp_profiles.png)
+![Cross-SP profiles](../../../outputs/figures/cross_sp_profiles.png)
 
 Figures disponibles:
 

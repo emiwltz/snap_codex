@@ -1,0 +1,7 @@
+model,n_human_coded,covered
+claude-sonnet-4-5,0,False
+gemini-3-pro,25,True
+gpt-5-2,43,True
+grok-4-3,45,True
+mistral-large-3,44,True
+qwen3-max,43,True

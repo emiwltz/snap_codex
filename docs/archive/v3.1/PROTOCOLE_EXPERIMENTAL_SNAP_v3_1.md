@@ -1,5 +1,11 @@
 # Protocole experimental SoulBench SNAP v3.1
 
+> Archive du protocole/kit v3.1 exécuté. Les mentions « actif » et « actuel »
+> dans le corps désignent ce snapshot historique. Les chemins et recettes sont
+> conservés pour provenance et ne sont pas des instructions à exécuter telles
+> quelles. Utiliser [le README courant](../../../README.md) et
+> [la configuration](../../../config/) pour préparer un travail nouveau.
+
 **Version active**: 3.1  
 **Objectif**: POC rapide, gerable, interpretable.  
 **Config source**: `config/protocol.yaml`

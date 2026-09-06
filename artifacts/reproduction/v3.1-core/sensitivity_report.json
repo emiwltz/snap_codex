@@ -1,0 +1,320 @@
+{
+  "analysis": "sensitivity",
+  "n_rows_raw": 2698,
+  "n_rows_after_exclusions": 2698,
+  "models": {
+    "claude-sonnet-4-5": {
+      "scenario_effect_wilcoxon": {
+        "status": "ok",
+        "statistic": 167.5,
+        "p_value": 0.8386960394640168,
+        "n_pairs": 45,
+        "levels": [
+          "base",
+          "variation"
+        ],
+        "method": "paired_means_by_item_system_prompt",
+        "pairing_unit": [
+          "item_id",
+          "system_prompt"
+        ],
+        "note": "Exploratory v3.1 estimate: factor levels are compared after averaging across the rotated schedule at item x system_prompt level."
+      },
+      "formulation_effect_friedman": {
+        "status": "ok",
+        "statistic": 0.3589743589743823,
+        "p_value": 0.8356986649599165,
+        "n_pairs": 45,
+        "levels": [
+          "F1",
+          "F2",
+          "F3"
+        ],
+        "method": "paired_means_by_item_system_prompt",
+        "pairing_unit": [
+          "item_id",
+          "system_prompt"
+        ],
+        "note": "Exploratory v3.1 estimate: factor levels are compared after averaging across the rotated schedule at item x system_prompt level."
+      },
+      "temperature_effect": {
+        "status": "ok",
+        "statistic": 0.15384615384618883,
+        "p_value": 0.9259610786422998,
+        "n_pairs": 45,
+        "levels": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "method": "paired_means_by_item_system_prompt",
+        "pairing_unit": [
+          "item_id",
+          "system_prompt"
+        ],
+        "note": "Exploratory v3.1 estimate: factor levels are compared after averaging across the rotated schedule at item x system_prompt level."
+      }
+    },
+    "gemini-3-pro": {
+      "scenario_effect_wilcoxon": {
+        "status": "ok",
+        "statistic": 218.5,
+        "p_value": 0.7729004094185017,
+        "n_pairs": 45,
+        "levels": [
+          "base",
+          "variation"
+        ],
+        "method": "paired_means_by_item_system_prompt",
+        "pairing_unit": [
+          "item_id",
+          "system_prompt"
+        ],
+        "note": "Exploratory v3.1 estimate: factor levels are compared after averaging across the rotated schedule at item x system_prompt level."
+      },
+      "formulation_effect_friedman": {
+        "status": "ok",
+        "statistic": 1.3888888888889521,
+        "p_value": 0.49935178859926044,
+        "n_pairs": 45,
+        "levels": [
+          "F1",
+          "F2",
+          "F3"
+        ],
+        "method": "paired_means_by_item_system_prompt",
+        "pairing_unit": [
+          "item_id",
+          "system_prompt"
+        ],
+        "note": "Exploratory v3.1 estimate: factor levels are compared after averaging across the rotated schedule at item x system_prompt level."
+      },
+      "temperature_effect": {
+        "status": "ok",
+        "statistic": 7.153846153846142,
+        "p_value": 0.027961601725905807,
+        "n_pairs": 45,
+        "levels": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "method": "paired_means_by_item_system_prompt",
+        "pairing_unit": [
+          "item_id",
+          "system_prompt"
+        ],
+        "note": "Exploratory v3.1 estimate: factor levels are compared after averaging across the rotated schedule at item x system_prompt level."
+      }
+    },
+    "gpt-5-2": {
+      "scenario_effect_wilcoxon": {
+        "status": "ok",
+        "statistic": 149.0,
+        "p_value": 0.3325613417319502,
+        "n_pairs": 45,
+        "levels": [
+          "base",
+          "variation"
+        ],
+        "method": "paired_means_by_item_system_prompt",
+        "pairing_unit": [
+          "item_id",
+          "system_prompt"
+        ],
+        "note": "Exploratory v3.1 estimate: factor levels are compared after averaging across the rotated schedule at item x system_prompt level."
+      },
+      "formulation_effect_friedman": {
+        "status": "ok",
+        "statistic": 1.6106194690266533,
+        "p_value": 0.4469494694415902,
+        "n_pairs": 45,
+        "levels": [
+          "F1",
+          "F2",
+          "F3"
+        ],
+        "method": "paired_means_by_item_system_prompt",
+        "pairing_unit": [
+          "item_id",
+          "system_prompt"
+        ],
+        "note": "Exploratory v3.1 estimate: factor levels are compared after averaging across the rotated schedule at item x system_prompt level."
+      },
+      "temperature_effect": {
+        "status": "not_applicable",
+        "reason": "Temperature parameter was not sent for this model.",
+        "statistic": null,
+        "p_value": null,
+        "n_pairs": 0,
+        "levels": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "method": "not_applicable",
+        "pairing_unit": [
+          "item_id",
+          "system_prompt"
+        ]
+      }
+    },
+    "grok-4-3": {
+      "scenario_effect_wilcoxon": {
+        "status": "ok",
+        "statistic": 226.0,
+        "p_value": 0.6647488220354554,
+        "n_pairs": 45,
+        "levels": [
+          "base",
+          "variation"
+        ],
+        "method": "paired_means_by_item_system_prompt",
+        "pairing_unit": [
+          "item_id",
+          "system_prompt"
+        ],
+        "note": "Exploratory v3.1 estimate: factor levels are compared after averaging across the rotated schedule at item x system_prompt level."
+      },
+      "formulation_effect_friedman": {
+        "status": "ok",
+        "statistic": 4.699186991869915,
+        "p_value": 0.09540793804840282,
+        "n_pairs": 45,
+        "levels": [
+          "F1",
+          "F2",
+          "F3"
+        ],
+        "method": "paired_means_by_item_system_prompt",
+        "pairing_unit": [
+          "item_id",
+          "system_prompt"
+        ],
+        "note": "Exploratory v3.1 estimate: factor levels are compared after averaging across the rotated schedule at item x system_prompt level."
+      },
+      "temperature_effect": {
+        "status": "ok",
+        "statistic": 7.716666666666753,
+        "p_value": 0.02110314213295232,
+        "n_pairs": 45,
+        "levels": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "method": "paired_means_by_item_system_prompt",
+        "pairing_unit": [
+          "item_id",
+          "system_prompt"
+        ],
+        "note": "Exploratory v3.1 estimate: factor levels are compared after averaging across the rotated schedule at item x system_prompt level."
+      }
+    },
+    "mistral-large-3": {
+      "scenario_effect_wilcoxon": {
+        "status": "ok",
+        "statistic": 134.5,
+        "p_value": 0.2963221076394793,
+        "n_pairs": 45,
+        "levels": [
+          "base",
+          "variation"
+        ],
+        "method": "paired_means_by_item_system_prompt",
+        "pairing_unit": [
+          "item_id",
+          "system_prompt"
+        ],
+        "note": "Exploratory v3.1 estimate: factor levels are compared after averaging across the rotated schedule at item x system_prompt level."
+      },
+      "formulation_effect_friedman": {
+        "status": "ok",
+        "statistic": 2.9900990099010394,
+        "p_value": 0.22423750358923697,
+        "n_pairs": 45,
+        "levels": [
+          "F1",
+          "F2",
+          "F3"
+        ],
+        "method": "paired_means_by_item_system_prompt",
+        "pairing_unit": [
+          "item_id",
+          "system_prompt"
+        ],
+        "note": "Exploratory v3.1 estimate: factor levels are compared after averaging across the rotated schedule at item x system_prompt level."
+      },
+      "temperature_effect": {
+        "status": "ok",
+        "statistic": 0.4242424242424518,
+        "p_value": 0.8088666471820785,
+        "n_pairs": 45,
+        "levels": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "method": "paired_means_by_item_system_prompt",
+        "pairing_unit": [
+          "item_id",
+          "system_prompt"
+        ],
+        "note": "Exploratory v3.1 estimate: factor levels are compared after averaging across the rotated schedule at item x system_prompt level."
+      }
+    },
+    "qwen3-max": {
+      "scenario_effect_wilcoxon": {
+        "status": "ok",
+        "statistic": 154.5,
+        "p_value": 0.8290342405851712,
+        "n_pairs": 45,
+        "levels": [
+          "base",
+          "variation"
+        ],
+        "method": "paired_means_by_item_system_prompt",
+        "pairing_unit": [
+          "item_id",
+          "system_prompt"
+        ],
+        "note": "Exploratory v3.1 estimate: factor levels are compared after averaging across the rotated schedule at item x system_prompt level."
+      },
+      "formulation_effect_friedman": {
+        "status": "ok",
+        "statistic": 1.750000000000114,
+        "p_value": 0.4168620196784849,
+        "n_pairs": 45,
+        "levels": [
+          "F1",
+          "F2",
+          "F3"
+        ],
+        "method": "paired_means_by_item_system_prompt",
+        "pairing_unit": [
+          "item_id",
+          "system_prompt"
+        ],
+        "note": "Exploratory v3.1 estimate: factor levels are compared after averaging across the rotated schedule at item x system_prompt level."
+      },
+      "temperature_effect": {
+        "status": "ok",
+        "statistic": 0.39252336448600683,
+        "p_value": 0.8217971568150959,
+        "n_pairs": 45,
+        "levels": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "method": "paired_means_by_item_system_prompt",
+        "pairing_unit": [
+          "item_id",
+          "system_prompt"
+        ],
+        "note": "Exploratory v3.1 estimate: factor levels are compared after averaging across the rotated schedule at item x system_prompt level."
+      }
+    }
+  },
+  "status": "ok"
+}
