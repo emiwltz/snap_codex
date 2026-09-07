@@ -1,0 +1,192 @@
+{
+  "pingouin_version": "0.6.1",
+  "models": {
+    "claude-sonnet-4-5": {
+      "library": {
+        "error": "Either missing values are present in data or data are unbalanced. Please remove them manually or use nan_policy='omit'."
+      },
+      "snap": {
+        "value": null,
+        "status": "reliability_not_computable",
+        "reason": "ICC computation failed: Either missing values are present in data or data are unbalanced. Please remove them manually or use nan_policy='omit'.",
+        "eligible_targets": 45,
+        "total_targets": 45
+      }
+    },
+    "gemini-3-pro": {
+      "library": [
+        {
+          "Type": "ICC(1,1)",
+          "ICC": 0.5699074074074076
+        },
+        {
+          "Type": "ICC(A,1)",
+          "ICC": 0.5701154744126372
+        },
+        {
+          "Type": "ICC(C,1)",
+          "ICC": 0.572886944391605
+        },
+        {
+          "Type": "ICC(1,k)",
+          "ICC": 0.9298285368985574
+        },
+        {
+          "Type": "ICC(A,k)",
+          "ICC": 0.9298839060270063
+        },
+        {
+          "Type": "ICC(C,k)",
+          "ICC": 0.9306182147786499
+        }
+      ],
+      "snap": {
+        "value": null,
+        "status": "reliability_not_computable",
+        "reason": "ICC2 row not available",
+        "eligible_targets": 45,
+        "total_targets": 45
+      }
+    },
+    "gpt-5-2": {
+      "library": [
+        {
+          "Type": "ICC(1,1)",
+          "ICC": 0.6030296279795057
+        },
+        {
+          "Type": "ICC(A,1)",
+          "ICC": 0.6033339928769293
+        },
+        {
+          "Type": "ICC(C,1)",
+          "ICC": 0.6079956133791937
+        },
+        {
+          "Type": "ICC(1,k)",
+          "ICC": 0.9382365173991405
+        },
+        {
+          "Type": "ICC(A,k)",
+          "ICC": 0.9383101647062445
+        },
+        {
+          "Type": "ICC(C,k)",
+          "ICC": 0.9394303495232375
+        }
+      ],
+      "snap": {
+        "value": null,
+        "status": "reliability_not_computable",
+        "reason": "ICC2 row not available",
+        "eligible_targets": 45,
+        "total_targets": 45
+      }
+    },
+    "grok-4-3": {
+      "library": [
+        {
+          "Type": "ICC(1,1)",
+          "ICC": 0.5579516969721084
+        },
+        {
+          "Type": "ICC(A,1)",
+          "ICC": 0.5582114611408121
+        },
+        {
+          "Type": "ICC(C,1)",
+          "ICC": 0.5615111111111112
+        },
+        {
+          "Type": "ICC(1,k)",
+          "ICC": 0.9265891370424211
+        },
+        {
+          "Type": "ICC(A,k)",
+          "ICC": 0.9266607500421743
+        },
+        {
+          "Type": "ICC(C,k)",
+          "ICC": 0.9275655991659693
+        }
+      ],
+      "snap": {
+        "value": null,
+        "status": "reliability_not_computable",
+        "reason": "ICC2 row not available",
+        "eligible_targets": 45,
+        "total_targets": 45
+      }
+    },
+    "mistral-large-3": {
+      "library": [
+        {
+          "Type": "ICC(1,1)",
+          "ICC": 0.5482000483208507
+        },
+        {
+          "Type": "ICC(A,1)",
+          "ICC": 0.5486271748969126
+        },
+        {
+          "Type": "ICC(C,1)",
+          "ICC": 0.553863336379328
+        },
+        {
+          "Type": "ICC(1,k)",
+          "ICC": 0.9238599348534203
+        },
+        {
+          "Type": "ICC(A,k)",
+          "ICC": 0.9239811646736001
+        },
+        {
+          "Type": "ICC(C,k)",
+          "ICC": 0.9254546688382194
+        }
+      ],
+      "snap": {
+        "value": null,
+        "status": "reliability_not_computable",
+        "reason": "ICC2 row not available",
+        "eligible_targets": 45,
+        "total_targets": 45
+      }
+    },
+    "qwen3-max": {
+      "library": [
+        {
+          "Type": "ICC(1,1)",
+          "ICC": 0.628721822638325
+        },
+        {
+          "Type": "ICC(A,1)",
+          "ICC": 0.6287665729208516
+        },
+        {
+          "Type": "ICC(C,1)",
+          "ICC": 0.6295253419147223
+        },
+        {
+          "Type": "ICC(1,k)",
+          "ICC": 0.9442399372397561
+        },
+        {
+          "Type": "ICC(A,k)",
+          "ICC": 0.9442500301677327
+        },
+        {
+          "Type": "ICC(C,k)",
+          "ICC": 0.9444209764045622
+        }
+      ],
+      "snap": {
+        "value": null,
+        "status": "reliability_not_computable",
+        "reason": "ICC2 row not available",
+        "eligible_targets": 45,
+        "total_targets": 45
+      }
+    }
+  }
+}

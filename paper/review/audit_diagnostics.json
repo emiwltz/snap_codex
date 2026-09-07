@@ -1,0 +1,49 @@
+{
+  "status": "exploratory_review_diagnostics",
+  "input_sha256": {
+    "data/snap_poc_v3_1.db": "bbcd28fb99554dc8a7ef308b181e4ff5374d1617abb389cdfd297b1ba847b59a",
+    "config/models.yaml": "22e8b87b47f6b5619071b70283f0900fc1a06c3e688ae55b901cf170c073aa60",
+    "src/runner.py": "d45c98d66188e93d3243e82387c80882440d486d1eec2a28cb89f986bbb9b392",
+    "src/api_client.py": "7f24470a60fdcd4c6bbabf7fd87d9e2253e79f80e1e613597fa6356a55c07a6e",
+    "paper/scripts/audit_diagnostics.py": "40cff304dcc3085947153596df3ce43c2b91c452f9947ec4f855f3c56d2fba23"
+  },
+  "request_reconstruction": "Stored messages and sent/omitted flags; endpoint, max_tokens and top_p inferred from retained config/code, not captured per-call payloads.",
+  "provider_equivalence_verified": false,
+  "repeated_pairs": 180,
+  "models": {
+    "gpt-5-2": 180
+  },
+  "run_pairs": {
+    "1/7": 45,
+    "4/10": 45,
+    "2/8": 45,
+    "3/9": 45
+  },
+  "score_agreement": {
+    "n": 180,
+    "exact": 0.7888888888888889,
+    "kappa": 0.6460176991150443
+  },
+  "score_pearson": 0.7440377890211923,
+  "raw_text_equal": 0,
+  "different_prompt_token_counts": 2,
+  "storage_time_deltas_seconds": {
+    "min": 33.570237,
+    "median": 3112.16338,
+    "max": 9305.727882
+  },
+  "item_kappas_below_060": [
+    "A2",
+    "C1",
+    "M_AS",
+    "N1",
+    "O1"
+  ],
+  "E1_judge1": {
+    "+1": 180
+  },
+  "E1_judge2": {
+    "+1": 180
+  },
+  "source_files_unchanged": true
+}

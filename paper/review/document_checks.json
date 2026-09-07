@@ -1,0 +1,13 @@
+{
+  "pages": 14,
+  "words_markdown": 6524,
+  "pdf_sha256": "fc5d07097e2b21f68ad38fe6f7b0d259c0015b0ded925d332faba6e561380d49",
+  "manuscript_sha256": "6464320b87d67722a35e5a5a90e89bfaa09158c6e45145490c7e647924009176",
+  "tables": 5,
+  "figures": 3,
+  "references": 8,
+  "text_checks": "passed",
+  "visual_review": "passed: all 14 Poppler-rendered pages inspected; no clipping, overlap or missing glyph observed",
+  "visual_review_date": "2026-09-06",
+  "supersedes": "paper/results/document_checks.json describes the first manuscript at d9fa3de"
+}

@@ -1,0 +1,101 @@
+{
+  "checked_utc": "2026-09-06T02:31:35.929850+00:00",
+  "source_head_at_capture": "d9fa3defa6a1baa69d67243b4aaad73a66923e4f",
+  "capture_utc": "2026-09-06T02:22:37.683468+00:00",
+  "source_changes_since_capture": [
+    "docs/CLEANUP.md",
+    "docs/DATA.md",
+    "docs/presentation-files.txt",
+    "paper/PROVENANCE.md",
+    "scripts/export_presentation.py"
+  ],
+  "source_current_head": "d9fa3defa6a1baa69d67243b4aaad73a66923e4f",
+  "candidate_non_database_changes": [],
+  "integrated_audit_input_hash_errors": {
+    "audit_diagnostics.json": [],
+    "reproduction_audit.json": []
+  },
+  "integrated_GPT_metrics_match": true,
+  "integrated_180_pairs_match": true,
+  "signature_comparison_note": "Hashes intentionally differ: independent script serializes internal model alias; integrated script serializes configured endpoint. Compare pair keys, scores, flags and times, not these serializations.",
+  "integrated_item_comparison": {
+    "items": 15,
+    "errors": []
+  },
+  "zip": {
+    "path_relative_to_audit": "work/final-presentation-review.zip",
+    "sha256": "20d35b85fa0aac1a1576ed0f0af3a75be8b3b4238b87f485119a4c0b27e1f179",
+    "bytes": 885418,
+    "file_count": 102,
+    "unsafe_paths": [],
+    "manifest_hash_mismatches": [],
+    "files_not_in_hash_manifest": [
+      "EXPORT_MANIFEST.json"
+    ],
+    "manifest_matches_sidecar": true,
+    "source_content_mismatches": [],
+    "forbidden_payloads": []
+  },
+  "zip_delta_since_100_file_candidate": {
+    "added": [
+      ".gitattributes",
+      "docs/reference-integrity.json"
+    ],
+    "removed": [],
+    "changed": [
+      "EXPORT_MANIFEST.json",
+      "docs/CLEANUP.md",
+      "docs/DATA.md",
+      "docs/presentation-files.txt",
+      "paper/PROVENANCE.md",
+      "scripts/export_presentation.py"
+    ]
+  },
+  "final_integrity_manifest": {
+    "references": 31,
+    "source_hash_errors": [],
+    "original_hash_errors": []
+  },
+  "pdf": {
+    "pages": 14,
+    "sha256": "fc5d07097e2b21f68ad38fe6f7b0d259c0015b0ded925d332faba6e561380d49",
+    "metadata": {
+      "/Author": "Authorship pending research-owner approval",
+      "/CreationDate": "D:20260906042033+02'00'",
+      "/Creator": "(unspecified)",
+      "/Keywords": "",
+      "/ModDate": "D:20260906042033+02'00'",
+      "/Producer": "ReportLab PDF Library - (opensource)",
+      "/Subject": "Local scientific working draft; historical POC FAIL; no new collection",
+      "/Title": "Scorable yet context-sensitive: SoulBench SNAP v3.1",
+      "/Trapped": "/False"
+    },
+    "visual_review": "All 14 pages inspected at 110 dpi. No clipping, overlap, missing glyph, raw response or personal path observed. Three numerical figures are also the three PNG figures in the archive.",
+    "visual_review_date": "2026-09-06"
+  },
+  "privacy_pattern_hits": {},
+  "exact_text_scan": {
+    "long_fragments_checked": 24204,
+    "manual_justifications_checked": 30,
+    "hits": [
+      "config/items_moral.yaml",
+      "config/items_personality.yaml",
+      "config/scoring_rubrics.yaml",
+      "paper/supplement.md"
+    ],
+    "limit": "160-character normalized prefixes, midpoints and suffixes of responses and judge justifications; complete manual justifications >=80 characters. No semantic or legal assurance."
+  },
+  "bundled_markdown_missing_files": [],
+  "recipient_missing_input": {
+    "exit_code": 2,
+    "stdout": "",
+    "stderr": "Matplotlib is building the font cache; this may take a moment.\nusage: reproduce.py [-h] [--bootstrap BOOTSTRAP] [--output-dir OUTPUT_DIR]\nreproduce.py: error: Reference inputs unavailable: data/snap_poc_v3_1.db, data/snap_poc_v3_1_human_validation_clean.db, data/manual_sample_coded.csv, outputs/reports/cross_sp_diagnostic.json. The presentation export omits raw data; see docs/DATA.md.\n",
+    "output_exists": false,
+    "private_directory_exists": false
+  },
+  "recipient_final_targeted_tests": {
+    "exit_code": 0,
+    "stdout": "......                                                                   [100%]\n6 passed in 0.02s\n",
+    "stderr": ""
+  }
+}

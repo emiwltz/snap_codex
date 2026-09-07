@@ -3,6 +3,27 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 .venv/
+venv/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.coverage
+htmlcov/
+.ruff_cache/
+.mypy_cache/
+.cache/
+*.egg-info/
+build/
+dist/
+artifacts/runs/
+artifacts/exports/
+artifacts/cleanup/
+work/
+paper/build/
+paper/results-review*/
+paper/reproductions/
 
 data/*.db
 data/*.db-shm

@@ -1,0 +1,335 @@
+ICC computation failed: Either missing values are present in data or data are unbalanced. Please remove them manually or use nan_policy='omit'.
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:312: RuntimeWarning: invalid value encountered in scalar divide
+  icc1 = (msb - msw) / (msb + (k - 1) * msw)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:313: RuntimeWarning: invalid value encountered in scalar divide
+  icc2 = (msb - mse) / (msb + (k - 1) * mse + k * (msj - mse) / n)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:314: RuntimeWarning: invalid value encountered in scalar divide
+  icc3 = (msb - mse) / (msb + (k - 1) * mse)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:315: RuntimeWarning: invalid value encountered in scalar divide
+  icc1k = (msb - msw) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:316: RuntimeWarning: invalid value encountered in scalar divide
+  icc2k = (msb - mse) / (msb + (msj - mse) / n)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:317: RuntimeWarning: invalid value encountered in scalar divide
+  icc3k = (msb - mse) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:320: RuntimeWarning: invalid value encountered in scalar divide
+  f1k = msb / msw
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:325: RuntimeWarning: invalid value encountered in scalar divide
+  f2k = f3k = msb / mse
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:361: RuntimeWarning: invalid value encountered in scalar divide
+  fj = msj / mse
+ICC computation failed: Either missing values are present in data or data are unbalanced. Please remove them manually or use nan_policy='omit'.
+ICC computation failed: Either missing values are present in data or data are unbalanced. Please remove them manually or use nan_policy='omit'.
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:312: RuntimeWarning: invalid value encountered in scalar divide
+  icc1 = (msb - msw) / (msb + (k - 1) * msw)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:313: RuntimeWarning: invalid value encountered in scalar divide
+  icc2 = (msb - mse) / (msb + (k - 1) * mse + k * (msj - mse) / n)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:314: RuntimeWarning: invalid value encountered in scalar divide
+  icc3 = (msb - mse) / (msb + (k - 1) * mse)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:315: RuntimeWarning: invalid value encountered in scalar divide
+  icc1k = (msb - msw) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:316: RuntimeWarning: invalid value encountered in scalar divide
+  icc2k = (msb - mse) / (msb + (msj - mse) / n)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:317: RuntimeWarning: invalid value encountered in scalar divide
+  icc3k = (msb - mse) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:320: RuntimeWarning: invalid value encountered in scalar divide
+  f1k = msb / msw
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:325: RuntimeWarning: invalid value encountered in scalar divide
+  f2k = f3k = msb / mse
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:361: RuntimeWarning: invalid value encountered in scalar divide
+  fj = msj / mse
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:312: RuntimeWarning: invalid value encountered in scalar divide
+  icc1 = (msb - msw) / (msb + (k - 1) * msw)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:313: RuntimeWarning: invalid value encountered in scalar divide
+  icc2 = (msb - mse) / (msb + (k - 1) * mse + k * (msj - mse) / n)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:314: RuntimeWarning: invalid value encountered in scalar divide
+  icc3 = (msb - mse) / (msb + (k - 1) * mse)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:315: RuntimeWarning: invalid value encountered in scalar divide
+  icc1k = (msb - msw) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:316: RuntimeWarning: invalid value encountered in scalar divide
+  icc2k = (msb - mse) / (msb + (msj - mse) / n)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:317: RuntimeWarning: invalid value encountered in scalar divide
+  icc3k = (msb - mse) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:320: RuntimeWarning: invalid value encountered in scalar divide
+  f1k = msb / msw
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:325: RuntimeWarning: invalid value encountered in scalar divide
+  f2k = f3k = msb / mse
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:361: RuntimeWarning: invalid value encountered in scalar divide
+  fj = msj / mse
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:315: RuntimeWarning: divide by zero encountered in scalar divide
+  icc1k = (msb - msw) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:317: RuntimeWarning: divide by zero encountered in scalar divide
+  icc3k = (msb - mse) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:367: RuntimeWarning: invalid value encountered in scalar divide
+  l2 = n * (msb - f2u * mse) / (f2u * (k * msj + (k * n - k - n) * mse) + n * msb)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:374: RuntimeWarning: divide by zero encountered in scalar divide
+  np.array([1 - 1 / f1l, 1 - 1 / f1u]),
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:376: RuntimeWarning: divide by zero encountered in scalar divide
+  np.array([1 - 1 / f3l, 1 - 1 / f3u]),
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:315: RuntimeWarning: divide by zero encountered in scalar divide
+  icc1k = (msb - msw) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:317: RuntimeWarning: divide by zero encountered in scalar divide
+  icc3k = (msb - mse) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:367: RuntimeWarning: invalid value encountered in scalar divide
+  l2 = n * (msb - f2u * mse) / (f2u * (k * msj + (k * n - k - n) * mse) + n * msb)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:374: RuntimeWarning: divide by zero encountered in scalar divide
+  np.array([1 - 1 / f1l, 1 - 1 / f1u]),
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:376: RuntimeWarning: divide by zero encountered in scalar divide
+  np.array([1 - 1 / f3l, 1 - 1 / f3u]),
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:312: RuntimeWarning: invalid value encountered in scalar divide
+  icc1 = (msb - msw) / (msb + (k - 1) * msw)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:313: RuntimeWarning: invalid value encountered in scalar divide
+  icc2 = (msb - mse) / (msb + (k - 1) * mse + k * (msj - mse) / n)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:314: RuntimeWarning: invalid value encountered in scalar divide
+  icc3 = (msb - mse) / (msb + (k - 1) * mse)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:315: RuntimeWarning: invalid value encountered in scalar divide
+  icc1k = (msb - msw) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:316: RuntimeWarning: invalid value encountered in scalar divide
+  icc2k = (msb - mse) / (msb + (msj - mse) / n)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:317: RuntimeWarning: invalid value encountered in scalar divide
+  icc3k = (msb - mse) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:320: RuntimeWarning: invalid value encountered in scalar divide
+  f1k = msb / msw
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:325: RuntimeWarning: invalid value encountered in scalar divide
+  f2k = f3k = msb / mse
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:361: RuntimeWarning: invalid value encountered in scalar divide
+  fj = msj / mse
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:312: RuntimeWarning: invalid value encountered in scalar divide
+  icc1 = (msb - msw) / (msb + (k - 1) * msw)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:313: RuntimeWarning: invalid value encountered in scalar divide
+  icc2 = (msb - mse) / (msb + (k - 1) * mse + k * (msj - mse) / n)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:314: RuntimeWarning: invalid value encountered in scalar divide
+  icc3 = (msb - mse) / (msb + (k - 1) * mse)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:315: RuntimeWarning: invalid value encountered in scalar divide
+  icc1k = (msb - msw) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:316: RuntimeWarning: invalid value encountered in scalar divide
+  icc2k = (msb - mse) / (msb + (msj - mse) / n)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:317: RuntimeWarning: invalid value encountered in scalar divide
+  icc3k = (msb - mse) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:320: RuntimeWarning: invalid value encountered in scalar divide
+  f1k = msb / msw
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:325: RuntimeWarning: invalid value encountered in scalar divide
+  f2k = f3k = msb / mse
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:361: RuntimeWarning: invalid value encountered in scalar divide
+  fj = msj / mse
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:315: RuntimeWarning: divide by zero encountered in scalar divide
+  icc1k = (msb - msw) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:317: RuntimeWarning: divide by zero encountered in scalar divide
+  icc3k = (msb - mse) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:367: RuntimeWarning: invalid value encountered in scalar divide
+  l2 = n * (msb - f2u * mse) / (f2u * (k * msj + (k * n - k - n) * mse) + n * msb)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:374: RuntimeWarning: divide by zero encountered in scalar divide
+  np.array([1 - 1 / f1l, 1 - 1 / f1u]),
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:376: RuntimeWarning: divide by zero encountered in scalar divide
+  np.array([1 - 1 / f3l, 1 - 1 / f3u]),
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:312: RuntimeWarning: invalid value encountered in scalar divide
+  icc1 = (msb - msw) / (msb + (k - 1) * msw)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:313: RuntimeWarning: invalid value encountered in scalar divide
+  icc2 = (msb - mse) / (msb + (k - 1) * mse + k * (msj - mse) / n)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:314: RuntimeWarning: invalid value encountered in scalar divide
+  icc3 = (msb - mse) / (msb + (k - 1) * mse)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:315: RuntimeWarning: invalid value encountered in scalar divide
+  icc1k = (msb - msw) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:316: RuntimeWarning: invalid value encountered in scalar divide
+  icc2k = (msb - mse) / (msb + (msj - mse) / n)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:317: RuntimeWarning: invalid value encountered in scalar divide
+  icc3k = (msb - mse) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:320: RuntimeWarning: invalid value encountered in scalar divide
+  f1k = msb / msw
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:325: RuntimeWarning: invalid value encountered in scalar divide
+  f2k = f3k = msb / mse
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:361: RuntimeWarning: invalid value encountered in scalar divide
+  fj = msj / mse
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:315: RuntimeWarning: divide by zero encountered in scalar divide
+  icc1k = (msb - msw) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:317: RuntimeWarning: divide by zero encountered in scalar divide
+  icc3k = (msb - mse) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:367: RuntimeWarning: invalid value encountered in scalar divide
+  l2 = n * (msb - f2u * mse) / (f2u * (k * msj + (k * n - k - n) * mse) + n * msb)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:374: RuntimeWarning: divide by zero encountered in scalar divide
+  np.array([1 - 1 / f1l, 1 - 1 / f1u]),
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:376: RuntimeWarning: divide by zero encountered in scalar divide
+  np.array([1 - 1 / f3l, 1 - 1 / f3u]),
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:312: RuntimeWarning: invalid value encountered in scalar divide
+  icc1 = (msb - msw) / (msb + (k - 1) * msw)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:313: RuntimeWarning: invalid value encountered in scalar divide
+  icc2 = (msb - mse) / (msb + (k - 1) * mse + k * (msj - mse) / n)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:314: RuntimeWarning: invalid value encountered in scalar divide
+  icc3 = (msb - mse) / (msb + (k - 1) * mse)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:315: RuntimeWarning: invalid value encountered in scalar divide
+  icc1k = (msb - msw) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:316: RuntimeWarning: invalid value encountered in scalar divide
+  icc2k = (msb - mse) / (msb + (msj - mse) / n)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:317: RuntimeWarning: invalid value encountered in scalar divide
+  icc3k = (msb - mse) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:320: RuntimeWarning: invalid value encountered in scalar divide
+  f1k = msb / msw
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:325: RuntimeWarning: invalid value encountered in scalar divide
+  f2k = f3k = msb / mse
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:361: RuntimeWarning: invalid value encountered in scalar divide
+  fj = msj / mse
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:315: RuntimeWarning: divide by zero encountered in scalar divide
+  icc1k = (msb - msw) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:317: RuntimeWarning: divide by zero encountered in scalar divide
+  icc3k = (msb - mse) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:367: RuntimeWarning: invalid value encountered in scalar divide
+  l2 = n * (msb - f2u * mse) / (f2u * (k * msj + (k * n - k - n) * mse) + n * msb)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:374: RuntimeWarning: divide by zero encountered in scalar divide
+  np.array([1 - 1 / f1l, 1 - 1 / f1u]),
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:376: RuntimeWarning: divide by zero encountered in scalar divide
+  np.array([1 - 1 / f3l, 1 - 1 / f3u]),
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:312: RuntimeWarning: invalid value encountered in scalar divide
+  icc1 = (msb - msw) / (msb + (k - 1) * msw)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:313: RuntimeWarning: invalid value encountered in scalar divide
+  icc2 = (msb - mse) / (msb + (k - 1) * mse + k * (msj - mse) / n)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:314: RuntimeWarning: invalid value encountered in scalar divide
+  icc3 = (msb - mse) / (msb + (k - 1) * mse)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:315: RuntimeWarning: invalid value encountered in scalar divide
+  icc1k = (msb - msw) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:316: RuntimeWarning: invalid value encountered in scalar divide
+  icc2k = (msb - mse) / (msb + (msj - mse) / n)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:317: RuntimeWarning: invalid value encountered in scalar divide
+  icc3k = (msb - mse) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:320: RuntimeWarning: invalid value encountered in scalar divide
+  f1k = msb / msw
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:325: RuntimeWarning: invalid value encountered in scalar divide
+  f2k = f3k = msb / mse
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:361: RuntimeWarning: invalid value encountered in scalar divide
+  fj = msj / mse
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:312: RuntimeWarning: invalid value encountered in scalar divide
+  icc1 = (msb - msw) / (msb + (k - 1) * msw)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:313: RuntimeWarning: invalid value encountered in scalar divide
+  icc2 = (msb - mse) / (msb + (k - 1) * mse + k * (msj - mse) / n)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:314: RuntimeWarning: invalid value encountered in scalar divide
+  icc3 = (msb - mse) / (msb + (k - 1) * mse)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:315: RuntimeWarning: invalid value encountered in scalar divide
+  icc1k = (msb - msw) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:316: RuntimeWarning: invalid value encountered in scalar divide
+  icc2k = (msb - mse) / (msb + (msj - mse) / n)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:317: RuntimeWarning: invalid value encountered in scalar divide
+  icc3k = (msb - mse) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:320: RuntimeWarning: invalid value encountered in scalar divide
+  f1k = msb / msw
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:325: RuntimeWarning: invalid value encountered in scalar divide
+  f2k = f3k = msb / mse
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:361: RuntimeWarning: invalid value encountered in scalar divide
+  fj = msj / mse
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:312: RuntimeWarning: invalid value encountered in scalar divide
+  icc1 = (msb - msw) / (msb + (k - 1) * msw)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:313: RuntimeWarning: invalid value encountered in scalar divide
+  icc2 = (msb - mse) / (msb + (k - 1) * mse + k * (msj - mse) / n)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:314: RuntimeWarning: invalid value encountered in scalar divide
+  icc3 = (msb - mse) / (msb + (k - 1) * mse)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:315: RuntimeWarning: invalid value encountered in scalar divide
+  icc1k = (msb - msw) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:316: RuntimeWarning: invalid value encountered in scalar divide
+  icc2k = (msb - mse) / (msb + (msj - mse) / n)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:317: RuntimeWarning: invalid value encountered in scalar divide
+  icc3k = (msb - mse) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:320: RuntimeWarning: invalid value encountered in scalar divide
+  f1k = msb / msw
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:325: RuntimeWarning: invalid value encountered in scalar divide
+  f2k = f3k = msb / mse
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:361: RuntimeWarning: invalid value encountered in scalar divide
+  fj = msj / mse
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:312: RuntimeWarning: invalid value encountered in scalar divide
+  icc1 = (msb - msw) / (msb + (k - 1) * msw)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:313: RuntimeWarning: invalid value encountered in scalar divide
+  icc2 = (msb - mse) / (msb + (k - 1) * mse + k * (msj - mse) / n)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:314: RuntimeWarning: invalid value encountered in scalar divide
+  icc3 = (msb - mse) / (msb + (k - 1) * mse)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:315: RuntimeWarning: invalid value encountered in scalar divide
+  icc1k = (msb - msw) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:316: RuntimeWarning: invalid value encountered in scalar divide
+  icc2k = (msb - mse) / (msb + (msj - mse) / n)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:317: RuntimeWarning: invalid value encountered in scalar divide
+  icc3k = (msb - mse) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:320: RuntimeWarning: invalid value encountered in scalar divide
+  f1k = msb / msw
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:325: RuntimeWarning: invalid value encountered in scalar divide
+  f2k = f3k = msb / mse
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:361: RuntimeWarning: invalid value encountered in scalar divide
+  fj = msj / mse
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:312: RuntimeWarning: invalid value encountered in scalar divide
+  icc1 = (msb - msw) / (msb + (k - 1) * msw)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:313: RuntimeWarning: invalid value encountered in scalar divide
+  icc2 = (msb - mse) / (msb + (k - 1) * mse + k * (msj - mse) / n)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:314: RuntimeWarning: invalid value encountered in scalar divide
+  icc3 = (msb - mse) / (msb + (k - 1) * mse)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:315: RuntimeWarning: invalid value encountered in scalar divide
+  icc1k = (msb - msw) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:316: RuntimeWarning: invalid value encountered in scalar divide
+  icc2k = (msb - mse) / (msb + (msj - mse) / n)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:317: RuntimeWarning: invalid value encountered in scalar divide
+  icc3k = (msb - mse) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:320: RuntimeWarning: invalid value encountered in scalar divide
+  f1k = msb / msw
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:325: RuntimeWarning: invalid value encountered in scalar divide
+  f2k = f3k = msb / mse
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:361: RuntimeWarning: invalid value encountered in scalar divide
+  fj = msj / mse
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:312: RuntimeWarning: invalid value encountered in scalar divide
+  icc1 = (msb - msw) / (msb + (k - 1) * msw)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:313: RuntimeWarning: invalid value encountered in scalar divide
+  icc2 = (msb - mse) / (msb + (k - 1) * mse + k * (msj - mse) / n)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:314: RuntimeWarning: invalid value encountered in scalar divide
+  icc3 = (msb - mse) / (msb + (k - 1) * mse)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:315: RuntimeWarning: invalid value encountered in scalar divide
+  icc1k = (msb - msw) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:316: RuntimeWarning: invalid value encountered in scalar divide
+  icc2k = (msb - mse) / (msb + (msj - mse) / n)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:317: RuntimeWarning: invalid value encountered in scalar divide
+  icc3k = (msb - mse) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:320: RuntimeWarning: invalid value encountered in scalar divide
+  f1k = msb / msw
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:325: RuntimeWarning: invalid value encountered in scalar divide
+  f2k = f3k = msb / mse
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:361: RuntimeWarning: invalid value encountered in scalar divide
+  fj = msj / mse
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:312: RuntimeWarning: invalid value encountered in scalar divide
+  icc1 = (msb - msw) / (msb + (k - 1) * msw)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:313: RuntimeWarning: invalid value encountered in scalar divide
+  icc2 = (msb - mse) / (msb + (k - 1) * mse + k * (msj - mse) / n)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:314: RuntimeWarning: invalid value encountered in scalar divide
+  icc3 = (msb - mse) / (msb + (k - 1) * mse)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:315: RuntimeWarning: invalid value encountered in scalar divide
+  icc1k = (msb - msw) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:316: RuntimeWarning: invalid value encountered in scalar divide
+  icc2k = (msb - mse) / (msb + (msj - mse) / n)
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:317: RuntimeWarning: invalid value encountered in scalar divide
+  icc3k = (msb - mse) / msb
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:320: RuntimeWarning: invalid value encountered in scalar divide
+  f1k = msb / msw
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:325: RuntimeWarning: invalid value encountered in scalar divide
+  f2k = f3k = msb / mse
+/Users/emi/.codex/worktrees/9665/snap_codex/work/source_snapshot/paper/private/venv/lib/python3.12/site-packages/pingouin/reliability.py:361: RuntimeWarning: invalid value encountered in scalar divide
+  fj = msj / mse
+Core analyses completed; computing descriptive uncertainty
+{
+  "checks": {
+    "2700_unique_trials": true,
+    "270_unique_model_item_prompt_cells_with_10_runs": true,
+    "no_errors_or_unresolved_scores": true,
+    "human_database_responses_identical_to_campaign": true,
+    "csv_human_labels_equal_validation_database": true,
+    "stored_user_prompts_match_config": true,
+    "stored_system_prompts_match_config": true,
+    "run_schedule_matches_config": true,
+    "csv_response_text_model_and_final_score_match_campaign": true,
+    "independent_icc_matches_claude-sonnet-4-5": true,
+    "independent_icc_matches_gemini-3-pro": true,
+    "independent_icc_matches_gpt-5-2": true,
+    "independent_icc_matches_grok-4-3": true,
+    "independent_icc_matches_mistral-large-3": true,
+    "independent_icc_matches_qwen3-max": true,
+    "historical_gate_reproduces_FAIL": true,
+    "interjudge_kappa_reproduced": true,
+    "all_reference_inputs_unchanged": true
+  },
+  "archived_differences": {
+    "stability": 0,
+    "sensitivity": 0,
+    "variance_decomposition": 0,
+    "decision": 0
+  },
+  "decision": "FAIL"
+}

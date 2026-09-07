@@ -1,0 +1,32 @@
+{
+  "n": 180,
+  "score_counts": {
+    "+1": 180
+  },
+  "wordband_vs_score": {
+    "+1/+1": 178,
+    "0/+1": 2
+  },
+  "mismatch_ids": [
+    {
+      "id": 2760,
+      "model": "grok-4-3",
+      "sp": "SP_PER",
+      "run": 6,
+      "word_count": 139,
+      "score": "+1",
+      "judge1": "+1",
+      "judge2": "+1"
+    },
+    {
+      "id": 2779,
+      "model": "grok-4-3",
+      "sp": "SP_PER",
+      "run": 2,
+      "word_count": 136,
+      "score": "+1",
+      "judge1": "+1",
+      "judge2": "+1"
+    }
+  ]
+}

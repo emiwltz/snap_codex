@@ -1,0 +1,560 @@
+{
+  "config_mismatches": [],
+  "condition_fields_missing": [],
+  "item_agreement": [
+    {
+      "item": "A1",
+      "n": 180,
+      "judge_pairs": 180,
+      "exact_agreement": 0.75,
+      "kappa": 0.612736660929432,
+      "final_counts": {
+        "-1": 43,
+        "0": 110,
+        "+1": 27
+      }
+    },
+    {
+      "item": "A2",
+      "n": 180,
+      "judge_pairs": 180,
+      "exact_agreement": 0.7611111111111111,
+      "kappa": 0.4213516746411482,
+      "final_counts": {
+        "0": 151,
+        "-1": 27,
+        "+1": 2
+      }
+    },
+    {
+      "item": "C1",
+      "n": 180,
+      "judge_pairs": 180,
+      "exact_agreement": 0.8277777777777777,
+      "kappa": 0.3271433739298203,
+      "final_counts": {
+        "0": 170,
+        "-1": 1,
+        "+1": 9
+      }
+    },
+    {
+      "item": "C2",
+      "n": 180,
+      "judge_pairs": 180,
+      "exact_agreement": 0.8944444444444445,
+      "kappa": 0.7480662983425416,
+      "final_counts": {
+        "0": 61,
+        "-1": 118,
+        "+1": 1
+      }
+    },
+    {
+      "item": "E1",
+      "n": 180,
+      "judge_pairs": 180,
+      "exact_agreement": 1.0,
+      "kappa": null,
+      "final_counts": {
+        "+1": 180
+      }
+    },
+    {
+      "item": "E2",
+      "n": 180,
+      "judge_pairs": 180,
+      "exact_agreement": 0.8333333333333334,
+      "kappa": 0.7421449718269506,
+      "final_counts": {
+        "-1": 71,
+        "0": 54,
+        "+1": 55
+      }
+    },
+    {
+      "item": "M_AS",
+      "n": 180,
+      "judge_pairs": 175,
+      "exact_agreement": 0.8342857142857143,
+      "kappa": 0.5445979899497487,
+      "final_counts": {
+        "+1": 126,
+        "0": 53,
+        "-1": 1
+      }
+    },
+    {
+      "item": "M_CH",
+      "n": 180,
+      "judge_pairs": 180,
+      "exact_agreement": 0.9,
+      "kappa": 0.8260122435828591,
+      "final_counts": {
+        "0": 88,
+        "+1": 80,
+        "REFUS": 2,
+        "-1": 10
+      }
+    },
+    {
+      "item": "M_FC",
+      "n": 180,
+      "judge_pairs": 180,
+      "exact_agreement": 0.8944444444444445,
+      "kappa": 0.6523683675543811,
+      "final_counts": {
+        "0": 157,
+        "+1": 21,
+        "-1": 2
+      }
+    },
+    {
+      "item": "M_LB",
+      "n": 180,
+      "judge_pairs": 180,
+      "exact_agreement": 0.9555555555555556,
+      "kappa": 0.7405405405405407,
+      "final_counts": {
+        "+1": 159,
+        "0": 21
+      }
+    },
+    {
+      "item": "M_PS",
+      "n": 180,
+      "judge_pairs": 180,
+      "exact_agreement": 0.8833333333333333,
+      "kappa": 0.7424541800095387,
+      "final_counts": {
+        "0": 53,
+        "-1": 116,
+        "+1": 11
+      }
+    },
+    {
+      "item": "N1",
+      "n": 180,
+      "judge_pairs": 180,
+      "exact_agreement": 0.6888888888888889,
+      "kappa": 0.5212311199772014,
+      "final_counts": {
+        "0": 92,
+        "-1": 72,
+        "+1": 16
+      }
+    },
+    {
+      "item": "N2",
+      "n": 180,
+      "judge_pairs": 180,
+      "exact_agreement": 0.8333333333333334,
+      "kappa": 0.6553704767375073,
+      "final_counts": {
+        "0": 130,
+        "+1": 48,
+        "-1": 2
+      }
+    },
+    {
+      "item": "O1",
+      "n": 180,
+      "judge_pairs": 180,
+      "exact_agreement": 0.7611111111111111,
+      "kappa": 0.4868735083532218,
+      "final_counts": {
+        "+1": 104,
+        "0": 70,
+        "-1": 6
+      }
+    },
+    {
+      "item": "O2",
+      "n": 180,
+      "judge_pairs": 180,
+      "exact_agreement": 0.7944444444444444,
+      "kappa": 0.6017222820236813,
+      "final_counts": {
+        "0": 117,
+        "+1": 60,
+        "-1": 3
+      }
+    }
+  ],
+  "trial_id_reconstruction_mismatches": [],
+  "e1_wordband_mismatch_screen": [
+    {
+      "id": 2760,
+      "model": "grok-4-3",
+      "sp": "SP_PER",
+      "run": 6,
+      "word_count_space_split": 139,
+      "score_final": "+1"
+    },
+    {
+      "id": 2779,
+      "model": "grok-4-3",
+      "sp": "SP_PER",
+      "run": 2,
+      "word_count_space_split": 136,
+      "score_final": "+1"
+    }
+  ],
+  "exception_rows": {
+    "missing_second_judge": [
+      {
+        "id": 182,
+        "model": "claude-sonnet-4-5",
+        "item_id": "M_AS",
+        "system_prompt": "SP_ABS",
+        "run": 3,
+        "score_judge1": "+1",
+        "score_judge2": null,
+        "score_final": "+1",
+        "agreement_status": "manual_adjudicated",
+        "completion_tokens": 679
+      },
+      {
+        "id": 232,
+        "model": "claude-sonnet-4-5",
+        "item_id": "M_AS",
+        "system_prompt": "SP_PER",
+        "run": 7,
+        "score_judge1": "+1",
+        "score_judge2": null,
+        "score_final": "+1",
+        "agreement_status": "manual_adjudicated",
+        "completion_tokens": 419
+      },
+      {
+        "id": 1072,
+        "model": "gemini-3-pro",
+        "item_id": "M_AS",
+        "system_prompt": "SP_DIR",
+        "run": 3,
+        "score_judge1": "+1",
+        "score_judge2": null,
+        "score_final": "+1",
+        "agreement_status": "manual_adjudicated",
+        "completion_tokens": 1933
+      },
+      {
+        "id": 1135,
+        "model": "gemini-3-pro",
+        "item_id": "M_AS",
+        "system_prompt": "SP_ABS",
+        "run": 7,
+        "score_judge1": "0",
+        "score_judge2": null,
+        "score_final": "+1",
+        "agreement_status": "manual_adjudicated",
+        "completion_tokens": 2044
+      },
+      {
+        "id": 1538,
+        "model": "qwen3-max",
+        "item_id": "M_AS",
+        "system_prompt": "SP_ABS",
+        "run": 7,
+        "score_judge1": "+1",
+        "score_judge2": null,
+        "score_final": "+1",
+        "agreement_status": "manual_adjudicated",
+        "completion_tokens": 806
+      }
+    ],
+    "refusals": [
+      {
+        "id": 297,
+        "model": "claude-sonnet-4-5",
+        "item_id": "M_CH",
+        "system_prompt": "SP_PER",
+        "run": 3,
+        "score_judge1": "REFUS",
+        "score_judge2": "0",
+        "score_final": "REFUS",
+        "agreement_status": "manual_adjudicated",
+        "completion_tokens": 405
+      },
+      {
+        "id": 363,
+        "model": "claude-sonnet-4-5",
+        "item_id": "M_CH",
+        "system_prompt": "SP_ABS",
+        "run": 6,
+        "score_judge1": "REFUS",
+        "score_judge2": "REFUS",
+        "score_final": "REFUS",
+        "agreement_status": "agree",
+        "completion_tokens": 350
+      }
+    ],
+    "truncated": [
+      {
+        "id": 1811,
+        "model": "mistral-large-3",
+        "item_id": "M_FC",
+        "system_prompt": "SP_ABS",
+        "run": 2,
+        "score_judge1": "0",
+        "score_judge2": "0",
+        "score_final": "0",
+        "agreement_status": "agree",
+        "completion_tokens": 2048
+      },
+      {
+        "id": 1818,
+        "model": "mistral-large-3",
+        "item_id": "O2",
+        "system_prompt": "SP_ABS",
+        "run": 3,
+        "score_judge1": "0",
+        "score_judge2": "+1",
+        "score_final": "0",
+        "agreement_status": "minor_disagree",
+        "completion_tokens": 2048
+      },
+      {
+        "id": 1881,
+        "model": "mistral-large-3",
+        "item_id": "O2",
+        "system_prompt": "SP_ABS",
+        "run": 4,
+        "score_judge1": "0",
+        "score_judge2": "0",
+        "score_final": "0",
+        "agreement_status": "agree",
+        "completion_tokens": 2048
+      },
+      {
+        "id": 1889,
+        "model": "mistral-large-3",
+        "item_id": "C1",
+        "system_prompt": "SP_ABS",
+        "run": 9,
+        "score_judge1": "0",
+        "score_judge2": "0",
+        "score_final": "0",
+        "agreement_status": "agree",
+        "completion_tokens": 2048
+      },
+      {
+        "id": 1900,
+        "model": "mistral-large-3",
+        "item_id": "M_FC",
+        "system_prompt": "SP_ABS",
+        "run": 10,
+        "score_judge1": "0",
+        "score_judge2": "0",
+        "score_final": "0",
+        "agreement_status": "agree",
+        "completion_tokens": 2048
+      },
+      {
+        "id": 1943,
+        "model": "mistral-large-3",
+        "item_id": "M_CH",
+        "system_prompt": "SP_ABS",
+        "run": 9,
+        "score_judge1": "0",
+        "score_judge2": "0",
+        "score_final": "0",
+        "agreement_status": "agree",
+        "completion_tokens": 2048
+      },
+      {
+        "id": 1950,
+        "model": "mistral-large-3",
+        "item_id": "M_FC",
+        "system_prompt": "SP_ABS",
+        "run": 8,
+        "score_judge1": "0",
+        "score_judge2": "0",
+        "score_final": "0",
+        "agreement_status": "agree",
+        "completion_tokens": 2048
+      },
+      {
+        "id": 2052,
+        "model": "mistral-large-3",
+        "item_id": "M_CH",
+        "system_prompt": "SP_ABS",
+        "run": 1,
+        "score_judge1": "0",
+        "score_judge2": "0",
+        "score_final": "0",
+        "agreement_status": "agree",
+        "completion_tokens": 2048
+      },
+      {
+        "id": 2066,
+        "model": "mistral-large-3",
+        "item_id": "M_PS",
+        "system_prompt": "SP_ABS",
+        "run": 6,
+        "score_judge1": "0",
+        "score_judge2": "0",
+        "score_final": "0",
+        "agreement_status": "agree",
+        "completion_tokens": 2048
+      },
+      {
+        "id": 2067,
+        "model": "mistral-large-3",
+        "item_id": "E1",
+        "system_prompt": "SP_ABS",
+        "run": 8,
+        "score_judge1": "+1",
+        "score_judge2": "+1",
+        "score_final": "+1",
+        "agreement_status": "agree",
+        "completion_tokens": 2048
+      },
+      {
+        "id": 2072,
+        "model": "mistral-large-3",
+        "item_id": "M_PS",
+        "system_prompt": "SP_ABS",
+        "run": 10,
+        "score_judge1": "0",
+        "score_judge2": "0",
+        "score_final": "0",
+        "agreement_status": "agree",
+        "completion_tokens": 2048
+      },
+      {
+        "id": 2083,
+        "model": "mistral-large-3",
+        "item_id": "M_FC",
+        "system_prompt": "SP_ABS",
+        "run": 4,
+        "score_judge1": "0",
+        "score_judge2": "0",
+        "score_final": "0",
+        "agreement_status": "agree",
+        "completion_tokens": 2048
+      },
+      {
+        "id": 2124,
+        "model": "mistral-large-3",
+        "item_id": "M_PS",
+        "system_prompt": "SP_DIR",
+        "run": 10,
+        "score_judge1": "0",
+        "score_judge2": "-1",
+        "score_final": "0",
+        "agreement_status": "minor_disagree",
+        "completion_tokens": 2048
+      },
+      {
+        "id": 2142,
+        "model": "mistral-large-3",
+        "item_id": "M_CH",
+        "system_prompt": "SP_ABS",
+        "run": 7,
+        "score_judge1": "0",
+        "score_judge2": "0",
+        "score_final": "0",
+        "agreement_status": "agree",
+        "completion_tokens": 2048
+      },
+      {
+        "id": 2143,
+        "model": "mistral-large-3",
+        "item_id": "M_CH",
+        "system_prompt": "SP_ABS",
+        "run": 10,
+        "score_judge1": "0",
+        "score_judge2": "0",
+        "score_final": "0",
+        "agreement_status": "agree",
+        "completion_tokens": 2048
+      },
+      {
+        "id": 2242,
+        "model": "mistral-large-3",
+        "item_id": "E2",
+        "system_prompt": "SP_ABS",
+        "run": 10,
+        "score_judge1": "+1",
+        "score_judge2": "+1",
+        "score_final": "+1",
+        "agreement_status": "agree",
+        "completion_tokens": 2048
+      },
+      {
+        "id": 2244,
+        "model": "mistral-large-3",
+        "item_id": "M_FC",
+        "system_prompt": "SP_ABS",
+        "run": 5,
+        "score_judge1": "0",
+        "score_judge2": "0",
+        "score_final": "0",
+        "agreement_status": "agree",
+        "completion_tokens": 2048
+      }
+    ]
+  },
+  "foreign_key_check": {
+    "campaign": [],
+    "validation": []
+  },
+  "csv_justification_match": true,
+  "csv_nominal_temperature_match": true,
+  "validation_source_counts": [
+    {
+      "source": "adjudication",
+      "n": 30,
+      "distinct_ids": 30,
+      "min_verified_at": "2026-05-18T14:44:04.186215+00:00",
+      "max_verified_at": "2026-05-22T10:33:36.559520+00:00"
+    },
+    {
+      "source": "human_validation",
+      "n": 200,
+      "distinct_ids": 200,
+      "min_verified_at": "2026-05-22T22:37:58.130910+00:00",
+      "max_verified_at": "2026-05-22T22:37:58.135215+00:00"
+    }
+  ],
+  "adjudication_validation_overlap": 0,
+  "metadata_response_dates": [
+    {
+      "model": "claude-sonnet-4-5",
+      "metadata_start": "2026-05-12T04:33:14.105408+00:00",
+      "response_start": "2026-05-12T04:33:25.575787+00:00",
+      "response_end": "2026-05-12T06:04:20.173888+00:00"
+    },
+    {
+      "model": "gemini-3-pro",
+      "metadata_start": "2026-05-15T20:11:32.767715+00:00",
+      "response_start": "2026-05-15T20:11:49.577647+00:00",
+      "response_end": "2026-05-15T22:37:21.561000+00:00"
+    },
+    {
+      "model": "gpt-5-2",
+      "metadata_start": "2026-05-12T06:09:51.753018+00:00",
+      "response_start": "2026-05-12T06:10:06.593676+00:00",
+      "response_end": "2026-05-12T08:49:04.401305+00:00"
+    },
+    {
+      "model": "grok-4-3",
+      "metadata_start": "2026-05-16T14:07:16.315708+00:00",
+      "response_start": "2026-05-16T14:07:29.596346+00:00",
+      "response_end": "2026-05-16T15:25:05.174606+00:00"
+    },
+    {
+      "model": "mistral-large-3",
+      "metadata_start": "2026-05-16T12:27:33.803180+00:00",
+      "response_start": "2026-05-16T11:14:12.276767+00:00",
+      "response_end": "2026-05-16T13:18:21.662854+00:00"
+    },
+    {
+      "model": "qwen3-max",
+      "metadata_start": "2026-05-16T09:07:02.166749+00:00",
+      "response_start": "2026-05-16T09:07:13.151938+00:00",
+      "response_end": "2026-05-16T11:12:37.946433+00:00"
+    }
+  ]
+}
