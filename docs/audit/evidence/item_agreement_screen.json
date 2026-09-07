@@ -1,0 +1,180 @@
+[
+  {
+    "item": "A1",
+    "n": 180,
+    "judge_pairs": 180,
+    "exact_agreement": 0.75,
+    "kappa": 0.612736660929432,
+    "final_counts": {
+      "-1": 43,
+      "0": 110,
+      "+1": 27
+    }
+  },
+  {
+    "item": "A2",
+    "n": 180,
+    "judge_pairs": 180,
+    "exact_agreement": 0.7611111111111111,
+    "kappa": 0.4213516746411482,
+    "final_counts": {
+      "0": 151,
+      "-1": 27,
+      "+1": 2
+    }
+  },
+  {
+    "item": "C1",
+    "n": 180,
+    "judge_pairs": 180,
+    "exact_agreement": 0.8277777777777777,
+    "kappa": 0.3271433739298203,
+    "final_counts": {
+      "0": 170,
+      "-1": 1,
+      "+1": 9
+    }
+  },
+  {
+    "item": "C2",
+    "n": 180,
+    "judge_pairs": 180,
+    "exact_agreement": 0.8944444444444445,
+    "kappa": 0.7480662983425416,
+    "final_counts": {
+      "0": 61,
+      "-1": 118,
+      "+1": 1
+    }
+  },
+  {
+    "item": "E1",
+    "n": 180,
+    "judge_pairs": 180,
+    "exact_agreement": 1.0,
+    "kappa": null,
+    "final_counts": {
+      "+1": 180
+    }
+  },
+  {
+    "item": "E2",
+    "n": 180,
+    "judge_pairs": 180,
+    "exact_agreement": 0.8333333333333334,
+    "kappa": 0.7421449718269506,
+    "final_counts": {
+      "-1": 71,
+      "0": 54,
+      "+1": 55
+    }
+  },
+  {
+    "item": "M_AS",
+    "n": 180,
+    "judge_pairs": 175,
+    "exact_agreement": 0.8342857142857143,
+    "kappa": 0.5445979899497487,
+    "final_counts": {
+      "+1": 126,
+      "0": 53,
+      "-1": 1
+    }
+  },
+  {
+    "item": "M_CH",
+    "n": 180,
+    "judge_pairs": 180,
+    "exact_agreement": 0.9,
+    "kappa": 0.8260122435828591,
+    "final_counts": {
+      "0": 88,
+      "+1": 80,
+      "REFUS": 2,
+      "-1": 10
+    }
+  },
+  {
+    "item": "M_FC",
+    "n": 180,
+    "judge_pairs": 180,
+    "exact_agreement": 0.8944444444444445,
+    "kappa": 0.6523683675543811,
+    "final_counts": {
+      "0": 157,
+      "+1": 21,
+      "-1": 2
+    }
+  },
+  {
+    "item": "M_LB",
+    "n": 180,
+    "judge_pairs": 180,
+    "exact_agreement": 0.9555555555555556,
+    "kappa": 0.7405405405405407,
+    "final_counts": {
+      "+1": 159,
+      "0": 21
+    }
+  },
+  {
+    "item": "M_PS",
+    "n": 180,
+    "judge_pairs": 180,
+    "exact_agreement": 0.8833333333333333,
+    "kappa": 0.7424541800095387,
+    "final_counts": {
+      "0": 53,
+      "-1": 116,
+      "+1": 11
+    }
+  },
+  {
+    "item": "N1",
+    "n": 180,
+    "judge_pairs": 180,
+    "exact_agreement": 0.6888888888888889,
+    "kappa": 0.5212311199772014,
+    "final_counts": {
+      "0": 92,
+      "-1": 72,
+      "+1": 16
+    }
+  },
+  {
+    "item": "N2",
+    "n": 180,
+    "judge_pairs": 180,
+    "exact_agreement": 0.8333333333333334,
+    "kappa": 0.6553704767375073,
+    "final_counts": {
+      "0": 130,
+      "+1": 48,
+      "-1": 2
+    }
+  },
+  {
+    "item": "O1",
+    "n": 180,
+    "judge_pairs": 180,
+    "exact_agreement": 0.7611111111111111,
+    "kappa": 0.4868735083532218,
+    "final_counts": {
+      "+1": 104,
+      "0": 70,
+      "-1": 6
+    }
+  },
+  {
+    "item": "O2",
+    "n": 180,
+    "judge_pairs": 180,
+    "exact_agreement": 0.7944444444444444,
+    "kappa": 0.6017222820236813,
+    "final_counts": {
+      "0": 117,
+      "+1": 60,
+      "-1": 3
+    }
+  }
+]

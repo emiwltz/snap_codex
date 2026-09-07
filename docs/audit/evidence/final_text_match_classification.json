@@ -1,0 +1,23 @@
+{
+  "config/items_moral.yaml": {
+    "matching_manual_rows": 73,
+    "unique_response_ids": 73,
+    "all_also_in_method_configuration": true
+  },
+  "config/items_personality.yaml": {
+    "matching_manual_rows": 117,
+    "unique_response_ids": 117,
+    "all_also_in_method_configuration": true
+  },
+  "config/scoring_rubrics.yaml": {
+    "matching_manual_rows": 143,
+    "unique_response_ids": 143,
+    "all_also_in_method_configuration": true
+  },
+  "paper/supplement.md": {
+    "matching_manual_rows": 190,
+    "unique_response_ids": 190,
+    "all_also_in_method_configuration": true
+  },
+  "classification": "All detected strings occur in the unchanged method configuration; these are rubric text carried into stored human-labelled justifications, not additional raw response export. No inference of coder identity or process is made."
+}

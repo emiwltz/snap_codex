@@ -20,6 +20,7 @@ dist/
 artifacts/runs/
 artifacts/exports/
 artifacts/cleanup/
+work/
 paper/build/
 paper/results-review*/
 paper/reproductions/

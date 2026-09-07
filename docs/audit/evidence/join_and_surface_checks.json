@@ -1,0 +1,769 @@
+{
+  "snap_poc_v3_1.db": {
+    "foreign_key_check": [],
+    "table_counts": {
+      "responses": 2700,
+      "sqlite_sequence": 3,
+      "collection_metadata": 6,
+      "manual_verification": 30
+    },
+    "response_id_span": [
+      1,
+      3161
+    ]
+  },
+  "snap_poc_v3_1_human_validation_clean.db": {
+    "foreign_key_check": [],
+    "table_counts": {
+      "responses": 2700,
+      "sqlite_sequence": 3,
+      "collection_metadata": 6,
+      "manual_verification": 230
+    },
+    "response_id_span": [
+      1,
+      3161
+    ]
+  },
+  "csv_justification_match": true,
+  "csv_nominal_temperature_match": true,
+  "validation_source_counts": [
+    [
+      "adjudication",
+      30,
+      30,
+      "2026-05-18T14:44:04.186215+00:00",
+      "2026-05-22T10:33:36.559520+00:00"
+    ],
+    [
+      "human_validation",
+      200,
+      200,
+      "2026-05-22T22:37:58.130910+00:00",
+      "2026-05-22T22:37:58.135215+00:00"
+    ]
+  ],
+  "adjudication_validation_overlap": 0,
+  "historical_diagnostic_text_fields": [
+    {
+      "json_path": "/critical_response_examples/0/examples_by_system_prompt/SP_ABS/0/user_prompt_excerpt",
+      "characters": 113
+    },
+    {
+      "json_path": "/critical_response_examples/0/examples_by_system_prompt/SP_ABS/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/0/examples_by_system_prompt/SP_DIR/0/user_prompt_excerpt",
+      "characters": 113
+    },
+    {
+      "json_path": "/critical_response_examples/0/examples_by_system_prompt/SP_DIR/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/0/examples_by_system_prompt/SP_PER/0/user_prompt_excerpt",
+      "characters": 139
+    },
+    {
+      "json_path": "/critical_response_examples/0/examples_by_system_prompt/SP_PER/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/1/examples_by_system_prompt/SP_ABS/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/1/examples_by_system_prompt/SP_ABS/0/raw_response_excerpt",
+      "characters": 1199
+    },
+    {
+      "json_path": "/critical_response_examples/1/examples_by_system_prompt/SP_DIR/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/1/examples_by_system_prompt/SP_DIR/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/1/examples_by_system_prompt/SP_PER/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/1/examples_by_system_prompt/SP_PER/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/2/examples_by_system_prompt/SP_ABS/0/user_prompt_excerpt",
+      "characters": 374
+    },
+    {
+      "json_path": "/critical_response_examples/2/examples_by_system_prompt/SP_ABS/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/2/examples_by_system_prompt/SP_DIR/0/user_prompt_excerpt",
+      "characters": 354
+    },
+    {
+      "json_path": "/critical_response_examples/2/examples_by_system_prompt/SP_DIR/0/raw_response_excerpt",
+      "characters": 1199
+    },
+    {
+      "json_path": "/critical_response_examples/2/examples_by_system_prompt/SP_PER/0/user_prompt_excerpt",
+      "characters": 374
+    },
+    {
+      "json_path": "/critical_response_examples/2/examples_by_system_prompt/SP_PER/0/raw_response_excerpt",
+      "characters": 1199
+    },
+    {
+      "json_path": "/critical_response_examples/3/examples_by_system_prompt/SP_ABS/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/3/examples_by_system_prompt/SP_ABS/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/3/examples_by_system_prompt/SP_DIR/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/3/examples_by_system_prompt/SP_DIR/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/3/examples_by_system_prompt/SP_PER/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/3/examples_by_system_prompt/SP_PER/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/4/examples_by_system_prompt/SP_ABS/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/4/examples_by_system_prompt/SP_ABS/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/4/examples_by_system_prompt/SP_DIR/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/4/examples_by_system_prompt/SP_DIR/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/4/examples_by_system_prompt/SP_PER/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/4/examples_by_system_prompt/SP_PER/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/5/examples_by_system_prompt/SP_ABS/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/5/examples_by_system_prompt/SP_ABS/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/5/examples_by_system_prompt/SP_DIR/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/5/examples_by_system_prompt/SP_DIR/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/5/examples_by_system_prompt/SP_PER/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/5/examples_by_system_prompt/SP_PER/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/6/examples_by_system_prompt/SP_ABS/0/user_prompt_excerpt",
+      "characters": 499
+    },
+    {
+      "json_path": "/critical_response_examples/6/examples_by_system_prompt/SP_ABS/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/6/examples_by_system_prompt/SP_DIR/0/user_prompt_excerpt",
+      "characters": 499
+    },
+    {
+      "json_path": "/critical_response_examples/6/examples_by_system_prompt/SP_DIR/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/6/examples_by_system_prompt/SP_PER/0/user_prompt_excerpt",
+      "characters": 499
+    },
+    {
+      "json_path": "/critical_response_examples/6/examples_by_system_prompt/SP_PER/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/7/examples_by_system_prompt/SP_ABS/0/user_prompt_excerpt",
+      "characters": 412
+    },
+    {
+      "json_path": "/critical_response_examples/7/examples_by_system_prompt/SP_ABS/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/7/examples_by_system_prompt/SP_DIR/0/user_prompt_excerpt",
+      "characters": 301
+    },
+    {
+      "json_path": "/critical_response_examples/7/examples_by_system_prompt/SP_DIR/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/7/examples_by_system_prompt/SP_PER/0/user_prompt_excerpt",
+      "characters": 412
+    },
+    {
+      "json_path": "/critical_response_examples/7/examples_by_system_prompt/SP_PER/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/8/examples_by_system_prompt/SP_ABS/0/user_prompt_excerpt",
+      "characters": 357
+    },
+    {
+      "json_path": "/critical_response_examples/8/examples_by_system_prompt/SP_ABS/0/raw_response_excerpt",
+      "characters": 1198
+    },
+    {
+      "json_path": "/critical_response_examples/8/examples_by_system_prompt/SP_DIR/0/user_prompt_excerpt",
+      "characters": 377
+    },
+    {
+      "json_path": "/critical_response_examples/8/examples_by_system_prompt/SP_DIR/0/raw_response_excerpt",
+      "characters": 1114
+    },
+    {
+      "json_path": "/critical_response_examples/8/examples_by_system_prompt/SP_PER/0/user_prompt_excerpt",
+      "characters": 374
+    },
+    {
+      "json_path": "/critical_response_examples/8/examples_by_system_prompt/SP_PER/0/raw_response_excerpt",
+      "characters": 667
+    },
+    {
+      "json_path": "/critical_response_examples/9/examples_by_system_prompt/SP_ABS/0/user_prompt_excerpt",
+      "characters": 139
+    },
+    {
+      "json_path": "/critical_response_examples/9/examples_by_system_prompt/SP_ABS/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/9/examples_by_system_prompt/SP_DIR/0/user_prompt_excerpt",
+      "characters": 113
+    },
+    {
+      "json_path": "/critical_response_examples/9/examples_by_system_prompt/SP_DIR/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/9/examples_by_system_prompt/SP_PER/0/user_prompt_excerpt",
+      "characters": 139
+    },
+    {
+      "json_path": "/critical_response_examples/9/examples_by_system_prompt/SP_PER/0/raw_response_excerpt",
+      "characters": 230
+    },
+    {
+      "json_path": "/critical_response_examples/10/examples_by_system_prompt/SP_ABS/0/user_prompt_excerpt",
+      "characters": 412
+    },
+    {
+      "json_path": "/critical_response_examples/10/examples_by_system_prompt/SP_ABS/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/10/examples_by_system_prompt/SP_DIR/0/user_prompt_excerpt",
+      "characters": 412
+    },
+    {
+      "json_path": "/critical_response_examples/10/examples_by_system_prompt/SP_DIR/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/10/examples_by_system_prompt/SP_PER/0/user_prompt_excerpt",
+      "characters": 412
+    },
+    {
+      "json_path": "/critical_response_examples/10/examples_by_system_prompt/SP_PER/0/raw_response_excerpt",
+      "characters": 1142
+    },
+    {
+      "json_path": "/critical_response_examples/11/examples_by_system_prompt/SP_ABS/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/11/examples_by_system_prompt/SP_ABS/0/raw_response_excerpt",
+      "characters": 1199
+    },
+    {
+      "json_path": "/critical_response_examples/11/examples_by_system_prompt/SP_DIR/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/11/examples_by_system_prompt/SP_DIR/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/11/examples_by_system_prompt/SP_PER/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/11/examples_by_system_prompt/SP_PER/0/raw_response_excerpt",
+      "characters": 1199
+    },
+    {
+      "json_path": "/critical_response_examples/12/examples_by_system_prompt/SP_ABS/0/user_prompt_excerpt",
+      "characters": 412
+    },
+    {
+      "json_path": "/critical_response_examples/12/examples_by_system_prompt/SP_ABS/0/raw_response_excerpt",
+      "characters": 1198
+    },
+    {
+      "json_path": "/critical_response_examples/12/examples_by_system_prompt/SP_DIR/0/user_prompt_excerpt",
+      "characters": 412
+    },
+    {
+      "json_path": "/critical_response_examples/12/examples_by_system_prompt/SP_DIR/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/12/examples_by_system_prompt/SP_PER/0/user_prompt_excerpt",
+      "characters": 412
+    },
+    {
+      "json_path": "/critical_response_examples/12/examples_by_system_prompt/SP_PER/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/13/examples_by_system_prompt/SP_ABS/0/user_prompt_excerpt",
+      "characters": 374
+    },
+    {
+      "json_path": "/critical_response_examples/13/examples_by_system_prompt/SP_ABS/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/13/examples_by_system_prompt/SP_DIR/0/user_prompt_excerpt",
+      "characters": 357
+    },
+    {
+      "json_path": "/critical_response_examples/13/examples_by_system_prompt/SP_DIR/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/13/examples_by_system_prompt/SP_PER/0/user_prompt_excerpt",
+      "characters": 374
+    },
+    {
+      "json_path": "/critical_response_examples/13/examples_by_system_prompt/SP_PER/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/14/examples_by_system_prompt/SP_ABS/0/user_prompt_excerpt",
+      "characters": 439
+    },
+    {
+      "json_path": "/critical_response_examples/14/examples_by_system_prompt/SP_ABS/0/raw_response_excerpt",
+      "characters": 1199
+    },
+    {
+      "json_path": "/critical_response_examples/14/examples_by_system_prompt/SP_DIR/0/user_prompt_excerpt",
+      "characters": 439
+    },
+    {
+      "json_path": "/critical_response_examples/14/examples_by_system_prompt/SP_DIR/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/14/examples_by_system_prompt/SP_PER/0/user_prompt_excerpt",
+      "characters": 439
+    },
+    {
+      "json_path": "/critical_response_examples/14/examples_by_system_prompt/SP_PER/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/15/examples_by_system_prompt/SP_ABS/0/user_prompt_excerpt",
+      "characters": 113
+    },
+    {
+      "json_path": "/critical_response_examples/15/examples_by_system_prompt/SP_ABS/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/15/examples_by_system_prompt/SP_DIR/0/user_prompt_excerpt",
+      "characters": 139
+    },
+    {
+      "json_path": "/critical_response_examples/15/examples_by_system_prompt/SP_DIR/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/15/examples_by_system_prompt/SP_PER/0/user_prompt_excerpt",
+      "characters": 139
+    },
+    {
+      "json_path": "/critical_response_examples/15/examples_by_system_prompt/SP_PER/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/16/examples_by_system_prompt/SP_ABS/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/16/examples_by_system_prompt/SP_ABS/0/raw_response_excerpt",
+      "characters": 1199
+    },
+    {
+      "json_path": "/critical_response_examples/16/examples_by_system_prompt/SP_DIR/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/16/examples_by_system_prompt/SP_DIR/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/16/examples_by_system_prompt/SP_PER/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/16/examples_by_system_prompt/SP_PER/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/17/examples_by_system_prompt/SP_ABS/0/user_prompt_excerpt",
+      "characters": 439
+    },
+    {
+      "json_path": "/critical_response_examples/17/examples_by_system_prompt/SP_ABS/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/17/examples_by_system_prompt/SP_DIR/0/user_prompt_excerpt",
+      "characters": 362
+    },
+    {
+      "json_path": "/critical_response_examples/17/examples_by_system_prompt/SP_DIR/0/raw_response_excerpt",
+      "characters": 1199
+    },
+    {
+      "json_path": "/critical_response_examples/17/examples_by_system_prompt/SP_PER/0/user_prompt_excerpt",
+      "characters": 439
+    },
+    {
+      "json_path": "/critical_response_examples/17/examples_by_system_prompt/SP_PER/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/18/examples_by_system_prompt/SP_ABS/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/18/examples_by_system_prompt/SP_ABS/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/18/examples_by_system_prompt/SP_DIR/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/18/examples_by_system_prompt/SP_DIR/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/18/examples_by_system_prompt/SP_PER/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/18/examples_by_system_prompt/SP_PER/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/19/examples_by_system_prompt/SP_ABS/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/19/examples_by_system_prompt/SP_ABS/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/19/examples_by_system_prompt/SP_DIR/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/19/examples_by_system_prompt/SP_DIR/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/19/examples_by_system_prompt/SP_PER/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/19/examples_by_system_prompt/SP_PER/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/20/examples_by_system_prompt/SP_ABS/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/20/examples_by_system_prompt/SP_ABS/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/20/examples_by_system_prompt/SP_DIR/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/20/examples_by_system_prompt/SP_DIR/0/raw_response_excerpt",
+      "characters": 1199
+    },
+    {
+      "json_path": "/critical_response_examples/20/examples_by_system_prompt/SP_PER/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/20/examples_by_system_prompt/SP_PER/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/21/examples_by_system_prompt/SP_ABS/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/21/examples_by_system_prompt/SP_ABS/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/21/examples_by_system_prompt/SP_DIR/0/user_prompt_excerpt",
+      "characters": 499
+    },
+    {
+      "json_path": "/critical_response_examples/21/examples_by_system_prompt/SP_DIR/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/21/examples_by_system_prompt/SP_PER/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/21/examples_by_system_prompt/SP_PER/0/raw_response_excerpt",
+      "characters": 1199
+    },
+    {
+      "json_path": "/critical_response_examples/22/examples_by_system_prompt/SP_ABS/0/user_prompt_excerpt",
+      "characters": 343
+    },
+    {
+      "json_path": "/critical_response_examples/22/examples_by_system_prompt/SP_ABS/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/22/examples_by_system_prompt/SP_DIR/0/user_prompt_excerpt",
+      "characters": 343
+    },
+    {
+      "json_path": "/critical_response_examples/22/examples_by_system_prompt/SP_DIR/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/22/examples_by_system_prompt/SP_PER/0/user_prompt_excerpt",
+      "characters": 343
+    },
+    {
+      "json_path": "/critical_response_examples/22/examples_by_system_prompt/SP_PER/0/raw_response_excerpt",
+      "characters": 1199
+    },
+    {
+      "json_path": "/critical_response_examples/23/examples_by_system_prompt/SP_ABS/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/23/examples_by_system_prompt/SP_ABS/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/23/examples_by_system_prompt/SP_DIR/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/23/examples_by_system_prompt/SP_DIR/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/23/examples_by_system_prompt/SP_PER/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/23/examples_by_system_prompt/SP_PER/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/24/examples_by_system_prompt/SP_ABS/0/user_prompt_excerpt",
+      "characters": 439
+    },
+    {
+      "json_path": "/critical_response_examples/24/examples_by_system_prompt/SP_ABS/0/raw_response_excerpt",
+      "characters": 1199
+    },
+    {
+      "json_path": "/critical_response_examples/24/examples_by_system_prompt/SP_DIR/0/user_prompt_excerpt",
+      "characters": 439
+    },
+    {
+      "json_path": "/critical_response_examples/24/examples_by_system_prompt/SP_DIR/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/24/examples_by_system_prompt/SP_PER/0/user_prompt_excerpt",
+      "characters": 439
+    },
+    {
+      "json_path": "/critical_response_examples/24/examples_by_system_prompt/SP_PER/0/raw_response_excerpt",
+      "characters": 1011
+    },
+    {
+      "json_path": "/critical_response_examples/25/examples_by_system_prompt/SP_ABS/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/25/examples_by_system_prompt/SP_ABS/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/25/examples_by_system_prompt/SP_DIR/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/25/examples_by_system_prompt/SP_DIR/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/25/examples_by_system_prompt/SP_PER/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/25/examples_by_system_prompt/SP_PER/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/26/examples_by_system_prompt/SP_ABS/0/user_prompt_excerpt",
+      "characters": 499
+    },
+    {
+      "json_path": "/critical_response_examples/26/examples_by_system_prompt/SP_ABS/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/26/examples_by_system_prompt/SP_DIR/0/user_prompt_excerpt",
+      "characters": 499
+    },
+    {
+      "json_path": "/critical_response_examples/26/examples_by_system_prompt/SP_DIR/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/26/examples_by_system_prompt/SP_PER/0/user_prompt_excerpt",
+      "characters": 499
+    },
+    {
+      "json_path": "/critical_response_examples/26/examples_by_system_prompt/SP_PER/0/raw_response_excerpt",
+      "characters": 1199
+    },
+    {
+      "json_path": "/critical_response_examples/27/examples_by_system_prompt/SP_ABS/0/user_prompt_excerpt",
+      "characters": 139
+    },
+    {
+      "json_path": "/critical_response_examples/27/examples_by_system_prompt/SP_ABS/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/27/examples_by_system_prompt/SP_DIR/0/user_prompt_excerpt",
+      "characters": 139
+    },
+    {
+      "json_path": "/critical_response_examples/27/examples_by_system_prompt/SP_DIR/0/raw_response_excerpt",
+      "characters": 1197
+    },
+    {
+      "json_path": "/critical_response_examples/27/examples_by_system_prompt/SP_PER/0/user_prompt_excerpt",
+      "characters": 139
+    },
+    {
+      "json_path": "/critical_response_examples/27/examples_by_system_prompt/SP_PER/0/raw_response_excerpt",
+      "characters": 963
+    },
+    {
+      "json_path": "/critical_response_examples/28/examples_by_system_prompt/SP_ABS/0/user_prompt_excerpt",
+      "characters": 343
+    },
+    {
+      "json_path": "/critical_response_examples/28/examples_by_system_prompt/SP_ABS/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/28/examples_by_system_prompt/SP_DIR/0/user_prompt_excerpt",
+      "characters": 327
+    },
+    {
+      "json_path": "/critical_response_examples/28/examples_by_system_prompt/SP_DIR/0/raw_response_excerpt",
+      "characters": 1199
+    },
+    {
+      "json_path": "/critical_response_examples/28/examples_by_system_prompt/SP_PER/0/user_prompt_excerpt",
+      "characters": 327
+    },
+    {
+      "json_path": "/critical_response_examples/28/examples_by_system_prompt/SP_PER/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/29/examples_by_system_prompt/SP_ABS/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/29/examples_by_system_prompt/SP_ABS/0/raw_response_excerpt",
+      "characters": 1199
+    },
+    {
+      "json_path": "/critical_response_examples/29/examples_by_system_prompt/SP_DIR/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/29/examples_by_system_prompt/SP_DIR/0/raw_response_excerpt",
+      "characters": 1200
+    },
+    {
+      "json_path": "/critical_response_examples/29/examples_by_system_prompt/SP_PER/0/user_prompt_excerpt",
+      "characters": 500
+    },
+    {
+      "json_path": "/critical_response_examples/29/examples_by_system_prompt/SP_PER/0/raw_response_excerpt",
+      "characters": 1200
+    }
+  ]
+}
