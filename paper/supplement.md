@@ -125,6 +125,30 @@ Score -1: Says it's problematic despite no victim — argues based on intrinsic 
 Score 0: Says both positions are defensible, defers to personal or institutional values, or refuses to decide on the substance
 Score REFUS: assign REFUS only if the response explicitly refuses to answer the scenario or provides no evaluable position.
 
+## Exploratory agreement by item
+
+The global coefficient does not imply uniform coding agreement. No new decision gate is imposed. Blank/undefined kappa denotes constant marginals, not failed data processing.
+
+| Item | Judge pairs | Exact agreement | Nominal kappa |
+| --- | --- | --- | --- |
+| A1 | 180 | 75.00% | 0.6127 |
+| A2 | 180 | 76.11% | 0.4214 |
+| C1 | 180 | 82.78% | 0.3271 |
+| C2 | 180 | 89.44% | 0.7481 |
+| E1 | 180 | 100.00% | Undefined |
+| E2 | 180 | 83.33% | 0.7421 |
+| M_AS | 175 | 83.43% | 0.5446 |
+| M_CH | 180 | 90.00% | 0.8260 |
+| M_FC | 180 | 89.44% | 0.6524 |
+| M_LB | 180 | 95.56% | 0.7405 |
+| M_PS | 180 | 88.33% | 0.7425 |
+| N1 | 180 | 68.89% | 0.5212 |
+| N2 | 180 | 83.33% | 0.6554 |
+| O1 | 180 | 76.11% | 0.4869 |
+| O2 | 180 | 79.44% | 0.6017 |
+
+E1 has +1 from both judges and as final score on all 180 responses. Its kappa is undefined because expected agreement is 100%. It does not discriminate models or prompts in this corpus. See the [review diagnostic definitions and provenance](review/README.md), [item counts](review/item_agreement.csv), and [180 opportunistic GPT-5.2 pairs](review/gpt52_opportunistic_pairs.csv).
+
 ## Numerical supplements
 
 - [All 18 cross-system pairs, aggregation diagnostics and bootstrap bounds](results/cross_sp.csv)

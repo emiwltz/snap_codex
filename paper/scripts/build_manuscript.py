@@ -2,12 +2,22 @@
 """Expand evidence-bound manuscript tables, bibliography and review PDF offline."""
 
 from __future__ import annotations
+import argparse
+import os
+import shutil
+import sys
 import csv
 import hashlib
 import html
 import json
 from pathlib import Path
 import re
+
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+os.environ.setdefault("MPLCONFIGDIR", str(ROOT / "paper/private/matplotlib"))
+os.environ.setdefault("XDG_CACHE_HOME", str(ROOT / "paper/private/cache"))
+from scripts.local_paths import fresh_directory
 
 import pandas as pd
 import yaml
@@ -32,6 +42,7 @@ from pypdf import PdfReader
 ROOT = Path(__file__).resolve().parents[2]
 PAPER = ROOT / "paper"
 RESULTS = PAPER / "results"
+BUILD = PAPER / "build/review"
 LABELS = {
     "claude-sonnet-4-5": "Claude Sonnet 4.5",
     "gemini-3-pro": "Gemini 3.1 Pro",
@@ -70,6 +81,11 @@ def expand():
     assert all(
         not v for v in audit["archived_comparison"].values()
     ), "Review changed archived analyses before rendering"
+    review_audit = json.loads((PAPER / "review/audit_diagnostics.json").read_text())
+    for rel, expected in review_audit["input_sha256"].items():
+        assert (
+            hashlib.sha256((ROOT / rel).read_bytes()).hexdigest() == expected
+        ), f"Stale review diagnostics: {rel}"
     m = json.loads((RESULTS / "metrics.json").read_text())
     d = json.loads((RESULTS / "core/decision_report.json").read_text())
     reliability = pd.read_csv(RESULTS / "reliability.csv")
@@ -193,7 +209,7 @@ def expand():
         r"\{\{.*?\}\}|\[(?:huang|serapio|sandhan|zierahn|zheng|cohen|koo|graham)\d+\]",
         source,
     )
-    (PAPER / "manuscript.md").write_text(source)
+    (BUILD / "manuscript.md").write_text(source)
     bib = []
     for r in references:
         authors = r["authors"].replace(", and ", " and ").replace(", ", " and ")
@@ -205,7 +221,7 @@ def expand():
         bib.append(
             f"@{kind}{{{r['id']},\n  author = {{{authors}}},\n  title = {{{r['title']}}},\n  year = {{{r['year']}}},\n  doi = {{{r['doi']}}},\n  url = {{{r['url']}}},\n  note = {{{r['venue']}}}\n}}"
         )
-    (PAPER / "references.bib").write_text("\n\n".join(bib) + "\n")
+    (BUILD / "references.bib").write_text("\n\n".join(bib) + "\n")
     supplement = [
         "# Supplementary material - SoulBench SNAP v3.1",
         "",
@@ -233,6 +249,28 @@ def expand():
         "rubrics"
     ].items():
         supplement += ["### " + key, "", obj["description"], ""]
+    review_rows = list(csv.DictReader((PAPER / "review/item_agreement.csv").open()))
+    supplement += [
+        "## Exploratory agreement by item",
+        "",
+        "The global coefficient does not imply uniform coding agreement. No new decision gate is imposed. Blank/undefined kappa denotes constant marginals, not failed data processing.",
+        "",
+        table(
+            ["Item", "Judge pairs", "Exact agreement", "Nominal kappa"],
+            [
+                [
+                    r["item"],
+                    r["n"],
+                    percent(float(r["exact"])),
+                    fmt(float(r["kappa"])) if r["kappa"] else "Undefined",
+                ]
+                for r in review_rows
+            ],
+        ),
+        "",
+        "E1 has +1 from both judges and as final score on all 180 responses. Its kappa is undefined because expected agreement is 100%. It does not discriminate models or prompts in this corpus. See the [review diagnostic definitions and provenance](review/README.md), [item counts](review/item_agreement.csv), and [180 opportunistic GPT-5.2 pairs](review/gpt52_opportunistic_pairs.csv).",
+        "",
+    ]
     supplement += [
         "## Numerical supplements",
         "",
@@ -249,7 +287,7 @@ def expand():
         "The paired-run sign-flip p-values in metrics.json inherit a post-selected-cell analysis and are not calibrated confirmatory evidence. The deterministic schedule is not a verified random exchangeable sample. Weighted kappas use ordinal-only pairs and are not comparable to the nominal four-category coefficient without considering their different populations and weights.",
         "",
     ]
-    (PAPER / "supplement.md").write_text("\n".join(supplement))
+    (BUILD / "supplement.md").write_text("\n".join(supplement))
     return source
 
 
@@ -337,7 +375,7 @@ def render(source):
             content.append(Paragraph(inline(line[4:]), subheading))
         elif line.startswith("!["):
             path = re.search(r"\]\(([^)]+)\)", line).group(1)
-            im = Image(str(PAPER / path))
+            im = Image(str(BUILD / path))
             im.drawHeight = width * im.imageHeight / im.imageWidth
             im.drawWidth = width
             j = i + 1
@@ -426,7 +464,7 @@ def render(source):
         canvas.drawRightString(page_width - 52, 26, str(doc.page))
         canvas.restoreState()
 
-    pdf = PAPER / "output/pdf/snap_v3_1_manuscript.pdf"
+    pdf = BUILD / "output/pdf/snap_v3_1_manuscript.pdf"
     pdf.parent.mkdir(parents=True, exist_ok=True)
     doc = SimpleDocTemplate(
         str(pdf),
@@ -452,7 +490,7 @@ def render(source):
     ]:
         assert fragment in extracted, fragment
     assert len(reader.pages) >= 8
-    qa = PAPER / "qa"
+    qa = BUILD / "qa"
     qa.mkdir(exist_ok=True)
     (qa / "pdf_text.txt").write_text(extracted)
     checks = {
@@ -460,7 +498,7 @@ def render(source):
         "words_markdown": len(source.split()),
         "pdf_sha256": hashlib.sha256(pdf.read_bytes()).hexdigest(),
         "manuscript_sha256": hashlib.sha256(
-            (PAPER / "manuscript.md").read_bytes()
+            (BUILD / "manuscript.md").read_bytes()
         ).hexdigest(),
         "tables": table_number,
         "figures": source.count("![Figure"),
@@ -468,11 +506,29 @@ def render(source):
         "text_checks": "passed",
         "visual_review": "required after rendering pages",
     }
-    (PAPER / "results/document_checks.json").write_text(
+    (BUILD / "results/document_checks.json").write_text(
         json.dumps(checks, indent=2) + "\n"
     )
     print(json.dumps(checks, indent=2))
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--results-dir",
+        type=Path,
+        required=True,
+        help="Fresh results from scripts/reproduce.py",
+    )
+    parser.add_argument("--output-dir", type=Path, default=BUILD)
+    args = parser.parse_args()
+    RESULTS = args.results_dir.resolve()
+    if not (RESULTS / "audit.json").is_file():
+        parser.error("Missing audit.json; run scripts/reproduce.py first")
+    try:
+        BUILD = fresh_directory(args.output_dir, ROOT, ("paper/build",))
+    except ValueError as error:
+        parser.error(str(error))
+    shutil.copytree(RESULTS, BUILD / "results")
+    shutil.copytree(PAPER / "review", BUILD / "review")
     render(expand())

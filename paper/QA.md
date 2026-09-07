@@ -1,6 +1,6 @@
-# Vérifications réellement effectuées
+# Vérifications du premier manuscrit
 
-Date : 6 septembre 2026. Périmètre : ce worktree de SoulBench SNAP, campagne retenue v3.1. Les contrôles de reproduction réussis ne changent pas le résultat scientifique FAIL.
+Date : 6 septembre 2026, avant le nettoyage du dépôt. Ce document conserve les vérifications du premier brouillon. Les vérifications de la révision et de l’export sont dans [l’inventaire du nettoyage](../docs/CLEANUP.md). Périmètre : ce worktree de SoulBench SNAP, campagne retenue v3.1. Les contrôles de reproduction réussis ne changent pas le résultat scientifique FAIL.
 
 ## Données et calculs
 
@@ -14,7 +14,7 @@ Date : 6 septembre 2026. Périmètre : ce worktree de SoulBench SNAP, campagne r
 
 ## Tests du dépôt
 
-Commande exécutée dans l'environnement isolé : appel à `pytest.main(['-q', '-p', 'no:cacheprovider', 'tests'])`, avec `socket.socket.connect`, `connect_ex` et `create_connection` remplacés par une fonction levant une erreur. Cache Matplotlib séparé sous `/private/tmp/snap-manuscript-test-mpl`. Les tests utilisent des bases temporaires et des clients/transport simulés.
+Commande exécutée dans l'environnement isolé : appel à `pytest.main(['-q', '-p', 'no:cacheprovider', 'tests'])`, avec `socket.socket.connect`, `connect_ex` et `create_connection` remplacés par une fonction levant une erreur. Cache Matplotlib séparé dans un répertoire temporaire. Les tests utilisent des bases temporaires et des clients/transport simulés.
 
 **Résultat : 41 tests réussis, 12 avertissements, 49,44 secondes.** Les avertissements concernent les données synthétiques de tests d'analyse : divisions indéfinies de tests non paramétriques, convergence/gradient et Hessienne d'un modèle mixte. Ils ne sont pas des erreurs ignorées d'une campagne réelle. La convergence du LMM sur les données de référence est contrôlée séparément, et n'est pas utilisée comme preuve de validité confirmatoire.
 

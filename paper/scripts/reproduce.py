@@ -48,6 +48,7 @@ from src.decision import build_decision_report
 from src.prompt_builder import load_configs, load_items, build_user_prompt
 from src.scorer import compute_kappa
 from scripts import reproduce_preliminary as prior
+from scripts.local_paths import fresh_directory
 
 
 def sha(path):
@@ -206,19 +207,26 @@ def figure_outputs(cross, reliability, means, coverage, out):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--bootstrap", type=int, default=5000)
-    parser.add_argument("--output-dir", type=Path, default=PAPER / "results")
+    parser.add_argument(
+        "--output-dir", type=Path, default=ROOT / "artifacts/runs/review"
+    )
     args = parser.parse_args()
     if args.bootstrap < 1000:
         parser.error("Use at least 1000 bootstrap replicates for review artifacts")
-    out = args.output_dir.resolve()
-    if (
-        out == ROOT
-        or out == PAPER
-        or not out.is_relative_to(PAPER)
-        or out.is_relative_to(PAPER / "private")
-    ):
-        parser.error("Use a dedicated results directory under paper/, outside private/")
-    out.mkdir(parents=True, exist_ok=True)
+    required = [ROOT / p for p in prior.FINGERPRINT_PATHS]
+    missing = [str(p.relative_to(ROOT)) for p in required if not p.is_file()]
+    if missing:
+        parser.error(
+            "Reference inputs unavailable: "
+            + ", ".join(missing)
+            + ". The presentation export omits raw data; see docs/DATA.md."
+        )
+    try:
+        out = fresh_directory(
+            args.output_dir, ROOT, ("artifacts/runs", "paper/reproductions")
+        )
+    except ValueError as error:
+        parser.error(str(error))
     (PAPER / "private").mkdir(exist_ok=True)
     files = [ROOT / p for p in prior.FINGERPRINT_PATHS]
     files += sorted((ROOT / "config").glob("*.yaml"))
@@ -226,6 +234,9 @@ def main():
     files += sorted((ROOT / "outputs/reports").glob("*.csv"))
     files += sorted((ROOT / "src").glob("*.py")) + [
         ROOT / "scripts/reproduce_preliminary.py",
+        ROOT / "scripts/local_paths.py",
+        ROOT / "scripts/reproduce.py",
+        ROOT / "paper/requirements.lock.txt",
         Path(__file__),
     ]
     before = {str(p.relative_to(ROOT)): sha(p) for p in files}

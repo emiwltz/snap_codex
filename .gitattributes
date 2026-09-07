@@ -1,0 +1,6 @@
+# Treat research databases and rendered media as binary evidence in reviews.
+*.db binary
+*.pdf binary
+*.png binary
+# CSV writers may emit standard CRLF; preserve reference bytes as recorded.
+*.csv whitespace=cr-at-eol

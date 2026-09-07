@@ -30,7 +30,9 @@
 
 **Décision requise.** Définir avant toute nouvelle réponse si SP_PER appartient au domaine de robustesse ordinaire ou à une épreuve séparée de modification de posture. Le retirer après observation ne constitue pas un PASS v3.1. Le critère de réussite futur doit découler de l'usage, pas du seuil le plus facile à franchir.
 
-## P3 - Micro-campagne factorielle avec répétitions réellement identiques
+## P3 - Micro-campagne factorielle avec répétitions planifiées à configuration fixe
+
+**Constat préalable.** Les 180 paires opportunistes GPT-5.2 déjà présentes sont documentées dans la revue. Elles ne couvrent qu’un endpoint sur une journée et n’attestent pas l’équivalence complète des exécutions fournisseur. Le nouveau design doit planifier et tracer ces répétitions pour toutes ses cellules.
 
 **Question.** Quelle part de variation relève de l'instruction système, du scénario, de la formulation, de la température réellement appliquée et de la répétition à configuration identique ?
 

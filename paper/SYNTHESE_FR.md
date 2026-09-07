@@ -4,11 +4,13 @@ Le premier manuscrit présente un résultat de faisabilité négatif et informat
 
 ## Ce que contient réellement la preuve
 
-Le corpus comprend 2 700 réponses, soit six endpoints x 15 items x trois conditions système x dix runs. Les réponses ont été enregistrées du 12 au 16 mai 2026 ; le nom du dataset contient avril, mais ce n'est pas la date de collecte. Tous les essais ont un score final et aucune ligne finale d'erreur ne subsiste. Le nombre réel de tentatives API et leur coût ne sont pas déductibles du nombre de lignes.
+Le corpus comprend 2 700 réponses, soit six endpoints x 15 items x trois conditions système x dix runs. Les timestamps des réponses vont du 12 au 16 mai 2026 ; les métadonnées Mistral reflètent une reprise et ne définissent pas le début des observations ; le nom du dataset contient avril, mais ce n'est pas la date de collecte. Tous les essais ont un score final et aucune ligne finale d'erreur ne subsiste. Le nombre réel de tentatives API et leur coût ne sont pas déductibles du nombre de lignes.
 
 Les deux juges disposent de 2 695 paires complètes : cinq scores du second juge manquent et ont été résolus par adjudication. L'accord exact juge/juge est 84,08 %, le kappa nominal 0,7509. La résolution aboutit à 2 266 accords directs, 404 désaccords voisins ramenés automatiquement à zéro et 30 adjudications. Deux réponses sont des refus ; les calculs numériques utilisent donc 2 698 réponses.
 
 Le terme « validation humaine » doit rester prudent. Les 200 labels historiques correspondent bien au CSV et à la base, mais leur auteur, l'indépendance du codage, la formation et l'aveuglement n'ont pas été établis par les fichiers examinés. Le CSV exporté affiche le score final. Claude Sonnet 4.5 n'est pas représenté ; les autres effectifs vont de 25 à 45. Les kappas personne/juge1, personne/juge2 et personne/score final sont respectivement 0,6234, 0,6304 et 0,5789, sur cet échantillon incomplet. Ils ne démontrent ni une vérité terrain indépendante ni une validation représentative des six modèles.
+
+L’accord agrégé entre juges masque une hétérogénéité entre rubriques : cinq des quatorze kappas par item calculables sont sous 0,60. E1 est au plafond, avec +1 pour les deux juges et le score final sur 180/180 réponses. Son accord exact est de 100 %, mais son kappa est indéfini et cet item ne discrimine ni modèle ni prompt dans ce corpus. Le [supplément de revue](review/README.md) contient les effectifs, accords et paires GPT, sans texte brut. Ces diagnostics exploratoires ne changent aucun label ni seuil.
 
 ## Le résultat central, avec ses dénominateurs
 
@@ -21,11 +23,11 @@ Le terme « validation humaine » doit rester prudent. Les 200 labels historique
 | Minimum ICC(2,1) | 0,5486 ; cinq valeurs disponibles | Critère 0,60 manqué ; Claude non calculable |
 | Minimum corrélation entre prompts | 0,3189 ; 18 comparaisons | Critère 0,60 manqué ; Mistral DIR/PER |
 
-Les règles figurent dans le protocole et la configuration conservés. La présente inspection n'établit pas leur préenregistrement daté ; le manuscrit ne les qualifie donc pas de préenregistrées. Les reproduire permet de vérifier le verdict historique, sans transformer cette analyse rétrospective en test confirmatoire.
+Les règles figurent dans le protocole et la configuration conservés. Les horodatages Git locaux du commit `0646789` placent le calendrier et les mêmes seuils au 10 mai, avant les premières réponses conservées. Ils ne constituent pas un enregistrement indépendant et immuable ; le manuscrit ne les qualifie donc pas de préenregistrées. Les reproduire permet de vérifier le verdict historique, sans transformer cette analyse rétrospective en test confirmatoire.
 
 ## Pourquoi les corrélations ne racontent pas toutes la même chose
 
-La corrélation split-half compare, sur 45 cibles item-prompt, les moyennes des runs 1-5 aux moyennes des runs 6-10. L'ICC traite chaque run comme une mesure unique. Or ces runs changent scénario, formulation et température nominale selon un calendrier fixe : ce ne sont pas dix répétitions identiques. Pour GPT 5.2, température et top-p ne sont même pas envoyés. La stabilité temporelle pure n'est donc pas identifiée.
+La corrélation split-half compare, sur 45 cibles item-prompt, les moyennes des runs 1-5 aux moyennes des runs 6-10. L'ICC traite chaque run comme une mesure unique. Or ces runs changent scénario, formulation et température nominale selon un calendrier fixe : ce ne sont pas dix répétitions identiques. Pour GPT 5.2, l’omission de température et top-p crée cependant une exception : 180 paires de requêtes reconstructibles identiques (runs 1/7, 2/8, 3/9, 4/10). Elles donnent 142 accords de score final sur 180 (78,89 %), κ = 0,6460 et r = 0,7440. Deux paires ont des comptes de tokens de prompt différents ; l’identité du backend et l’équivalence complète d’exécution fournisseur ne sont pas attestées. Les moitiés 1-5 et 6-10 sont des positions du calendrier, pas des périodes chronologiques : l’ordre a été mélangé. Ce diagnostic opportuniste sur une journée et un seul endpoint ne constitue pas un test-retest contrôlé pour l’ensemble du design.
 
 Le pire cas entre prompts, Mistral DIR/PER, donne une corrélation de 0,3189 sur 150 paires item-run. La corrélation des quinze moyennes d'items monte à 0,5186 et celle des réponses centrées au sein des items descend à 0,0606. L'intervalle descriptif obtenu par rééchantillonnage des quinze items est large : [-0,0672 ; 0,6413]. Ces calculs concernent des niveaux différents. L'incertitude traverse le seuil historique et n'autorise pas à transformer son franchissement ponctuel en preuve générale d'invariance ou d'absence d'invariance.
 
