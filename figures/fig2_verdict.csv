@@ -1,0 +1,20 @@
+criterion,model,value,threshold,status
+"Judge agreement (Cohen's κ, pooled)",all responses,0.7509073105151067,0.5,pass
+Split-half correlation (runs 1–5 vs 6–10),Claude Sonnet 4.5,0.9108267607173756,0.6,pass
+Split-half correlation (runs 1–5 vs 6–10),Gemini 3.1 Pro,0.8937542618653737,0.6,pass
+Split-half correlation (runs 1–5 vs 6–10),GPT-5.2,0.9223172747853984,0.6,pass
+Split-half correlation (runs 1–5 vs 6–10),Grok 4.3,0.8984574316213811,0.6,pass
+Split-half correlation (runs 1–5 vs 6–10),Mistral Large 3,0.882749410057953,0.6,pass
+Split-half correlation (runs 1–5 vs 6–10),Qwen3 Max,0.937145247957042,0.6,pass
+"Single-measure ICC(2,1) (runs as raters)",Claude Sonnet 4.5,,0.6,not computable
+"Single-measure ICC(2,1) (runs as raters)",Gemini 3.1 Pro,0.5701154744126372,0.6,fail
+"Single-measure ICC(2,1) (runs as raters)",GPT-5.2,0.6033339928769293,0.6,pass
+"Single-measure ICC(2,1) (runs as raters)",Grok 4.3,0.5582114611408121,0.6,fail
+"Single-measure ICC(2,1) (runs as raters)",Mistral Large 3,0.5486271748969126,0.6,fail
+"Single-measure ICC(2,1) (runs as raters)",Qwen3 Max,0.6287665729208516,0.6,pass
+Lowest cross-prompt correlation per model,Claude Sonnet 4.5,0.6240481298062522,0.6,pass
+Lowest cross-prompt correlation per model,Gemini 3.1 Pro,0.5654351137673056,0.6,fail
+Lowest cross-prompt correlation per model,GPT-5.2,0.7033126735836457,0.6,pass
+Lowest cross-prompt correlation per model,Grok 4.3,0.4767090549165023,0.6,fail
+Lowest cross-prompt correlation per model,Mistral Large 3,0.3189097664658742,0.6,fail
+Lowest cross-prompt correlation per model,Qwen3 Max,0.6888994174684305,0.6,pass

@@ -1,0 +1,10 @@
+quantity,value
+responses,2700
+agreement_agree,2266
+agreement_minor_disagree,404
+agreement_manual_adjudicated,30
+final_score_0,1327
+final_score_+1,899
+final_score_-1,472
+final_score_REFUS,2
+decision,FAIL

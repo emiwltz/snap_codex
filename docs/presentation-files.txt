@@ -1,6 +1,9 @@
 # Explicit reviewed presentation file list. Additions require content review.
 .gitattributes
 .gitignore
+CITATION.cff
+LICENSE
+LICENSE-CC-BY-4.0.txt
 AGENTS.md
 README.md
 config/items_moral.yaml
@@ -12,6 +15,9 @@ config/models.yaml
 config/protocol.yaml
 config/scoring_rubrics.yaml
 config/system_prompts.yaml
+data/DICTIONARY.md
+data/README.md
+docs/CODING_PROVENANCE.md
 docs/CLEANUP.md
 docs/CONTRIBUTING.md
 docs/DATA.md
@@ -19,6 +25,19 @@ docs/RELEASING.md
 docs/REPRODUCING.md
 docs/presentation-files.txt
 docs/reference-integrity.json
+figures/README.md
+figures/fig1_design.csv
+figures/fig1_design.pdf
+figures/fig1_design.png
+figures/fig2_verdict.csv
+figures/fig2_verdict.pdf
+figures/fig2_verdict.png
+figures/fig3_cross_prompt.csv
+figures/fig3_cross_prompt.pdf
+figures/fig3_cross_prompt.png
+figures/fig4_items.csv
+figures/fig4_items.pdf
+figures/fig4_items.png
 outputs/reports/cross_sp_item_amplitudes.csv
 outputs/reports/cross_sp_model_pairs.csv
 outputs/reports/cross_sp_top_cells.csv
@@ -31,7 +50,6 @@ paper/EXPERIMENT_PLAN.md
 paper/PROVENANCE.md
 paper/QA.md
 paper/README.md
-paper/SYNTHESE_FR.md
 paper/claims.csv
 paper/manuscript.md
 paper/manuscript.template.md
@@ -71,6 +89,7 @@ paper/review/reproduction_audit.json
 paper/scripts/audit_diagnostics.py
 paper/scripts/build_manuscript.py
 paper/scripts/reproduce.py
+paper/scripts/make_figures.py
 paper/supplement.md
 requirements.txt
 scripts/export_presentation.py

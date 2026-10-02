@@ -26,6 +26,9 @@ PERSONAL = re.compile(r"/(?:Users|home)/[A-Za-z0-9_.-]+/")
 FORBIDDEN_PARTS = {".git", ".venv", "venv", "__pycache__", "private", "qa"}
 FORBIDDEN_PREFIXES = ("data/", "docs/archive/", "artifacts/", "paper/provenance/")
 FORBIDDEN_FILES = {"outputs/reports/cross_sp_diagnostic.json"}
+# Documentation inside forbidden directories; contains no raw records.
+ALLOWED_FILES = {"data/README.md", "data/DICTIONARY.md"}
+ALLOWED_NAMES = {".gitignore", ".gitattributes", "LICENSE", "CITATION.cff"}
 ALLOWED_SUFFIXES = {
     ".py",
     ".sh",
@@ -53,12 +56,9 @@ def candidates(root: Path, manifest: Path) -> list[Path]:
             Path(rel).is_absolute()
             or ".." in parts
             or any(p in FORBIDDEN_PARTS for p in parts)
-            or rel.startswith(FORBIDDEN_PREFIXES)
+            or (rel.startswith(FORBIDDEN_PREFIXES) and rel not in ALLOWED_FILES)
             or rel in FORBIDDEN_FILES
-            or (
-                path.suffix not in ALLOWED_SUFFIXES
-                and path.name not in {".gitignore", ".gitattributes"}
-            )
+            or (path.suffix not in ALLOWED_SUFFIXES and path.name not in ALLOWED_NAMES)
             or path.name.startswith(".env")
         ):
             raise ValueError(f"Forbidden export path: {rel}")
