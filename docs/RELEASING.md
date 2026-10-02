@@ -1,9 +1,10 @@
 # Preparing a presentation or release
 
-The working repository is ready for structured local review. A public release,
-licence and scientific submission have not been approved. The author name,
-affiliation and licence are explicitly undecided. No placeholder identity is
-presented as a real author and no licence has been chosen on the owner's behalf.
+The repository is being prepared for publication on GitHub with a Zenodo
+archive. Decided by the author on 3 October 2026: raw data stay public, code
+under MIT, text, data and figures under CC BY 4.0, English-only article, author
+Emilien Waltz without institutional affiliation. Publishing, tagging and
+archiving still require the author's explicit approval of the exact version.
 
 ## Prepare the local bundle
 
@@ -37,14 +38,15 @@ inventory and the PDF before using the bundle outside the local review.
 
 ## Decisions remaining before external release
 
-| Decision | Required fact or authorization |
+| Decision | Status |
 |---|---|
-| Author name and affiliation | Owner's chosen public attribution; both undecided |
-| Licence | Owner's choice and appropriate rights for code, text, inputs and outputs |
-| Data disclosure | Whether and under what terms raw responses/coding may be distributed; review excerpts first |
-| Human-validation account | Coder identity/role, independent work, blinding, instructions and adjudication conditions |
-| Scientific declarations | Real chronology, conflicts/funding, applicable ethical review or rationale, rights statements |
-| Venue and release action | Target if any, final review and explicit permission to publish or submit |
+| Author list | Emilien Waltz; whether a contributor is credited as co-author or acknowledged is undecided |
+| Affiliation | None (independent researcher) |
+| Licence | Decided: MIT for code, CC BY 4.0 for text, data and figures |
+| Data disclosure | Decided: raw databases, coded CSV and diagnostics with excerpts remain public and documented |
+| Human-validation account | Partly declared, see [coding provenance](CODING_PROVENANCE.md); open points listed there |
+| Scientific declarations | Chronology, conflicts/funding and ethics statement to be provided by the author |
+| Venue and release action | GitHub release archived on Zenodo; each push, tag and deposit needs explicit approval |
 
 The missing facts do not block local tests, reproduction, manuscript revision or
 export preparation. They prevent an honest claim that external publication or
@@ -53,7 +55,8 @@ and [experiment plan](../paper/EXPERIMENT_PLAN.md).
 
 ## Citation status
 
-There is no DOI for SNAP and no settled author metadata. Cite the actual working
-version and commit in an internal review; do not invent a BibTeX author, DOI,
-licence or affiliation. `paper/references.bib` contains the verified *external*
-literature cited by the manuscript, not an official citation for this project.
+There is no DOI for SNAP yet. [CITATION.cff](../CITATION.cff) carries the
+decided author and licences; the version, release date and DOI are added only
+when a release is approved and archived. `paper/references.bib` contains the
+verified *external* literature cited by the manuscript, not a citation for this
+project.

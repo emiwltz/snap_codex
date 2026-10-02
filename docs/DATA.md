@@ -13,14 +13,14 @@ or an observation of intrinsic model personality.
 | `data/manual_sample_coded.csv` | 200 historical coded rows | Raw validation reference; exact correspondence audited |
 | `config/*.yaml` | Executed design, nominal settings, items and rubrics | Method reference; do not alter to improve the verdict |
 | `outputs/reports/`, `outputs/figures/` | Historical v3.1 reports and figures | Preserved at original paths |
-| `outputs/reports/cross_sp_diagnostic.json` | Aggregates **and raw response excerpts** | Excluded from the presentation export |
+| `outputs/reports/cross_sp_diagnostic.json` | Aggregates **and raw response excerpts** (copy in `artifacts/reproduction/v3.1-core/`) | Public; excluded from the presentation export |
 | `paper/results/` | Audited manuscript aggregates and numerical supplements | Retained first-manuscript evidence |
 | `artifacts/reproduction/` | Earlier local reproductions | Historical comparisons, not a new campaign |
 | `artifacts/runs/` | Newly recomputed aggregates | Disposable, ignored; each run records its own inputs |
 
-The working Git history contains raw data. Ignoring future database files does not
-untrack existing evidence. Do not publish the full history on the assumption that
-it has the same scope as the manuscript or presentation bundle.
+The databases, coded CSV and diagnostics are public in this repository and its
+Git history, by the author's decision of 3 October 2026, under CC BY 4.0. Their
+columns are described in the [data dictionary](../data/DICTIONARY.md).
 
 ## Schema and joins
 
@@ -39,9 +39,10 @@ exploratory sensitivity analyses.
 
 Validation rows are linked back to campaign responses and CSV labels during
 reproduction. The 200 historical human-labelled rows cover five models and exclude
-Claude. Coder identity, independence, blinding and inter-human reliability are not
-established by file consistency. No agent-generated judgment is called human
-coding.
+Claude. Their provenance is described, as far as it is known, in
+[coding provenance](CODING_PROVENANCE.md); file consistency does not establish
+independence or inter-human reliability. No agent-generated judgment is called
+human coding.
 
 ## Provenance and reproducibility
 
@@ -60,14 +61,14 @@ limitations described in the manuscript.
 
 ## Presentation bundle and missing data
 
-The curated export contains code, configuration, tests, manuscript, bibliography
-and selected aggregate evidence. It excludes the two databases, coded CSV, raw
-response diagnostic, archival prose not reviewed for excerpts, private import
-records and Git history. Data rights and disclosure have not been decided, so no
-raw download is claimed and no author/contact identity is invented.
+The curated presentation export contains code, configuration, tests, manuscript,
+bibliography and selected aggregate evidence. It excludes the two databases,
+coded CSV, raw response diagnostic, archival prose not reviewed for excerpts,
+private import records and Git history; a recipient obtains the raw inputs from
+this public repository.
 
-A recipient can run the local tests and inspect aggregate results. Full numerical
-reproduction requires the exact retained inputs at the paths above, obtained only
-through a separately approved release/access process. The reproduction command
-fails with a clear missing-input error when they are absent. It does not fabricate
-samples, fetch private data or silently switch to a demonstration dataset.
+A recipient of the export alone can run the local tests and inspect aggregate
+results. Full numerical reproduction requires the exact retained inputs at the
+paths above. The reproduction command fails with a clear missing-input error
+when they are absent. It does not fabricate samples, fetch data or silently
+switch to a demonstration dataset.

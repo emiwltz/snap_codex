@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this software or data, please cite it using these metadata."
+title: "SoulBench SNAP v3.1: a preliminary audit of prompt-conditioned response profiles in six language models"
+abstract: >-
+  Code, configuration, data and manuscript of SNAP v3.1, a compact pilot that
+  collected 2,700 single-turn responses from six language-model endpoints
+  (15 items, three system conditions, ten scheduled runs), coded them with two
+  LLM judges and tested pre-set stability and context-robustness criteria. The
+  pipeline completed; the scientific decision is FAIL.
+type: software
+authors:
+  - given-names: Emilien
+    family-names: Waltz
+repository-code: "https://github.com/emiwltz/snap_codex"
+license:
+  - MIT
+  - CC-BY-4.0
+keywords:
+  - language-model evaluation
+  - behavioral measurement
+  - prompt sensitivity
+  - inter-rater agreement
+  - reproducibility
+  - negative results
